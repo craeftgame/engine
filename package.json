@@ -1,0 +1,24 @@
+{
+  "name": "@craeft/engine",
+  "version": "1.0.0",
+  "description": "Cräft! engine",
+  "main": "src",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "tsc -b ."
+  },
+  "keywords": [],
+  "author": "Sebastian Gerske",
+  "license": "MIT",
+  "dependencies": {
+    "@craeft/serializer": "git+https://github.com/craeftgame/serializer.git",
+    "local-storage": "^2.0.0",
+    "lz-string": "^1.4.4",
+    "mathjs": "^6.2.5"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.23",
+    "@types/node": "^12.12.17",
+    "@types/core-js": "^2.5.2"
+  }
+}
