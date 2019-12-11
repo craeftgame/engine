@@ -1,4 +1,3 @@
-/* globals describe, test */
 import assert from "assert"
 import {
     getRandomArrayItem,
