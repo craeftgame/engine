@@ -37,8 +37,8 @@ export default {
     playerInitialHp: 50,
     playerInitialSta: 25,
 
-    playerInitialStrFrom: 0,
-    playerInitialStrTo: 10,
+    playerInitialStrFrom: 1,
+    playerInitialStrTo: 5,
 
     playerInitialVitFrom: 1,
     playerInitialVitTo: 2,
