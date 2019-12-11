@@ -188,7 +188,7 @@ export default class WeaponCraefter extends Craefter {
                 matk,
                 matkMax
             )
-        } as Weapon);
+        });
 
         this.itemId = item.id;
 

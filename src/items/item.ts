@@ -1,6 +1,7 @@
 import Delay from "../delay";
 
 import {
+    ItemCategories,
     Rarities,
     ResourceTypes,
     Unknown
@@ -40,23 +41,27 @@ export default class Item {
 
     constructor(
         {
-            category = Unknown,
-            // @ts-ignore
+            category,
             name,
-            // @ts-ignore
             craefterId,
-            // @ts-ignore
             slot,
             level = 1,
-            // @ts-ignore
             type,
-            // @ts-ignore
             rarity,
-            // @ts-ignore
             material,
-            // @ts-ignore
             resources,
             delay = config.initialItemDelay
+        }: {
+            category?: any
+            delay?: number
+            name?: string
+            craefterId?: string
+            slot?: any
+            level?: number
+            type?: any
+            rarity?: any
+            material?: any
+            resources?: any
         } = {}
     ) {
 

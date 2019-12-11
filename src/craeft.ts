@@ -143,8 +143,9 @@ export default class Craeft {
             material: ResourceTypes.Metal,
             rarity: Rarities.Common,
             atk: 1,
-            matk: 1
-        } as Weapon);
+            matk: 1,
+            delay: -1
+        });
 
         knife.equipped = this.player.equipment.equip(knife);
 

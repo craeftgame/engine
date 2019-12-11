@@ -25,22 +25,27 @@ export default class Weapon extends Item {
         {
             type = Unknown,
             slot = Unknown,
-            // @ts-ignore
             craefterId,
-            // @ts-ignore
             name,
-            // @ts-ignore
             level = 1,
-            // @ts-ignore
             rarity,
             atk = 0,
             matk = 0,
-            // @ts-ignore
             material,
-            // @ts-ignore
             resources,
-            // @ts-ignore
             delay
+        }: {
+            delay?: number
+            name?: string
+            type?: any
+            slot?: any
+            craefterId?: string
+            material?: any
+            rarity?: any
+            level?: number
+            atk?: number
+            matk?: number
+            resources?: any
         } = {}
     ) {
         super({
