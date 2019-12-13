@@ -7,6 +7,11 @@ import {
     Rarities
 } from "./types";
 
+import FirstNames from "./lists/firstnames"
+import SurNames from "./lists/surnames"
+import ArmorNames from "./lists/weaponnames"
+import WeaponNames from "./lists/weaponnames"
+
 const CraefterTypeNames = Object.freeze({
     [Unknown]: "???",
     [CraefterTypes.WeaponCraefter]: "Weaponcräfter",
@@ -50,5 +55,9 @@ export {
     CraefterTypeNames,
     ItemNames,
     SlotNames,
-    RarityNames
+    RarityNames,
+    FirstNames,
+    SurNames,
+    WeaponNames,
+    ArmorNames
 };

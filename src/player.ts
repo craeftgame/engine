@@ -1,7 +1,6 @@
 import {
     log
 } from "mathjs";
-import peopleNames from "./data/people_names"
 import {
     getRandomArrayItem,
     getRandomInt
@@ -9,6 +8,10 @@ import {
 import Organism from "./organism";
 import Equipment from "./equipment";
 import config from "../config"
+import {
+    FirstNames,
+    SurNames
+} from "./data/names";
 
 export default class Player extends Organism {
 
@@ -27,7 +30,9 @@ export default class Player extends Organism {
     constructor(
         {
             name = getRandomArrayItem({
-                array: peopleNames
+                array: FirstNames
+            }) + " " + getRandomArrayItem({
+                array: SurNames
             }),
             // stats
             hp = config.playerInitialHp,
