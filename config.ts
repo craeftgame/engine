@@ -1,5 +1,5 @@
 // create debug flag to fall back to debug values
-const debug = process.env.NODE_ENV === "development" && false;
+const debug = process.env.NODE_ENV === "development" && true;
 
 export default {
     // detect debug
@@ -62,5 +62,7 @@ export default {
     armorCraefterInitialDex: 3,
     armorCraefterInitialLuk: 9,
 
-    organismInitialRequiredExp: 20
+    organismInitialRequiredExp: 20,
+
+    showBossScreen: debug
 };
