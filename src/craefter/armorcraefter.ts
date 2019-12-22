@@ -21,7 +21,6 @@ export default class ArmorCraefter extends Craefter {
 
     constructor(
         {
-            name = 'Armorcräfter',
             // @ts-ignore
             delay,
             str = 4,
@@ -32,7 +31,6 @@ export default class ArmorCraefter extends Craefter {
     ) {
         super({
             type: CraefterTypes.ArmorCraefter,
-            name,
             delay,
             str,
             int,

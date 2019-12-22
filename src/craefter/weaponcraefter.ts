@@ -23,7 +23,6 @@ import config from "../../config"
 export default class WeaponCraefter extends Craefter {
     constructor(
         {
-            name = 'Weaponcräfter',
             // @ts-ignore
             delay,
             str = config.weaponCraefterInitialStr,
@@ -34,7 +33,6 @@ export default class WeaponCraefter extends Craefter {
     ) {
         super({
             type: CraefterTypes.WeaponCraefter,
-            name,
             delay,
             str,
             int,
