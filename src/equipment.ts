@@ -24,9 +24,9 @@ export default class Equipment {
     // @ts-ignore
     [JewelerySlots.Right] = null;
 
-    findSlotByItemId(
+    private findSlotByItemId(
         itemId: string
-    ) {
+    ): symbol | null {
 
         const symbolSlots = Object.getOwnPropertySymbols(this);
 
@@ -36,9 +36,11 @@ export default class Equipment {
                 return slot;
             }
         }
+
+        return null
     }
 
-    getEquipped() {
+    public getEquipped(): Item[] {
         const equipped = [];
 
         for (const equipmentSymbol of Object.getOwnPropertySymbols(this)) {
@@ -53,9 +55,9 @@ export default class Equipment {
         return equipped;
     }
 
-    equip(
+    public equip(
         item
-    ) {
+    ): boolean {
         let equipped = false;
 
         if (item.category === ItemCategories.Weapon) {
@@ -138,9 +140,9 @@ export default class Equipment {
         return equipped;
     }
 
-    unequip(
+    public unequip(
         itemId: string
-    ) {
+    ): boolean {
         // @ts-ignore
         this[this.findSlotByItemId(itemId)] = null;
         // @ts-ignore
@@ -151,7 +153,7 @@ export default class Equipment {
 
     static hydrate(
         obj
-    ) {
+    ): Equipment {
         const equipment = Object.assign(new Equipment(), obj);
 
         return equipment;

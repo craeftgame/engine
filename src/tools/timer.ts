@@ -10,9 +10,7 @@ export default class Timer {
     constructor(
         {
             callback,
-            // @ts-ignore
             delay,
-            // @ts-ignore
             autoStart = true
         }: {
             callback?: any
@@ -20,12 +18,10 @@ export default class Timer {
             autoStart?: boolean
         } = {}
     ) {
-        // @ts-ignore
         this.callback = callback;
 
         // make it milliseconds
-        // @ts-ignore
-        this.delay = delay * 1000;
+        this.delay = (delay ? delay : 0) * 1000;
         this.remaining = this.delay;
 
         if (autoStart) {

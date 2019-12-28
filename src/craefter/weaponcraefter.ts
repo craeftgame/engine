@@ -19,6 +19,7 @@ import {
 } from "mathjs";
 
 import config from "../../config"
+import Resources from "../resources";
 
 export default class WeaponCraefter extends Craefter {
     constructor(
@@ -49,7 +50,7 @@ export default class WeaponCraefter extends Craefter {
         return weaponcraefter;
     }
 
-    evaluateItemType(
+    protected evaluateItemType(
         ratios,
         highestResource
     ) {
@@ -102,11 +103,14 @@ export default class WeaponCraefter extends Craefter {
         return type;
     }
 
-    evaluateItem(
+    public evaluateItem(
         {
-            // @ts-ignore
             resources
-        } = {}
+        }: {
+            resources: Resources
+        } = {
+            resources: new Resources()
+        }
     ) {
 
         // 2 percent of all resources is the base
@@ -146,18 +150,16 @@ export default class WeaponCraefter extends Craefter {
         }
     }
 
-    craeft(
+    public craeft(
         {
-            // @ts-ignore
             resources
-        } = {}
+        }: {
+            resources: Resources
+        } = {
+            resources: new Resources()
+        }
     ) {
-        super.craeft(resources);
-
-        // todo include resource heaviness / complexity
-        this.exhaust(
-            1
-        );
+        super.craeft({resources});
 
         const {
             type,

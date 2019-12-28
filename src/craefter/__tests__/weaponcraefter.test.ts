@@ -1,6 +1,11 @@
 /* globals describe, test, expect */
 import WeaponCraefter from "../weaponcraefter"
-import {Unknown, WeaponTypes} from "../../data/types";
+import {
+    ResourceTypes,
+    Unknown,
+    WeaponTypes
+} from "../../data/types";
+import Resources from "../../resources";
 
 describe("WeaponCraefter", () => {
     describe("evaluateItem", () => {
@@ -10,9 +15,10 @@ describe("WeaponCraefter", () => {
             test("should return item type wand if only wood", () => {
                 const craefter = new WeaponCraefter();
 
-                const item = craefter.evaluateItem({
-                    wood: 100
-                });
+                const resources = new Resources();
+                resources[ResourceTypes.Wood] = 100;
+
+                const item = craefter.evaluateItem({resources});
 
                 expect(item.type).toBe(WeaponTypes.Staff)
             });
@@ -24,9 +30,9 @@ describe("WeaponCraefter", () => {
             test("should return item type sword if only metal", () => {
                 const weaponCraefter = new WeaponCraefter();
 
-                const item = weaponCraefter.evaluateItem({
-                    metal: 100
-                });
+                const resources = new Resources();
+                resources[ResourceTypes.Metal] = 100;
+                const item = weaponCraefter.evaluateItem({resources});
 
                 expect(item.type).toBe(WeaponTypes.Sword)
             });
@@ -34,10 +40,10 @@ describe("WeaponCraefter", () => {
             test("should return item type sword if metal is way larger than wood", () => {
                 const weaponCraefter = new WeaponCraefter();
 
-                const item = weaponCraefter.evaluateItem({
-                    metal: 100,
-                    wood: 20
-                });
+                const resources = new Resources();
+                resources[ResourceTypes.Metal] = 100;
+                resources[ResourceTypes.Wood] = 20;
+                const item = weaponCraefter.evaluateItem({resources});
 
                 expect(item.type).toBe(WeaponTypes.Sword)
             });
@@ -49,10 +55,10 @@ describe("WeaponCraefter", () => {
             test("should return item type knife if metal is a little bit larger than wood", () => {
                 const weaponCraefter = new WeaponCraefter();
 
-                const item = weaponCraefter.evaluateItem({
-                    metal: 30,
-                    wood: 20
-                });
+                const resources = new Resources();
+                resources[ResourceTypes.Metal] = 30;
+                resources[ResourceTypes.Wood] = 20;
+                const item = weaponCraefter.evaluateItem({resources});
 
                 expect(item.type).toBe(WeaponTypes.Knife)
             });
@@ -64,13 +70,12 @@ describe("WeaponCraefter", () => {
             test("make jewel sword", () => {
                 const weaponCraefter = new WeaponCraefter();
 
-                const res = {
-                    metal: 5,
-                    wood: 2,
-                    diamond: 11
-                };
+                const resources = new Resources();
+                resources[ResourceTypes.Metal] = 5;
+                resources[ResourceTypes.Wood] = 2;
+                resources[ResourceTypes.Diamond] = 11;
 
-                const item = weaponCraefter.evaluateItem(res);
+                const item = weaponCraefter.evaluateItem({resources});
 
                 console.log(item.type, WeaponTypes.JewelSword);
 
@@ -84,13 +89,12 @@ describe("WeaponCraefter", () => {
             test("make jewel knife", () => {
                 const weaponCraefter = new WeaponCraefter();
 
-                const res = {
-                    metal: 5,
-                    wood: 5,
-                    diamond: 11
-                };
+                const resources = new Resources();
+                resources[ResourceTypes.Metal] = 5;
+                resources[ResourceTypes.Wood] = 5;
+                resources[ResourceTypes.Diamond] = 11;
 
-                const item = weaponCraefter.evaluateItem(res);
+                const item = weaponCraefter.evaluateItem({resources});
 
                 expect(item.type).toBe(WeaponTypes.JewelKnife)
             });
@@ -102,12 +106,11 @@ describe("WeaponCraefter", () => {
             test("make jewel wand", () => {
                 const weaponCraefter = new WeaponCraefter();
 
-                const res = {
-                    wood: 5,
-                    diamond: 11
-                };
+                const resources = new Resources();
+                resources[ResourceTypes.Wood] = 5;
+                resources[ResourceTypes.Diamond] = 11;
 
-                const item = weaponCraefter.evaluateItem(res);
+                const item = weaponCraefter.evaluateItem({resources});
 
                 expect(item.type).toBe(WeaponTypes.JewelWand)
             });
@@ -119,11 +122,10 @@ describe("WeaponCraefter", () => {
             test("Should create", () => {
                 const weaponCraefter = new WeaponCraefter();
 
-                const res = {
-                    diamond: 50
-                };
+                const resources = new Resources();
+                resources[ResourceTypes.Diamond] = 50;
 
-                const item = weaponCraefter.evaluateItem(res);
+                const item = weaponCraefter.evaluateItem({resources});
 
                 expect(item.type).toBe(Unknown)
             });

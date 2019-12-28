@@ -14,6 +14,7 @@ import {
     getRandomInt,
     getRandomObjectEntry
 } from "../tools/rand";
+import Resources from "../resources";
 
 export default class ArmorCraefter extends Craefter {
 
@@ -47,7 +48,7 @@ export default class ArmorCraefter extends Craefter {
         return armorCraefter;
     }
 
-    evaluateItemType(
+    protected evaluateItemType(
         ratios,
         highestResource
     ) {
@@ -82,13 +83,15 @@ export default class ArmorCraefter extends Craefter {
         return type;
     }
 
-    evaluateItem(
+    public evaluateItem(
         {
-            // @ts-ignore
             resources
-        } = {}
+        }: {
+            resources: Resources
+        } = {
+            resources: new Resources()
+        }
     ) {
-
         // 2 percent of all resources is the base
         const baseline = (resources.sum() / 100);
 
@@ -127,7 +130,7 @@ export default class ArmorCraefter extends Craefter {
         }
     }
 
-    evaluateSlot(
+    protected evaluateSlot(
         /* eslint-disable-next-line no-unused-vars */
         type
     ) {
@@ -137,13 +140,16 @@ export default class ArmorCraefter extends Craefter {
         });
     }
 
-    craeft(
+    public craeft(
         {
-            // @ts-ignore
             resources
-        } = {}
+        }: {
+            resources: Resources
+        } = {
+            resources: new Resources()
+        }
     ) {
-        super.craeft(resources);
+        super.craeft({resources});
 
         const {
             type,
@@ -172,7 +178,7 @@ export default class ArmorCraefter extends Craefter {
                 mdef,
                 mdefMax
             )
-        } as Armor);
+        });
 
         this.itemId = item.id;
 

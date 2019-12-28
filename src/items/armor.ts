@@ -1,8 +1,12 @@
 import Item from "./item";
 import {
     Unknown,
-    ItemCategories
+    ItemCategories, Rarities
 } from "../data/types";
+import {ItemNames, RarityNames, SlotNames} from "../data/names";
+import resources from "../resources";
+import Resources from "../resources";
+import Delay from "../delay";
 
 export default class Armor extends Item {
 
@@ -13,22 +17,27 @@ export default class Armor extends Item {
         {
             type = Unknown,
             slot = Unknown,
-            // @ts-ignore
             craefterId,
-            // @ts-ignore
             name,
-            // @ts-ignore
             level,
-            // @ts-ignore
             rarity,
             def = 0,
             mdef = 0,
-            // @ts-ignore
             material,
-            // @ts-ignore
             resources,
-            // @ts-ignore
             delay
+        }: {
+            type?: any
+            slot?: any
+            craefterId?: string
+            name?: string
+            level?: number
+            rarity?: any
+            def?: number
+            mdef?: number
+            material?: string
+            resources?: Resources
+            delay?: number
         } = {}
     ) {
         super({
@@ -46,6 +55,24 @@ export default class Armor extends Item {
 
         this.def = def;
         this.mdef = mdef;
+    }
+
+    evaluateItemName() {
+        const prefixes: string[] = [];
+
+        if (this.rarity !== Rarities.Common) {
+            prefixes.push(RarityNames[this.rarity]);
+        }
+
+        const parts: string[] = [];
+
+        parts.push(...prefixes);
+
+        parts.push(SlotNames[this.slot]);
+        parts.push(ItemNames[this.type]);
+
+
+        return parts.join(" ")
     }
 
     static hydrate(obj) {

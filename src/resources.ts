@@ -8,10 +8,18 @@ import Ratios from "./ratios";
 
 export default class Resources {
 
-    constructor({
-                    initialResources = 0,
-                    resources = {}
-                } = {}) {
+    constructor(
+        {
+            initialResources = 0,
+            resources = {} as Resources
+        }: {
+            initialResources?: number,
+            resources?: Resources
+        } = {
+            initialResources: 0,
+            resources: {} as Resources
+        }
+    ) {
         this[ResourceTypes.Wood] = resources[ResourceTypes.Wood] ? resources[ResourceTypes.Wood] : initialResources;
         this[ResourceTypes.Metal] = resources[ResourceTypes.Metal] ? resources[ResourceTypes.Metal] : initialResources;
         this[ResourceTypes.Cloth] = resources[ResourceTypes.Cloth] ? resources[ResourceTypes.Cloth] : initialResources;
@@ -21,6 +29,23 @@ export default class Resources {
     static hydrate(obj) {
         const resources = Object.assign(new Resources(), obj);
         return resources;
+    }
+
+    map(cb: { (type, name: string, i: number): any }) {
+
+        const rv: any[] = [];
+        const symbols = Object.getOwnPropertySymbols(this);
+
+        symbols.forEach((sym, i) => {
+
+            // @ts-ignore
+            const name = Symbol.keyFor(sym).toString();
+            const nameCapitalized = name.charAt(0).toUpperCase() + name.slice(1);
+
+            rv.push(cb(sym, nameCapitalized, i))
+        });
+
+        return rv;
     }
 
     add(resources) {

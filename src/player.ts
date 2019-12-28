@@ -12,6 +12,8 @@ import {
     FirstNames,
     SurNames
 } from "./data/names";
+import Armor from "./items/armor";
+import Weapon from "./items/weapon";
 
 export default class Player extends Organism {
 
@@ -21,9 +23,6 @@ export default class Player extends Organism {
     str;
     int;
     vit;
-
-    hpCurrent;
-    hpMax;
 
     class;
 
@@ -61,7 +60,8 @@ export default class Player extends Organism {
     ) {
         super({
             name,
-            sta
+            sta,
+            hp,
         });
 
         this.dex = dex;
@@ -69,13 +69,10 @@ export default class Player extends Organism {
         this.int = int;
         this.vit = vit;
 
-        this.hpCurrent = hp;
-        this.hpMax = hp;
-
         this.class = "Novice"
     }
 
-    static hydrate(obj) {
+    static hydrate(obj): Player {
         const player = Object.assign(new Player(), obj);
 
         player.equipment = Equipment.hydrate(obj.equipment);
@@ -83,25 +80,30 @@ export default class Player extends Organism {
         return player;
     }
 
-    tick() {
+    protected levelUp(): void {
+        super.levelUp();
+
+        this.hpMax = this.hpMax + (50 * log(this.level, 10));
+        this.hpCurrent = this.hpMax;
+    }
+
+    public tick(): void {
         // regenerate stamina
         if (this.staCurrent < this.staMax) {
-            this.staCurrent += 0.1;
+            this.staCurrent += 0.10;
         }
 
         // regenerate hp
         if (this.hpCurrent < this.hpMax) {
-            this.hpCurrent += (0.5 * this.vit);
+            this.hpCurrent += (0.50 * this.vit);
         }
     }
 
-    atk() {
+    public atk(): number {
         let atk = 0;
 
-        for (const equipment of this.equipment.getEquipped()) {
-            // @ts-ignore
+        for (const equipment of this.equipment.getEquipped() as Weapon[]) {
             if (equipment.atk) {
-                // @ts-ignore
                 atk += equipment.atk * this.str;
             }
         }
@@ -109,13 +111,11 @@ export default class Player extends Organism {
         return atk;
     }
 
-    matk() {
+    public matk(): number {
         let matk = 0;
 
-        for (const equipment of this.equipment.getEquipped()) {
-            // @ts-ignore
+        for (const equipment of this.equipment.getEquipped() as Weapon[]) {
             if (equipment.matk) {
-                // @ts-ignore
                 matk += equipment.matk * this.int;
             }
         }
@@ -123,27 +123,23 @@ export default class Player extends Organism {
         return matk;
     }
 
-    def() {
+    public def(): number {
         let def = 0;
 
-        for (const equipment of this.equipment.getEquipped()) {
-            // @ts-ignore
-            if (equipment.def) {
-                // @ts-ignore
-                def += equipment.def * this.vit;
+        for (const armor of this.equipment.getEquipped() as Armor[]) {
+            if (armor.def) {
+                def += armor.def * this.vit;
             }
         }
 
         return def;
     }
 
-    mdef() {
+    public mdef(): number {
         let mdef = 0;
 
-        for (const equipment of this.equipment.getEquipped()) {
-            // @ts-ignore
+        for (const equipment of this.equipment.getEquipped() as Armor[]) {
             if (equipment.mdef) {
-                // @ts-ignore
                 mdef += equipment.mdef * this.int;
             }
         }
@@ -151,26 +147,17 @@ export default class Player extends Organism {
         return mdef;
     }
 
-    levelUp() {
-        super.levelUp();
-
-        this.hpMax = this.hpMax + (50 * log(this.level, 10));
-        this.hpCurrent = this.hpMax;
-    }
-
-    damage(
+    public takeDamage(
         dmg
-    ) {
-        this.hpCurrent -= dmg;
+    ): boolean {
+        const dead: boolean = super.takeDamage(dmg);
 
-        if (Math.floor(this.hpCurrent) <= 0) {
-            // killed
-            this.hpCurrent = 0;
-            this.dead = true;
-
+        if (dead) {
             global.craeft.logs.push(`${this.class} ${this.name} died!`);
             global.craeft.stop(true);
         }
+
+        return dead;
     }
 
 }

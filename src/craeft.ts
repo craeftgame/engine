@@ -26,8 +26,10 @@ import config from "../config"
 // storage
 import ls from "local-storage";
 import zip from "lz-string/libs/lz-string";
-import Items from "./items";
-import Craefters from "./craefters";
+import Items from "./items/items";
+import Craefters from "./craefter/craefters";
+import Timeout = NodeJS.Timeout;
+import Bosses from "./boss/bosses";
 
 const version = `v${process.env.REACT_APP_VERSION}`;
 const versionMsg = `Welcome to Cräft! version: ${version}`;
@@ -40,30 +42,48 @@ if (config.debug) {
 }
 
 export default class Craeft {
-
-    onTick;
-
-    logs = [
+    logs: string[] = [
         versionMsg
     ];
 
-    // the player
     player: Player;
-    // the farm
     farm: Farm;
-    // craefters
     craefters: Craefters;
-
-    // todo move to craefters
-    craeftersCount = 0;
-
-    gameTick;
     items: Items;
+    resources: Resources;
+    bosses: Bosses;
 
-    // resources
-    resources;
+    gameTick: Timeout | null = null;
+    onTick: any;
 
-    serialize() {
+    constructor() {
+
+        this.player = new Player();
+        this.farm = new Farm();
+        this.craefters = new Craefters();
+        this.items = new Items();
+        this.bosses = new Bosses();
+
+        this.resources = new Resources({
+            initialResources: config.startResources
+        });
+
+        const knife = new Weapon({
+            name: "Newbie Knife",
+            type: WeaponTypes.Knife,
+            material: ResourceTypes.Metal,
+            rarity: Rarities.Common,
+            atk: 1,
+            matk: 1,
+            delay: -1
+        });
+
+        knife.equipped = this.player.equipment.equip(knife);
+
+        this.items.push(knife);
+    }
+
+    public serialize() {
 
         return Serializer.serialize({
             obj: this,
@@ -81,78 +101,16 @@ export default class Craeft {
 
         craeft.resources = Resources.hydrate(obj.resources);
         craeft.farm = Farm.hydrate(obj.farm);
-
-        for (const itemIndex in craeft.items) {
-
-            const item = craeft.items[itemIndex];
-            let ti;
-
-            switch (item.category) {
-                case ItemCategories.Weapon:
-                    ti = Weapon.hydrate(item);
-                    break;
-                case ItemCategories.Armor:
-                    ti = Armor.hydrate(item);
-                    break;
-                default:
-                    break;
-            }
-
-            craeft.items[itemIndex] = ti;
-        }
-
-        for (const craefterIndex in craeft.craefters) {
-
-            const craefter = craeft.craefters[craefterIndex];
-            let tc;
-
-            switch (craefter.type) {
-                case CraefterTypes.WeaponCraefter:
-                    tc = WeaponCraefter.hydrate(craefter);
-                    break;
-                case CraefterTypes.ArmorCraefter:
-                    tc = ArmorCraefter.hydrate(craefter);
-                    break;
-                default:
-                    break;
-            }
-
-            craeft.craefters[craefterIndex] = tc;
-        }
+        craeft.items = Items.hydrate(obj.items);
+        craeft.craefters = Craefters.hydrate(obj.craefters);
+        craeft.bosses = Bosses.hydrate(obj.bosses);
 
         craeft.player = Player.hydrate(obj.player);
 
         return craeft;
     }
 
-    constructor() {
-
-        this.player = new Player();
-        this.farm = new Farm();
-        this.craefters = new Craefters();
-        this.resources = new Resources({
-            initialResources: config.startResources
-        });
-
-        // items
-        this.items = new Items();
-
-        const knife = new Weapon({
-            name: "Newbie Knife",
-            type: WeaponTypes.Knife,
-            material: ResourceTypes.Metal,
-            rarity: Rarities.Common,
-            atk: 1,
-            matk: 1,
-            delay: -1
-        });
-
-        knife.equipped = this.player.equipment.equip(knife);
-
-        this.items.push(knife);
-    }
-
-    tick() {
+    public tick() {
         // tick the player
         this.player.tick();
 
@@ -171,7 +129,7 @@ export default class Craeft {
         }
     }
 
-    start(
+    public start(
         {
             onTick
         }: {
@@ -191,10 +149,12 @@ export default class Craeft {
         }, timeoutInSeconds * 1000);
     }
 
-    stop(
+    public stop(
         hard?: boolean
     ) {
-        clearInterval(this.gameTick);
+        if (this.gameTick) {
+            clearInterval(this.gameTick);
+        }
 
         this.gameTick = null;
 
@@ -206,7 +166,7 @@ export default class Craeft {
         }
     }
 
-    startFarming(
+    public startFarming(
         {
             callback
         }: {
@@ -233,7 +193,7 @@ export default class Craeft {
                     .add(this.resources)
                     .add(result);
 
-                this.player.damage(dmg);
+                this.player.takeDamage(dmg);
                 this.player.addExp(exp);
                 this.player.exhaust(usedStamina);
 
@@ -242,7 +202,7 @@ export default class Craeft {
         });
     }
 
-    addItem(
+    public addItem(
         item,
         resourcesConsumed
     ) {
@@ -253,7 +213,7 @@ export default class Craeft {
             exp
         ) => {
 
-            const craefter = this.craefters.findById(craefterId)
+            const craefter = this.craefters.findById(craefterId);
             craefter.finishCraefting(
                 exp
             );
@@ -264,12 +224,12 @@ export default class Craeft {
         this.items.push(item);
     }
 
-    addCraefter(
+    public addCraefter(
         which
     ) {
         let craefter;
 
-        const delay = config.startDelay * pow(log(this.craeftersCount + 2), 20);
+        const delay = config.startDelay * pow(log(this.craefters.count + 2), 20);
 
         switch (which) {
             case CraefterTypes.WeaponCraefter:
@@ -290,45 +250,30 @@ export default class Craeft {
 
         this.craefters.push(craefter);
 
-        this.craeftersCount++;
-
         craefter.onDoneCreating = (exp) => {
             this.player.addExp(exp);
         };
     }
 
-    disentchant(
+    public disentchant(
         itemId
-    ) {
-        const item = this.items.findById(itemId);
-        const name = item.getName();
-        const resources = item.disentchant();
+    ): void {
+        console.log(this.items);
 
-        this.items.removeItem(item);
+        const result = this.items.disentchant(itemId);
 
         this.resources = new Resources(
             {
                 resources: this.resources
             })
-            .add(resources);
+            .add(result.resources);
 
-        return {
-            name,
-            resources
-        }
+        this.logs.push(
+            `"${result.name}" disenchanted! ${result.resources.sum()} resource(s) retrieved!`
+        );
     }
 
-    bury(
-        craefterId
-    ) {
-        const craefter = this.craefters.findById(craefterId);
-        const name = craefter.name;
-        this.craefters.removeItem(craefter);
-
-        return name;
-    }
-
-    static saveState() {
+    public static saveState(): boolean {
         if (config.useLocalStorage && !global.craeft.player.dead) {
             const state = global.craeft.serialize();
 
@@ -338,17 +283,20 @@ export default class Craeft {
                 config.compressLocalStorage ?
                     zip.compress(state) : state
             );
+            return true;
         }
+
+        return false;
     }
 
-    static loadState() {
+    public static loadState(): void {
 
         let state = null;
 
         if (config.useLocalStorage) {
 
             // @ts-ignore
-            const localState = ls.get("state");
+            const localState: string = ls.get("state");
 
             if (localState) {
                 // if the state starts with { it is uncompressed
@@ -362,7 +310,7 @@ export default class Craeft {
         }
     }
 
-    static deleteState() {
+    private static deleteState(): void {
         if (config.useLocalStorage) {
             // @ts-ignore
             ls.remove("state");

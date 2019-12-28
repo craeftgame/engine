@@ -1,5 +1,5 @@
 export default class Tickable {
-    tick() {
+    public tick() {
         // stub please override
     }
 }

@@ -86,11 +86,11 @@ export default class Item {
         this.rarity = rarity || Item.evaluateRarity();
     }
 
-    getName() {
+    getName(): string {
         return this.name || this.evaluateItemName()
     }
 
-    evaluateItemName() {
+    evaluateItemName(): string {
         return `${RarityNames[this.rarity]} ${SlotNames[this.slot]} ${ItemNames[this.type]}`
     }
 
@@ -131,7 +131,7 @@ export default class Item {
             return new Resources({
                 resources: {
                     [ResourceTypes.Wood]: 1
-                }
+                } as unknown as Resources
             });
         }
 
@@ -157,7 +157,7 @@ export default class Item {
                         Math.floor(this.resources[ResourceTypes.Cloth] / 100 * config.disentchantRecyclingPercentFrom),
                         Math.floor(this.resources[ResourceTypes.Cloth] / 100 * config.disentchantRecyclingPercentTo)
                     )
-            }
+            } as Resources
 
         })
     }

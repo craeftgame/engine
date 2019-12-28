@@ -77,7 +77,7 @@ export default class Farm {
 
             amount = amount * player.atk();
 
-            const resources = {};
+            const resources = new Resources();
             const resTypes = [
                 ResourceTypes.Wood,
                 ResourceTypes.Metal,

@@ -12,6 +12,9 @@ import {
     FirstNames,
     SurNames
 } from "../data/names";
+import resources from "../resources";
+import Resources from "../resources";
+import {type} from "os";
 
 export default class Craefter extends Organism {
 
@@ -78,9 +81,10 @@ export default class Craefter extends Organism {
         craefter.delay = Delay.hydrate(obj.delay)
     }
 
-    tick() {
+    public tick() {
         if (this.staCurrent < this.staMax) {
-            this.staCurrent += 0.01;
+            // todo calculate some creafter parameters in
+            this.staCurrent += 0.10;
         }
     }
 
@@ -90,61 +94,62 @@ export default class Craefter extends Organism {
         return ((material ? material : 0.1) / 100) * 80
     }
 
-    evaluateItemType(
+    protected evaluateItemType(
         ratios,
         highestResource
     ) {
         // stub please override
     }
 
-    evaluateItem(
+    public evaluateItem(
         {
-            // @ts-ignore
             resources
-        } = {}
+        }: {
+            resources: Resources
+        } = {
+            resources: new Resources()
+        }
     ) {
         // stub please override
     }
 
-    craeft(
+    public craeft(
         {
-            // @ts-ignore
             resources
-        } = {}
+        }: {
+            resources: Resources
+        } = {
+            resources: new Resources()
+        }
     ) {
         // stub please override
         this.isCraefting = true;
+
+        // todo include resource heaviness / complexity
+        this.exhaust(
+            1
+        );
     }
 
-    finishCraefting(
+    public finishCraefting(
         exp
     ) {
         this.isCraefting = false;
         this.itemId = null;
 
+        // todo inlcude resource heaviness / complexity
         this.addExp(
             exp
         );
     }
 
-    evaluateSlot(
-        /* eslint-disable-next-line no-unused-vars */
+    protected evaluateSlot(
         type
     ) {
 
     }
 
-    evaluateItemName(
-        /* eslint-disable-next-line no-unused-vars */
-        type,
-        /* eslint-disable-next-line no-unused-vars */
-        slot,
-        /* eslint-disable-next-line no-unused-vars */
-        isMultiSlot
-    ) {
-    }
-
-    exhaust(
+    public exhaust(
         sta
     ) {
         super.exhaust(sta);

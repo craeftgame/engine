@@ -13,26 +13,31 @@ import config from "../config"
 
 export default class Organism extends Tickable {
 
-    dead: boolean;
     id: string;
-    level: number;
     name: string;
+    level: number;
+    dead: boolean;
 
     staCurrent: number;
     staMax: number;
+
     expCurrent: number;
     expMax: number;
+
+    hpCurrent: number;
+    hpMax: number;
 
     constructor(
         {
             name,
-            sta
+            sta,
+            hp
         }: {
             name: string,
-            sta: number
+            sta?: number,
+            hp?: number
         } = {
-            name: 'Organism',
-            sta: 0
+            name: 'Organism'
         }
     ) {
         super();
@@ -44,14 +49,23 @@ export default class Organism extends Tickable {
         this.level = 1;
         this.name = name;
 
-        this.staCurrent = sta;
-        this.staMax = sta;
-
         this.expCurrent = 0;
         this.expMax = config.organismInitialRequiredExp;
+
+        this.staCurrent = sta ? sta : 0;
+        this.staMax = sta ? sta : 0;
+
+        this.hpCurrent = hp ? hp : 0;
+        this.hpMax = hp ? hp : 0;
     }
 
-    addExp(
+    protected levelUp(): void {
+        this.level++;
+        this.expMax = Math.floor(this.expMax + (50 * log(this.level, 10)));
+        global.craeft.logs.push(`"${this.name}" has reached Level ${this.level}`);
+    }
+
+    public addExp(
         exp
     ) {
         if (!this.dead) {
@@ -64,13 +78,7 @@ export default class Organism extends Tickable {
         }
     }
 
-    levelUp() {
-        this.level++;
-        this.expMax = Math.floor(this.expMax + (50 * log(this.level, 10)));
-        global.craeft.logs.push(`"${this.name}" has reached Level ${this.level}`);
-    }
-
-    exhaust(
+    public exhaust(
         sta
     ) {
         this.staCurrent -= sta;
@@ -78,5 +86,19 @@ export default class Organism extends Tickable {
         if (this.staCurrent < 0) {
             this.staCurrent = 0
         }
+    }
+
+    public takeDamage(
+        dmg
+    ): boolean {
+        this.hpCurrent -= dmg;
+
+        if (Math.floor(this.hpCurrent) <= 0) {
+            // killed
+            this.hpCurrent = 0;
+            this.dead = true;
+        }
+
+        return this.dead
     }
 }
