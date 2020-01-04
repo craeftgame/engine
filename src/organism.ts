@@ -67,7 +67,7 @@ export default class Organism extends Tickable {
 
     public addExp(
         exp
-    ) {
+    ): void {
         if (!this.dead) {
             this.expCurrent += exp;
             if (this.expCurrent >= this.expMax) {
@@ -80,7 +80,7 @@ export default class Organism extends Tickable {
 
     public exhaust(
         sta
-    ) {
+    ): void {
         this.staCurrent -= sta;
 
         if (this.staCurrent < 0) {
@@ -93,6 +93,8 @@ export default class Organism extends Tickable {
     ): boolean {
         this.hpCurrent -= dmg;
 
+        global.craeft.logs.push(`${this.name} has taken ${Math.floor(dmg)} Damage!`);
+
         if (Math.floor(this.hpCurrent) <= 0) {
             // killed
             this.hpCurrent = 0;
@@ -100,5 +102,9 @@ export default class Organism extends Tickable {
         }
 
         return this.dead
+    }
+
+    public tick(tick: number): void {
+        // stub please override
     }
 }

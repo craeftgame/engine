@@ -9,18 +9,22 @@ function getRandomInt(
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function getRandomArrayItem({
-                                array,
-                                start = 0
-                            }) {
+function getRandomArrayItem(
+    {
+        array,
+        start = 0
+    }
+) {
     const randomIndex = getRandomInt(start, array.length - 1);
     return array[randomIndex]
 }
 
-function getRandomObjectEntry({
-                                  object,
-                                  start
-                              }) {
+function getRandomObjectEntry(
+    {
+        object,
+        start = 0
+    }
+) {
     const array = Object.keys(object);
 
     const randomIndex = getRandomArrayItem({

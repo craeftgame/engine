@@ -18,17 +18,17 @@ import {type} from "os";
 
 export default class Craefter extends Organism {
 
-    isCraefting = false;
-    itemId = null;
-    onDoneCreating;
-    type;
+    isCraefting: boolean = false;
+    itemId: string | null = null;
+    onDoneCreating: any = null;
+    type: any;
 
-    str;
-    int;
-    dex;
-    luk;
+    str: number;
+    int: number;
+    dex: number;
+    luk: number;
 
-    delay;
+    delay: Delay;
 
     constructor(
         {
@@ -81,7 +81,7 @@ export default class Craefter extends Organism {
         craefter.delay = Delay.hydrate(obj.delay)
     }
 
-    public tick() {
+    public tick(tick: number) {
         if (this.staCurrent < this.staMax) {
             // todo calculate some creafter parameters in
             this.staCurrent += 0.10;

@@ -18,8 +18,6 @@ import Resources from "../resources";
 
 export default class ArmorCraefter extends Craefter {
 
-    itemId;
-
     constructor(
         {
             // @ts-ignore

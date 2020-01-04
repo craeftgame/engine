@@ -5,15 +5,18 @@ export default class Boss extends Organism {
 
     constructor(
         {
-            hp = 100,
-            name = "Boss",
-            type = "spider"
+            hp,
+            level,
+            name,
+            type
         }: {
             hp: number
+            level: number
             name: string
             type: string
         } = {
             hp: 100,
+            level: 1,
             name: "Boss",
             type: "spider"
         }
@@ -23,6 +26,7 @@ export default class Boss extends Organism {
             hp
         });
 
+        this.level = level;
         this.type = type;
     }
 }

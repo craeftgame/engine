@@ -87,7 +87,7 @@ export default class Player extends Organism {
         this.hpCurrent = this.hpMax;
     }
 
-    public tick(): void {
+    public tick(tick: number): void {
         // regenerate stamina
         if (this.staCurrent < this.staMax) {
             this.staCurrent += 0.10;

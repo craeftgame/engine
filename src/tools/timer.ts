@@ -1,11 +1,11 @@
 export default class Timer {
 
-    delay = 0;
-    remaining = 0;
+    delay: number = 0;
+    remaining: number = 0;
     startDate: Date = new Date();
-    running = false;
-    callback;
-    ticker;
+    running: boolean = false;
+    callback: { (): void };
+    ticker: number | null = null;
 
     constructor(
         {
@@ -42,7 +42,15 @@ export default class Timer {
         return timer;
     }
 
-    trigger() {
+    private tick() {
+        this.remaining = this.delay - (+new Date() - +this.startDate);
+
+        if (this.remaining <= 0) {
+            this.triggerCallback()
+        }
+    }
+
+    private triggerCallback() {
         if (this.callback) {
             this.callback()
         }
@@ -50,11 +58,11 @@ export default class Timer {
         this.pause();
     }
 
-    start() {
+    public start() {
         this.running = true;
         this.startDate = new Date();
 
-        this.ticker = setInterval(
+        this.ticker = window.setInterval(
             () => this.tick(),
             400
         );
@@ -62,29 +70,23 @@ export default class Timer {
         this.tick();
     }
 
-    tick() {
-        this.remaining = this.delay - (+new Date() - +this.startDate);
+    public pause() {
+        this.running = false;
 
-        if (this.remaining <= 0) {
-            this.trigger()
+        if (this.ticker) {
+            window.clearInterval(this.ticker);
         }
     }
 
-    pause() {
-        this.running = false;
-
-        clearInterval(this.ticker);
-    }
-
-    getTimeLeft() {
+    public getTimeLeft() {
         return this.remaining
     }
 
-    getTimeLeftInSeconds() {
+    public getTimeLeftInSeconds() {
         return Math.round(this.getTimeLeft() / 1000)
     }
 
-    getTimeoutString() {
+    public getTimeoutString() {
         const timeoutInSeconds = this.getTimeLeftInSeconds();
 
         const mins = Math.floor(timeoutInSeconds / 60);

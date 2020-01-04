@@ -1,6 +1,5 @@
 import {
     CraefterTypes,
-    ItemCategories,
     Rarities,
     ResourceTypes,
     WeaponTypes
@@ -10,26 +9,23 @@ import Resources from "./resources";
 import Player from "./player";
 import Farm from "./farm";
 import Weapon from "./items/weapon";
-import Armor from "./items/armor";
 
 import WeaponCraefter from "./craefter/weaponcraefter";
 import ArmorCraefter from "./craefter/armorcraefter";
 
 import Serializer from "@craeft/serializer";
-import {
-    log,
-    pow
-} from "mathjs";
+import {log, pow} from "mathjs";
 
 import config from "../config"
-
 // storage
 import ls from "local-storage";
 import zip from "lz-string/libs/lz-string";
 import Items from "./items/items";
 import Craefters from "./craefter/craefters";
-import Timeout = NodeJS.Timeout;
 import Bosses from "./boss/bosses";
+import {generate} from "@craeft/map-generator/src/map/generator";
+import Map from "@craeft/map-generator/src/map/map";
+import {TerrainTypes} from "@craeft/map-generator/src/TerrainTypes";
 
 const version = `v${process.env.REACT_APP_VERSION}`;
 const versionMsg = `Welcome to Cräft! version: ${version}`;
@@ -52,9 +48,12 @@ export default class Craeft {
     items: Items;
     resources: Resources;
     bosses: Bosses;
+    map: Map;
 
-    gameTick: Timeout | null = null;
-    onTick: any;
+    gameTick: number | null = null;
+    onTick: { (): void } | null = null;
+
+    ticker: number = 0;
 
     constructor() {
 
@@ -63,6 +62,12 @@ export default class Craeft {
         this.craefters = new Craefters();
         this.items = new Items();
         this.bosses = new Bosses();
+        this.map = generate({
+            height: 200,
+            width: 200,
+            treeChance: 30,
+            pondMax: 5
+        });
 
         this.resources = new Resources({
             initialResources: config.startResources
@@ -91,6 +96,24 @@ export default class Craeft {
         });
     }
 
+    public move(direction) {
+        if (this.player.staCurrent >= 1) {
+            const results = this.map.move(direction);
+
+            if (results.hasMoved) {
+                let a = 1;
+
+                if (results.terrain === TerrainTypes.Tree) {
+                    a *= 2;
+                } else if (results.terrain === TerrainTypes.Water) {
+                    a *= 4;
+                }
+
+                this.player.exhaust(a)
+            }
+        }
+    }
+
     static deserialize(
         json
     ) {
@@ -111,17 +134,20 @@ export default class Craeft {
     }
 
     public tick() {
+
+        this.ticker++;
+
         // tick the player
-        this.player.tick();
+        this.player.tick(this.ticker);
 
         // tick all craefters
         for (const craefter of this.craefters) {
-            craefter.tick();
+            craefter.tick(this.ticker);
         }
 
         // tick all the items
         for (const item of this.items) {
-            item.tick();
+            item.tick(this.ticker);
         }
 
         if (this.onTick) {
@@ -133,8 +159,10 @@ export default class Craeft {
         {
             onTick
         }: {
-            onTick?: any
-        } = {}
+            onTick: { (): void } | null
+        } = {
+            onTick: null
+        }
     ) {
         // re-render every second
         const timeoutInSeconds = 1;
@@ -144,7 +172,8 @@ export default class Craeft {
             this.stop();
         }
 
-        this.gameTick = setInterval(() => {
+        this.gameTick = window.setInterval(() => {
+            this.ticker = 0;
             this.tick();
         }, timeoutInSeconds * 1000);
     }
@@ -153,7 +182,7 @@ export default class Craeft {
         hard?: boolean
     ) {
         if (this.gameTick) {
-            clearInterval(this.gameTick);
+            window.clearInterval(this.gameTick);
         }
 
         this.gameTick = null;

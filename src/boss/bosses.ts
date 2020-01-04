@@ -1,6 +1,11 @@
 import ExtendedArray from "../tools/ExtendedArray";
 import Boss from "./boss";
 
+/**
+ * Spider - Tsuchigumo
+ * Dragon - Tatsu
+ * Fish - Namazu
+ */
 export default class Bosses extends ExtendedArray<Boss> {
 
     constructor() {
@@ -8,16 +13,26 @@ export default class Bosses extends ExtendedArray<Boss> {
 
         const bosses: Boss[] = [
             new Boss({
-                name: 'sdasdsd',
-                type: "dragon",
+                name: 'Namazu',
+                level: 12,
+                type: "fish",
                 hp: 123
             }),
             new Boss({
-                name: 'daasd',
+                name: 'Tsuchigumo',
+                level: 1,
                 type: "spider",
                 hp: 12
-            })
+            }),
+            new Boss({
+                name: 'Tatsu',
+                level: 3,
+                type: "dragon",
+                hp: 12
+            }),
         ];
+
+        bosses[0].dead = true;
 
         this.push(...bosses);
     }
