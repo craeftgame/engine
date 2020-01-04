@@ -48,7 +48,7 @@ export default class Craeft {
     items: Items;
     resources: Resources;
     bosses: Bosses;
-    map: Map;
+    map?: Map;
 
     gameTick: number | null = null;
     onTick: { (): void } | null = null;
@@ -62,12 +62,12 @@ export default class Craeft {
         this.craefters = new Craefters();
         this.items = new Items();
         this.bosses = new Bosses();
-        this.map = generate({
+        generate({
             height: 200,
             width: 200,
             treeChance: 30,
             pondMax: 5
-        });
+        }).then((map) => this.map = map);
 
         this.resources = new Resources({
             initialResources: config.startResources
@@ -97,6 +97,10 @@ export default class Craeft {
     }
 
     public move(direction) {
+        if (!this.map) {
+            return;
+        }
+
         if (this.player.staCurrent >= 1) {
             const results = this.map.move(direction);
 
