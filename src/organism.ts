@@ -18,6 +18,8 @@ export default class Organism extends Tickable {
     level: number;
     dead: boolean;
 
+    isFarming: boolean;
+
     staCurrent: number;
     staMax: number;
 
@@ -43,6 +45,7 @@ export default class Organism extends Tickable {
         super();
 
         this.dead = false;
+        this.isFarming = false;
 
         this.id = getRandomId();
 

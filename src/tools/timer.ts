@@ -1,3 +1,5 @@
+import config from "../../config";
+
 export default class Timer {
 
     delay: number = 0;
@@ -24,6 +26,11 @@ export default class Timer {
         this.delay = (delay ? delay : 0) * 1000;
         this.remaining = this.delay;
 
+        if (config.instant) {
+            this.delay = 5;
+            this.start()
+        }
+
         if (autoStart) {
             this.start();
         }
@@ -45,13 +52,13 @@ export default class Timer {
     private tick() {
         this.remaining = this.delay - (+new Date() - +this.startDate);
 
-        if (this.remaining <= 0) {
+        if (this.remaining <= 0 || this.remaining === 0) {
             this.triggerCallback()
         }
     }
 
     private triggerCallback() {
-        if (this.callback) {
+        if (this.running && this.callback) {
             this.callback()
         }
 
@@ -64,7 +71,7 @@ export default class Timer {
 
         this.ticker = window.setInterval(
             () => this.tick(),
-            400
+            config.tickerTick * 1000
         );
 
         this.tick();
@@ -75,6 +82,7 @@ export default class Timer {
 
         if (this.ticker) {
             window.clearInterval(this.ticker);
+            this.ticker = null;
         }
     }
 

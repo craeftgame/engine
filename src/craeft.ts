@@ -206,33 +206,39 @@ export default class Craeft {
             callback: any
         }
     ) {
-        this.farm.start({
-            player: this.player,
-            callback: (
-                {
-                    result,
-                    dmg,
-                    exp,
-                    usedStamina
-                }: {
-                    result: Resources,
-                    dmg: number,
-                    exp: number
-                    usedStamina: number
+        if (
+            !this.player.isFarming &&
+            this.player.staCurrent > 0
+        ) {
+            this.player.isFarming = true;
+            this.farm.start({
+                player: this.player,
+                callback: (
+                    {
+                        result,
+                        dmg,
+                        exp,
+                        usedStamina
+                    }: {
+                        result: Resources,
+                        dmg: number,
+                        exp: number
+                        usedStamina: number
+                    }
+                ) => {
+                    this.resources = new Resources()
+                        .add(this.resources)
+                        .add(result);
+
+                    this.player.takeDamage(dmg);
+                    this.player.addExp(exp);
+                    this.player.exhaust(usedStamina);
+                    this.player.isFarming = false;
+
+                    callback();
                 }
-            ) => {
-
-                this.resources = new Resources()
-                    .add(this.resources)
-                    .add(result);
-
-                this.player.takeDamage(dmg);
-                this.player.addExp(exp);
-                this.player.exhaust(usedStamina);
-
-                callback();
-            }
-        });
+            });
+        }
     }
 
     public addItem(

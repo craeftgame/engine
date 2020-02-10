@@ -13,7 +13,13 @@ export default {
 
     // game parameters
     startResources: debug ? 1000 : 0,
-    startDelay: 1,
+    startDelay: 1, // 1 second
+
+    // everything happens instantly
+    instant: debug,
+
+    // how fast should the ticker update?
+    tickerTick: 0.2, // 0.2 seconds
 
     // disentchant
     disentchantRecyclingPercentFrom: 30,
