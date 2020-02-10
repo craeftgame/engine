@@ -7,8 +7,8 @@ import {
     Rarities
 } from "./types";
 
-import FirstNames from "./lists/firstnames"
-import SurNames from "./lists/surnames"
+import {english as FirstNames} from "./lists/firstnames"
+import {english as SurNames} from "./lists/surnames"
 import ArmorNames from "./lists/weaponnames"
 import WeaponNames from "./lists/weaponnames"
 

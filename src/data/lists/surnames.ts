@@ -1,4 +1,4 @@
-export default [
+export const japanese = [
     // A
     "Abe",
     "Andō",
@@ -125,4 +125,96 @@ export default [
     "Yamazaki",
     "Yokoyama",
     "Yoshida",
-]
+];
+
+export const english = [
+    // A
+    "Alexander",
+    "Anderson",
+    // B
+    "Brown",
+    // C
+    "Campbell",
+    "Clark",
+    "Clarke",
+    "Cox",
+    // D
+    "Davies",
+    "Davis",
+    "Doherty",
+    "Driscoll",
+    // E
+    "Edwards",
+    "Evans",
+    // G
+    "Graham",
+    "Green",
+    "Griffiths",
+    // H
+    "Hall",
+    "Hamilton",
+    "Hughes",
+    // J
+    "Jackson",
+    "James",
+    "Jenkins",
+    "Johnson",
+    "Johnston",
+    "Jones",
+    // K
+    "Kelly",
+    "Khan",
+    // L
+    "Lewis",
+    // M
+    "MacDonald",
+    "Martin",
+    "Mason",
+    "McLaughlin",
+    "Mitchell",
+    "Moore",
+    "Morgan",
+    "Morrison",
+    "Moss",
+    "Murphy",
+    "Murray",
+    // O
+    "O’Neill",
+    "Owen",
+    // P
+    "Patel",
+    "Paterson",
+    "Phillips",
+    "Price",
+    // Q
+    "Quinn",
+    // R
+    "Rees",
+    "Reid",
+    "Roberts",
+    "Robertson",
+    "Robinson",
+    "Rodríguez",
+    "Ross",
+    // S
+    "Scott",
+    "Smith",
+    "Smyth",
+    "Stewart",
+    // T
+    "Taylor",
+    "Thomas",
+    "Thompson",
+    "Thomson",
+    // W
+    "Walker",
+    "Watson",
+    "White",
+    "William",
+    "Williams",
+    "Wilson",
+    "Wood",
+    "Wright",
+    // Y
+    "Young",
+];
