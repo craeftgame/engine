@@ -14,13 +14,13 @@
   "dependencies": {
     "@craeft/map-generator": "git+https://github.com/craeftgame/map-generator.git",
     "@craeft/serializer": "git+https://github.com/craeftgame/serializer.git",
+    "@types/jest": "^25.1.2",
     "local-storage": "^2.0.0",
     "lz-string": "^1.4.4",
     "mathjs": "^6.3.0"
   },
   "devDependencies": {
     "@types/core-js": "^2.5.2",
-    "@types/jest": "^25.1.2",
     "@types/node": "~10.17.13"
   },
   "repository": {
