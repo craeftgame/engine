@@ -1,5 +1,5 @@
 // create debug flag to fall back to debug values
-const debug = process.env.NODE_ENV === "development" && true;
+const debug = process.env.NODE_ENV === "development" && false;
 
 export default {
     // detect debug
