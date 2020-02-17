@@ -1,17 +1,20 @@
 import Item from "./item";
 import {
     Unknown,
-    ItemCategories, Rarities
+    ItemCategories,
+    Rarities
 } from "../data/types";
-import {ItemNames, RarityNames, SlotNames} from "../data/names";
-import resources from "../resources";
+import {
+    ItemNames,
+    RarityNames,
+    SlotNames
+} from "../data/names";
 import Resources from "../resources";
-import Delay from "../delay";
 
 export default class Armor extends Item {
 
-    def: number;
-    mdef: number;
+    private readonly _def: number = 0;
+    private readonly _mdef: number = 0;
 
     constructor(
         {
@@ -53,8 +56,16 @@ export default class Armor extends Item {
             delay
         });
 
-        this.def = def;
-        this.mdef = mdef;
+        this._def = def;
+        this._mdef = mdef;
+    }
+
+    public def() {
+        return this._def * this.level;
+    }
+
+    public mdef() {
+        return this._mdef * this.level;
     }
 
     evaluateItemName() {
@@ -70,7 +81,6 @@ export default class Armor extends Item {
 
         parts.push(SlotNames[this.slot]);
         parts.push(ItemNames[this.type]);
-
 
         return parts.join(" ")
     }

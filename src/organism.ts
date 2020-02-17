@@ -72,11 +72,15 @@ export default class Organism extends Tickable {
         exp
     ): void {
         if (!this.dead) {
-            this.expCurrent += exp;
-            if (this.expCurrent >= this.expMax) {
+            if (this.expCurrent + exp >= this.expMax) {
+                const nextExp = this.expCurrent + exp - this.expMax;
                 // level up
                 this.expCurrent = 0;
                 this.levelUp();
+
+                this.addExp(nextExp)
+            } else {
+                this.expCurrent += exp;
             }
         }
     }

@@ -12,9 +12,8 @@ import {
     FirstNames,
     SurNames
 } from "../data/names";
-import resources from "../resources";
 import Resources from "../resources";
-import {type} from "os";
+import {PreItem} from "../items/PreItem";
 
 export default class Craefter extends Organism {
 
@@ -109,7 +108,8 @@ export default class Craefter extends Organism {
         } = {
             resources: new Resources()
         }
-    ) {
+        // @ts-ignore
+    ): PreItem {
         // stub please override
     }
 

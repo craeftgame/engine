@@ -4,7 +4,7 @@ import {
     WeaponTypes,
     ArmorTypes,
     ArmorSlots,
-    Rarities
+    Rarities, Classes
 } from "./types";
 
 import {english as FirstNames} from "./lists/firstnames"
@@ -12,7 +12,7 @@ import {english as SurNames} from "./lists/surnames"
 import ArmorNames from "./lists/weaponnames"
 import WeaponNames from "./lists/weaponnames"
 
-const CraefterTypeNames = Object.freeze({
+export const CraefterTypeNames = Object.freeze({
     [Unknown]: "???",
     [CraefterTypes.WeaponCraefter]: "Weaponcräfter",
     [CraefterTypes.ArmorCraefter]: "Armorcräfter",
@@ -20,7 +20,7 @@ const CraefterTypeNames = Object.freeze({
     [CraefterTypes.Alchemist]: "Alchemist"
 });
 
-const ItemNames = Object.freeze({
+export const ItemNames = Object.freeze({
     [Unknown]: "???",
     [WeaponTypes.Sword]: "Sword",
     [WeaponTypes.JewelSword]: "Jewel Sword",
@@ -37,25 +37,28 @@ const ItemNames = Object.freeze({
     [ArmorTypes.JewelWoven]: "Jewel Woven"
 });
 
-const SlotNames = Object.freeze({
+export const SlotNames = Object.freeze({
     [ArmorSlots.Head]: "Head",
     [ArmorSlots.Body]: "Body",
     [ArmorSlots.Legs]: "Legs",
     [ArmorSlots.Feet]: "Feet",
 });
 
-const RarityNames = Object.freeze({
+export const RarityNames = Object.freeze({
     [Rarities.Common]: "Common",
     [Rarities.Rare]: "Rare",
     [Rarities.Epic]: "Epic",
     [Rarities.Legendary]: "Legendary",
 });
 
+export const ClassNames = Object.freeze({
+    [Classes.Novice]: "Novice",
+    [Classes.Mage]: "Mage",
+    [Classes.Swordsman]: "Swordsman",
+    [Classes.Hunter]: "Hunter",
+});
+
 export {
-    CraefterTypeNames,
-    ItemNames,
-    SlotNames,
-    RarityNames,
     FirstNames,
     SurNames,
     WeaponNames,

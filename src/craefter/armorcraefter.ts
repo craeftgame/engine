@@ -3,18 +3,16 @@ import Craefter from "./craefter";
 
 import {
     Unknown,
+    ArmorSlots,
+    ArmorTypes,
     CraefterTypes,
     ItemCategories,
-    ArmorTypes,
-    ArmorSlots,
-    ResourceTypes
+    ResourceTypes,
 } from "../data/types";
 
-import {
-    getRandomInt,
-    getRandomObjectEntry
-} from "../tools/rand";
+import {getRandomInt, getRandomObjectEntry} from "../tools/rand";
 import Resources from "../resources";
+import {PreItem} from "../items/PreItem";
 
 export default class ArmorCraefter extends Craefter {
 
@@ -89,7 +87,7 @@ export default class ArmorCraefter extends Craefter {
         } = {
             resources: new Resources()
         }
-    ) {
+    ): PreItem {
         // 2 percent of all resources is the base
         const baseline = (resources.sum() / 100);
 
@@ -99,7 +97,7 @@ export default class ArmorCraefter extends Craefter {
             baseline + Craefter.calculateMaterialImpact(
             resources[ResourceTypes.Metal]
             )
-        );
+        ) * this.level;
 
         // add matk mainly based on wood
         // todo add int influence
@@ -107,12 +105,11 @@ export default class ArmorCraefter extends Craefter {
             baseline + Craefter.calculateMaterialImpact(
             resources[ResourceTypes.Wood]
             )
-        );
+        ) * this.level;
 
         const ratios = resources.ratios();
         const highestResource = ratios.getHighest();
 
-        // todo: add level influence
         return {
             category: ItemCategories.Armor,
             type: this.evaluateItemType(
@@ -147,7 +144,9 @@ export default class ArmorCraefter extends Craefter {
             resources: new Resources()
         }
     ) {
-        super.craeft({resources});
+        super.craeft({
+            resources
+        });
 
         const {
             type,
@@ -165,7 +164,9 @@ export default class ArmorCraefter extends Craefter {
         const item = new Armor({
             type,
             material,
+            resources,
             slot,
+            delay: resources.sum() / this.level,
             craefterId: this.id,
             level: this.level,
             def: getRandomInt(

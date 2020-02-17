@@ -8,7 +8,7 @@ export default class Craefters extends ExtendedArray<Craefter> {
 
     public bury = (
         craefterId
-    ) => {
+    ): string => {
         const craefter = this.findById(craefterId);
         const name = craefter.name;
         this.removeItem(craefter);

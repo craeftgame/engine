@@ -14,12 +14,12 @@ import {
     ItemNames,
     RarityNames
 } from "../data/names";
-import Resources from "../resources";
+import config from "../../config";
 
 export default class Weapon extends Item {
 
-    atk;
-    matk;
+    private readonly _atk: number = 0;
+    private readonly _matk: number = 0;
 
     constructor(
         {
@@ -63,11 +63,19 @@ export default class Weapon extends Item {
 
         this.isMultiSlot = this.canBeTwoHanded() && getRandomInt(0, 1) === 1;
 
-        this.atk = atk;
-        this.matk = matk;
+        this._atk = atk;
+        this._matk = matk;
     }
 
-    canBeTwoHanded() {
+    public atk() {
+        return this._atk * this.level * config.rarityMultiplier[this.rarity];
+    }
+
+    public matk() {
+        return this._matk * this.level * config.rarityMultiplier[this.rarity];
+    }
+
+    private canBeTwoHanded() {
         return !(
             this.type === WeaponTypes.Knife ||
             this.type === WeaponTypes.JewelKnife ||

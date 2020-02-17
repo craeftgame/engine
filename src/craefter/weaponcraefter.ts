@@ -20,6 +20,7 @@ import {
 
 import config from "../../config"
 import Resources from "../resources";
+import {PreItem} from "../items/PreItem";
 
 export default class WeaponCraefter extends Craefter {
     constructor(
@@ -111,24 +112,25 @@ export default class WeaponCraefter extends Craefter {
         } = {
             resources: new Resources()
         }
-    ) {
-
+    ): PreItem {
         // 2 percent of all resources is the base
         const baseline = (resources.sum() / 100);
 
         // add atk mainly based on metal
         // todo add str influence
         const atk = round(
-            baseline + Craefter.calculateMaterialImpact(resources[ResourceTypes.Metal])
-        );
+            baseline + Craefter.calculateMaterialImpact(
+            resources[ResourceTypes.Metal]
+            )
+        ) * this.level;
 
         // add matk mainly based on wood
         // todo add int influence
         const matk = round(
-            baseline + Craefter.calculateMaterialImpact(resources[ResourceTypes.Wood])
-        );
-
-        // todo: add level influence
+            baseline + Craefter.calculateMaterialImpact(
+            resources[ResourceTypes.Wood]
+            )
+        ) * this.level;
 
         const ratios = resources.ratios();
         const highestResource = ratios.getHighest();
@@ -159,7 +161,9 @@ export default class WeaponCraefter extends Craefter {
             resources: new Resources()
         }
     ) {
-        super.craeft({resources});
+        super.craeft({
+            resources
+        });
 
         const {
             type,
@@ -177,6 +181,7 @@ export default class WeaponCraefter extends Craefter {
             type,
             material,
             resources,
+            delay: resources.sum() / this.level,
             level: this.level,
             craefterId: this.id,
             // todo include luk

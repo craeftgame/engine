@@ -9,22 +9,26 @@ import Organism from "./organism";
 import Equipment from "./equipment";
 import config from "../config"
 import {
+    ClassNames,
     FirstNames,
     SurNames
 } from "./data/names";
 import Armor from "./items/armor";
 import Weapon from "./items/weapon";
+import {Classes} from "./data/types";
+import {getRandomEnumEntry} from "../../map-generator/src/tools/rand";
 
 export default class Player extends Organism {
 
     equipment = new Equipment();
 
-    dex;
-    str;
-    int;
-    vit;
+    private _dex: number;
+    private _str: number;
+    private _int: number;
+    private _vit: number;
+    private _agi: number;
 
-    class;
+    private _class: any;
 
     constructor(
         {
@@ -55,6 +59,10 @@ export default class Player extends Organism {
             dex = getRandomInt(
                 config.playerInitialDexFrom,
                 config.playerInitialDexTo
+            ),
+            agi = getRandomInt(
+                config.playerInitialAgiFrom,
+                config.playerInitialAgiTo
             )
         } = {}
     ) {
@@ -64,12 +72,15 @@ export default class Player extends Organism {
             hp,
         });
 
-        this.dex = dex;
-        this.str = str;
-        this.int = int;
-        this.vit = vit;
+        this._dex = dex;
+        this._str = str;
+        this._int = int;
+        this._vit = vit;
+        this._agi = agi;
 
-        this.class = "Novice"
+        this._class = Classes.Novice;
+
+        this.level = config.playerStartLevel;
     }
 
     static hydrate(obj): Player {
@@ -85,18 +96,71 @@ export default class Player extends Organism {
 
         this.hpMax = this.hpMax + (50 * log(this.level, 10));
         this.hpCurrent = this.hpMax;
+
+        // todo make this nicer
+        this._vit *= this.level;
+        this._agi *= this.level;
+        this._int *= this.level;
+        this._dex *= this.level;
+        this._str *= this.level;
+
+        // evaluate class on level 10
+        if (this.level === 10) {
+            this._class = getRandomEnumEntry({
+                en: Classes,
+                start: 1 // do not assign novice again
+            })
+        }
     }
 
     public tick(tick: number): void {
+
+        // do not tick when farming
+        if (this.isFarming) {
+            return;
+        }
+
         // regenerate stamina
         if (this.staCurrent < this.staMax) {
             this.staCurrent += 0.10;
+            if (this.staCurrent > this.staMax) {
+                this.staCurrent = this.staMax
+            }
         }
 
         // regenerate hp
         if (this.hpCurrent < this.hpMax) {
-            this.hpCurrent += (0.50 * this.vit);
+            this.hpCurrent += (0.50 * this.vit());
+            if (this.hpCurrent > this.hpMax) {
+                this.hpCurrent = this.hpMax
+            }
         }
+
+        this.equipment.tick()
+    }
+
+    public className(): string {
+        return ClassNames[this._class]
+    }
+
+    public dex() {
+        return this._dex
+    }
+
+    public agi() {
+        return this._agi
+    }
+
+    public int() {
+        return this._int
+    }
+
+    public str() {
+        return this._str
+    }
+
+    public vit() {
+        return this._vit
     }
 
     public atk(): number {
@@ -104,7 +168,7 @@ export default class Player extends Organism {
 
         for (const equipment of this.equipment.getEquipped() as Weapon[]) {
             if (equipment.atk) {
-                atk += equipment.atk * this.str;
+                atk += equipment.atk() * this.str();
             }
         }
 
@@ -116,7 +180,7 @@ export default class Player extends Organism {
 
         for (const equipment of this.equipment.getEquipped() as Weapon[]) {
             if (equipment.matk) {
-                matk += equipment.matk * this.int;
+                matk += equipment.matk() * this.int();
             }
         }
 
@@ -128,7 +192,7 @@ export default class Player extends Organism {
 
         for (const armor of this.equipment.getEquipped() as Armor[]) {
             if (armor.def) {
-                def += armor.def * this.vit;
+                def += armor.def() * this.vit();
             }
         }
 
@@ -140,7 +204,7 @@ export default class Player extends Organism {
 
         for (const equipment of this.equipment.getEquipped() as Armor[]) {
             if (equipment.mdef) {
-                mdef += equipment.mdef * this.int;
+                mdef += equipment.mdef() * this.int();
             }
         }
 
@@ -153,7 +217,7 @@ export default class Player extends Organism {
         const dead: boolean = super.takeDamage(dmg);
 
         if (dead) {
-            global.craeft.logs.push(`${this.class} ${this.name} died!`);
+            global.craeft.logs.push(`${this.className()} ${this.name} died!`);
             global.craeft.stop(true);
         }
 

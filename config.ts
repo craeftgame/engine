@@ -1,4 +1,6 @@
 // create debug flag to fall back to debug values
+import {Rarities} from "./src/data/types";
+
 const debug = process.env.NODE_ENV === "development" && false;
 
 export default {
@@ -40,6 +42,8 @@ export default {
     initialFarmDelay: debug ? 1 : 2,
 
     // play initial stats
+    playerStartLevel: 1,
+
     playerInitialHp: 50,
     playerInitialSta: 25,
 
@@ -54,6 +58,9 @@ export default {
 
     playerInitialDexFrom: 0,
     playerInitialDexTo: 2,
+
+    playerInitialAgiFrom: 0,
+    playerInitialAgiTo: 2,
 
     // craefter initial stats
     craefterInitialSta: 5,
@@ -70,5 +77,12 @@ export default {
 
     organismInitialRequiredExp: 20,
 
-    showBossScreen: debug
+    showBossScreen: debug,
+
+    rarityMultiplier: {
+        [Rarities.Common]: 1,
+        [Rarities.Rare]: 1.5,
+        [Rarities.Epic]: 3,
+        [Rarities.Legendary]: 5,
+    }
 };

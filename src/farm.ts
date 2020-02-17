@@ -52,18 +52,23 @@ export default class Farm {
         return farm;
     }
 
-    start({
-              player,
-              callback
-          }: {
-        player: Player
-        callback?: any
-    }) {
-
+    start(
+        {
+            player,
+            callback
+        }: {
+            player: Player
+            callback?: any
+        }
+    ) {
         let delay: number = this.delay * pow(log(this.counter + 2), 5);
 
-        if (player.vit > 0) {
-            delay /= player.vit;
+        if (player.dex() > 0) {
+            delay /= player.dex() * player.level;
+        }
+
+        if (player.vit() > 0) {
+            delay /= player.vit() * player.level;
         }
 
         delay = delay < 1 ? this.delay : delay;
@@ -75,7 +80,8 @@ export default class Farm {
             // calculate amount of all resources first
             let amount = player.level;
 
-            amount = amount * player.atk();
+            // todo fine tune this
+            amount = amount * (player.atk() + player.matk());
 
             const resources = new Resources();
             const resTypes = [
@@ -106,9 +112,9 @@ export default class Farm {
                 // todo calculate exp based on farm level
                 exp: 4 * this.counter,
                 // todo calculate dmg based on defense and dmg dealt
-                dmg: getRandomInt(5, 20) * this.counter,
+                dmg: (getRandomInt(5, 15) * this.counter) - (player.def() + player.mdef()),
                 // todo calculate stamina used
-                usedStamina: 2
+                usedStamina: this.counter
             });
 
         };

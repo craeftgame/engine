@@ -26,6 +26,7 @@ import Bosses from "./boss/bosses";
 import {generate} from "@craeft/map-generator/src/map/generator";
 import Map from "@craeft/map-generator/src/map/map";
 import {TerrainTypes} from "@craeft/map-generator/src/TerrainTypes";
+import Item from "./items/item";
 
 const version = `v${process.env.REACT_APP_VERSION}`;
 const versionMsg = `Welcome to Cräft! version: ${version}`;
@@ -88,7 +89,7 @@ export default class Craeft {
         this.items.push(knife);
     }
 
-    public serialize() {
+    public serialize(): string {
 
         return Serializer.serialize({
             obj: this,
@@ -96,7 +97,7 @@ export default class Craeft {
         });
     }
 
-    public move(direction) {
+    public move(direction): void {
         if (!this.map) {
             return;
         }
@@ -120,7 +121,7 @@ export default class Craeft {
 
     static deserialize(
         json
-    ) {
+    ): Craeft {
 
         const obj = Serializer.deserialize(json);
 
@@ -137,7 +138,7 @@ export default class Craeft {
         return craeft;
     }
 
-    public tick() {
+    public tick(): void {
 
         this.ticker++;
 
@@ -167,7 +168,7 @@ export default class Craeft {
         } = {
             onTick: null
         }
-    ) {
+    ): void {
         // re-render every second
         const timeoutInSeconds = 1;
         this.onTick = onTick;
@@ -233,6 +234,7 @@ export default class Craeft {
                     this.player.takeDamage(dmg);
                     this.player.addExp(exp);
                     this.player.exhaust(usedStamina);
+
                     this.player.isFarming = false;
 
                     callback();
@@ -242,8 +244,8 @@ export default class Craeft {
     }
 
     public addItem(
-        item,
-        resourcesConsumed
+        item: Item,
+        resourcesConsumed: Resources
     ) {
         this.resources.sub(resourcesConsumed);
 
@@ -310,6 +312,48 @@ export default class Craeft {
         this.logs.push(
             `"${result.name}" disenchanted! ${result.resources.sum()} resource(s) retrieved!`
         );
+    }
+
+    public equipItem(
+        item: Item
+    ): boolean {
+        let equipped = false;
+
+        if (!this.player.isFarming) {
+            equipped = this.player.equipment.equip(item);
+
+            if (equipped) {
+                item.equipped = equipped;
+
+                this.logs.push(`"${item.getName()}" put on.`);
+            } else {
+                this.logs.push("Equip failed!")
+            }
+        }
+
+        return equipped
+    }
+
+    public unEquipItem(
+        itemId
+    ): boolean {
+        let unequipped = false;
+
+        if (!this.player.isFarming) {
+            unequipped = this.player.equipment.unequip(itemId);
+
+            if (unequipped) {
+                const item = this.items.find((i) => i.id === itemId);
+
+                item.equipped = !unequipped;
+
+                this.logs.push(`"${item.getName()}" taken off.`);
+            } else {
+                this.logs.push("Unequip failed!")
+            }
+        }
+
+        return unequipped
     }
 
     public static saveState(): boolean {

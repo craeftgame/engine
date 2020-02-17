@@ -56,7 +56,7 @@ export default class Equipment {
     }
 
     public equip(
-        item
+        item: Item
     ): boolean {
         let equipped = false;
 
@@ -157,5 +157,10 @@ export default class Equipment {
         const equipment = Object.assign(new Equipment(), obj);
 
         return equipment;
+    }
+
+    public tick() {
+
+        // todo tick equipment
     }
 }

@@ -37,7 +37,7 @@ export default class Item {
     material;
     level;
     name;
-    resources;
+    private readonly resources;
 
     constructor(
         {
@@ -64,13 +64,6 @@ export default class Item {
             resources?: any
         } = {}
     ) {
-
-        this.delay = new Delay({
-            delayInSeconds: delay,
-            onDelayExpired: () => {
-                this.meterialize();
-            }
-        });
         this.id = getRandomId();
 
         this.category = category;
@@ -84,13 +77,20 @@ export default class Item {
         this.name = name;
 
         this.rarity = rarity || Item.evaluateRarity();
+
+        this.delay = new Delay({
+            delayInSeconds: delay,
+            onDelayExpired: () => {
+                this.meterialize();
+            }
+        });
     }
 
-    getName(): string {
+    public getName(): string {
         return this.name || this.evaluateItemName()
     }
 
-    evaluateItemName(): string {
+    public evaluateItemName(): string {
         return `${RarityNames[this.rarity]} ${SlotNames[this.slot]} ${ItemNames[this.type]}`
     }
 
@@ -110,21 +110,21 @@ export default class Item {
         }
     }
 
-    tick() {
+    public tick() {
         // todo: tick, tock
     }
 
-    meterialize() {
+    private meterialize() {
         if (this.onDoneCreating) {
             this.onDoneCreating(
                 this.craefterId,
                 // todo evaluate exp properly
-                5
+                this.resources.sum()
             );
         }
     }
 
-    disentchant() {
+    public disentchant() {
         // this item did not have any resources
         if (!this.resources) {
             // return a dummy set
