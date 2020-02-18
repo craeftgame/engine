@@ -105,14 +105,20 @@ export default class Farm {
 
             this.counter++;
 
+            // todo calculate dmg based on defense and dmg dealt
+            let dmg = (getRandomInt(5, 15) * this.counter) - (player.def() + player.mdef())
+
+            if (dmg < 0) {
+                dmg = 0
+            }
+
             callback({
                 result: new Resources({
                     resources
                 }),
                 // todo calculate exp based on farm level
                 exp: 4 * this.counter,
-                // todo calculate dmg based on defense and dmg dealt
-                dmg: (getRandomInt(5, 15) * this.counter) - (player.def() + player.mdef()),
+                dmg,
                 // todo calculate stamina used
                 usedStamina: this.counter
             });
