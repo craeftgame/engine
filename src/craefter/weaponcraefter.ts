@@ -41,6 +41,8 @@ export default class WeaponCraefter extends Craefter {
             dex,
             luk
         });
+
+        this.expMax = config.weaponCraefterInitialRequiredExp
     }
 
     static hydrate(obj) {

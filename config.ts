@@ -69,11 +69,13 @@ export default {
     weaponCraefterInitialInt: 3,
     weaponCraefterInitialDex: 5,
     weaponCraefterInitialLuk: 6,
+    weaponCraefterInitialRequiredExp: 5,
 
     armorCraefterInitialStr: 4,
     armorCraefterInitialInt: 2,
     armorCraefterInitialDex: 3,
     armorCraefterInitialLuk: 9,
+    armorCraefterInitialRequiredExp: 10,
 
     organismInitialRequiredExp: 20,
 

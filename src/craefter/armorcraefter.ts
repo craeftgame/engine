@@ -13,6 +13,7 @@ import {
 import {getRandomInt, getRandomObjectEntry} from "../tools/rand";
 import Resources from "../resources";
 import {PreItem} from "../items/PreItem";
+import config from "../../config";
 
 export default class ArmorCraefter extends Craefter {
 
@@ -34,6 +35,8 @@ export default class ArmorCraefter extends Craefter {
             dex,
             luk
         });
+
+        this.expMax = config.armorCraefterInitialRequiredExp
     }
 
     static hydrate(obj) {

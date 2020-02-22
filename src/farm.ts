@@ -106,7 +106,7 @@ export default class Farm {
             this.counter++;
 
             // todo calculate dmg based on defense and dmg dealt
-            let dmg = (getRandomInt(5, 15) * this.counter) - (player.def() + player.mdef())
+            let dmg = (getRandomInt(5, 15) * this.counter) - (player.def() + player.mdef());
 
             if (dmg < 0) {
                 dmg = 0

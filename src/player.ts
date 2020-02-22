@@ -98,11 +98,13 @@ export default class Player extends Organism {
         this.hpCurrent = this.hpMax;
 
         // todo make this nicer
+        /*
         this._vit *= this.level;
         this._agi *= this.level;
         this._int *= this.level;
         this._dex *= this.level;
         this._str *= this.level;
+        */
 
         // evaluate class on level 10
         if (this.level === 10) {

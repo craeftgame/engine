@@ -119,7 +119,7 @@ export default class Item {
             this.onDoneCreating(
                 this.craefterId,
                 // todo evaluate exp properly
-                this.resources.sum()
+                this.resources.sum() * 2
             );
         }
     }
