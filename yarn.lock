@@ -3,8 +3,8 @@
 
 
 "@craeft/map-generator@git+https://github.com/craeftgame/map-generator.git":
-  version "1.2.1"
-  resolved "git+https://github.com/craeftgame/map-generator.git#a4d79f452085b86dbfc7bc04ef1c4d1e7284bd67"
+  version "1.2.2"
+  resolved "git+https://github.com/craeftgame/map-generator.git#3eca458f14497e1b7d35b796886eb2fca145074f"
 
 "@craeft/serializer@git+https://github.com/craeftgame/serializer.git":
   version "1.2.0"
@@ -59,9 +59,9 @@
     pretty-format "^25.1.0"
 
 "@types/node@~10.17.13":
-  version "10.17.16"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.17.16.tgz#ee96ddac1a38d98d2c8a71c7df0cdad5758e8993"
-  integrity sha512-A4283YSA1OmnIivcpy/4nN86YlnKRiQp8PYwI2KdPCONEBN093QTb0gCtERtkLyVNGKKIGazTZ2nAmVzQU51zA==
+  version "10.17.17"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.17.17.tgz#7a183163a9e6ff720d86502db23ba4aade5999b8"
+  integrity sha512-gpNnRnZP3VWzzj5k3qrpRC6Rk3H/uclhAVo1aIvwzK5p5cOrs9yEyQ8H/HBsBY0u5rrWxXEiVPQ0dEB6pkjE8Q==
 
 "@types/yargs-parser@*":
   version "15.0.0"
@@ -69,9 +69,9 @@
   integrity sha512-FA/BWv8t8ZWJ+gEOnLLd8ygxH/2UFbAvgEonyfN6yWGLKc7zVjbpl2Y4CTjid9h2RfgPP6SEt6uHwEOply00yw==
 
 "@types/yargs@^15.0.0":
-  version "15.0.3"
-  resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-15.0.3.tgz#41453a0bc7ab393e995d1f5451455638edbd2baf"
-  integrity sha512-XCMQRK6kfpNBixHLyHUsGmXrpEmFFxzMrcnSXFMziHd8CoNJo8l16FkHyQq4x+xbM7E2XL83/O78OD8u+iZTdQ==
+  version "15.0.4"
+  resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-15.0.4.tgz#7e5d0f8ca25e9d5849f2ea443cf7c402decd8299"
+  integrity sha512-9T1auFmbPZoxHz0enUFlUuKRy3it01R+hlggyVUMtnCTQRunsQYifnSGb8hET4Xo8yiC0o0r1paW3ud5+rbURg==
   dependencies:
     "@types/yargs-parser" "*"
 
@@ -169,9 +169,9 @@ lz-string@^1.4.4:
   integrity sha1-wNjq82BZ9wV5bh40SBHPTEmNOiY=
 
 mathjs@^6.3.0:
-  version "6.6.0"
-  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-6.6.0.tgz#0d71c7cc6b50bd112e160b55703a395caf4db4b1"
-  integrity sha512-gYYc1+irFbwuwYUx6O8G2YauvbD1+tPBbq829PaxAiRWpPzPEE8pvwGgvdMuk6c3pqhm6Do/mN26vLiQP46H5A==
+  version "6.6.1"
+  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-6.6.1.tgz#46675c9e97b8cb8cf9a66402b1360a6996abf103"
+  integrity sha512-RCFCYkf1IV3u0DAeqj2Rqqwyi302kFxHoYbfp/Bxm6kUg0ALYH7YT0bYzsO8qgCLv9RS3bWMZnAgUbLgiDjLcw==
   dependencies:
     complex.js "^2.0.11"
     decimal.js "^10.2.0"
@@ -193,9 +193,9 @@ pretty-format@^25.1.0:
     react-is "^16.12.0"
 
 react-is@^16.12.0:
-  version "16.12.0"
-  resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.12.0.tgz#2cc0fe0fba742d97fd527c42a13bec4eeb06241c"
-  integrity sha512-rPCkf/mWBtKc97aLL9/txD8DZdemK0vkA3JMLShjlJB3Pj3s+lpf1KaBzMfQrAmhMQB0n1cU/SUGgKKBCe837Q==
+  version "16.13.0"
+  resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.0.tgz#0f37c3613c34fe6b37cd7f763a0d6293ab15c527"
+  integrity sha512-GFMtL0vHkiBv9HluwNZTggSn/sCyEt9n02aM0dSAjGGyqyNlAyftYm4phPxdvCigG15JreC5biwxCgTAJZ7yAA==
 
 seed-random@^2.2.0:
   version "2.2.0"
