@@ -14,8 +14,8 @@
   "author": "Sebastian Gerske",
   "license": "MIT",
   "dependencies": {
-    "@craeft/map-generator": "git+https://github.com/craeftgame/map-generator.git",
-    "@craeft/serializer": "git+https://github.com/craeftgame/serializer.git",
+    "@craeft/map-generator": "git+https://github.com/craeftgame/map-generator.git#v1.3.0",
+    "@craeft/serializer": "git+https://github.com/craeftgame/serializer.git#v1.3.0",
     "local-storage": "^2.0.0",
     "lz-string": "^1.4.4",
     "mathjs": "^7.5.1"

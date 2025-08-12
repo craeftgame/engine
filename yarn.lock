@@ -16,13 +16,13 @@
   resolved "https://registry.yarnpkg.com/@babel/helper-validator-identifier/-/helper-validator-identifier-7.27.1.tgz#a7054dcc145a967dd4dc8fee845a57c1316c9df8"
   integrity sha512-D2hP9eA+Sqx1kBZgzxZh0y1trbuU+JoDkiEwqhQ36nodYqJwyEIhPSdMNd7lOm/4io72luTPWH20Yda0xOuUow==
 
-"@craeft/map-generator@git+https://github.com/craeftgame/map-generator.git":
-  version "1.2.2"
-  resolved "git+https://github.com/craeftgame/map-generator.git#3eca458f14497e1b7d35b796886eb2fca145074f"
+"@craeft/map-generator@git+https://github.com/craeftgame/map-generator.git#v1.3.0":
+  version "1.3.0"
+  resolved "git+https://github.com/craeftgame/map-generator.git#8112f8d3ff2e7093afbb2609900084ab933f61d8"
 
-"@craeft/serializer@git+https://github.com/craeftgame/serializer.git":
-  version "1.2.0"
-  resolved "git+https://github.com/craeftgame/serializer.git#9ba54881879e366b8d58af1ab2d6697ecb0a2bfe"
+"@craeft/serializer@git+https://github.com/craeftgame/serializer.git#v1.3.0":
+  version "1.3.0"
+  resolved "git+https://github.com/craeftgame/serializer.git#ffa74d926a680034a9685fa55555b7f00d5b9789"
 
 "@jest/diff-sequences@30.0.1":
   version "30.0.1"
