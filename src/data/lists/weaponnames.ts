@@ -1,4 +1,1 @@
-export default [
-    "Knife",
-    "Dagger"
-]
+export default ["Knife", "Dagger"];

@@ -1,5 +1,1 @@
-export default [
-    "Turagon",
-    "Ligalonia",
-    "Tuconworth",
-]
+export default ["Turagon", "Ligalonia", "Tuconworth"];

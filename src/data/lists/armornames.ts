@@ -1,4 +1,1 @@
-export default [
-    "Shellmail",
-    "Platemail"
-]
+export default ["Shellmail", "Platemail"];
