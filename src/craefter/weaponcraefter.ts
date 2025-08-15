@@ -13,7 +13,7 @@ import { getRandomInt } from "../tools/rand";
 
 import { log, round } from "mathjs";
 
-import config from "../../config";
+import config from "../config";
 import Resources from "../resources";
 import PreItem from "../items/PreItem";
 

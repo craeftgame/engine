@@ -31,13 +31,11 @@ export default class Equipment {
   }
 
   public getEquipped(): Item[] {
-    const equipped = [];
+    const equipped: Item[] = [];
 
     for (const equipmentSymbol of Object.getOwnPropertySymbols(this)) {
-      const equipment: Item[] | null = this[equipmentSymbol];
-      // @ts-ignore
+      const equipment: Item | null = this[equipmentSymbol] as Item;
       if (equipment && equipped.indexOf(equipment) < 0) {
-        // @ts-ignore
         equipped.push(equipment);
       }
     }
@@ -54,12 +52,12 @@ export default class Equipment {
       if (item.isMultiSlot) {
         // unequip right
         if (this[WeaponSlots.RightHand]) {
-          this[WeaponSlots.RightHand].equipped = false;
+          this[WeaponSlots.RightHand]!.equipped = false;
         }
 
         // unequip left
         if (this[WeaponSlots.LeftHand]) {
-          this[WeaponSlots.LeftHand].equipped = false;
+          this[WeaponSlots.LeftHand]!.equipped = false;
         }
 
         // equip both
@@ -85,12 +83,12 @@ export default class Equipment {
             // no, both hands taken
 
             // if we unquipped a multi slot weapon, unequip the other hand as well
-            if (this[WeaponSlots.RightHand].isMultiSlot) {
+            if (this[WeaponSlots.RightHand]?.isMultiSlot) {
               this[WeaponSlots.LeftHand] = null;
             }
 
             // unequip what ever is in right hand
-            this[WeaponSlots.RightHand].equipped = false;
+            this[WeaponSlots.RightHand]!.equipped = false;
 
             // equip ro right hand
             this[WeaponSlots.RightHand] = item;
@@ -115,7 +113,7 @@ export default class Equipment {
         equipped = true;
       } else {
         if (this[JewelerySlots.Right]) {
-          this[JewelerySlots.Right].equipped = false;
+          this[JewelerySlots.Right]!.equipped = false;
         }
         this[JewelerySlots.Right] = item;
         equipped = true;

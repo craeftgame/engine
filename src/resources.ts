@@ -1,5 +1,5 @@
-import { ResourceTypes } from "./data/types";
 import { gcd } from "mathjs";
+import { ResourceTypes } from "./data/types";
 import Ratios from "./ratios";
 
 export default class Resources {
@@ -35,18 +35,16 @@ export default class Resources {
   }
 
   static hydrate(obj) {
-    const resources = Object.assign(new Resources(), obj);
-    return resources;
+    return Object.assign(new Resources(), obj);
   }
 
   map(cb: { (type, name: string, i: number): any }) {
     const rv: any[] = [];
     const symbols = Object.getOwnPropertySymbols(this);
 
-    symbols.forEach((sym, i) => {
-      // @ts-ignore
-      const name = Symbol.keyFor(sym).toString();
-      const nameCapitalized = name.charAt(0).toUpperCase() + name.slice(1);
+    symbols.forEach((sym: symbol, i: number) => {
+      const name = Symbol.keyFor(sym)?.toString();
+      const nameCapitalized = `${name?.charAt(0).toUpperCase()}${name?.slice(1)}`;
 
       rv.push(cb(sym, nameCapitalized, i));
     });

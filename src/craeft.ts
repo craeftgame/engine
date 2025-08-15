@@ -16,16 +16,16 @@ import ArmorCraefter from "./craefter/armorcraefter";
 import Serializer from "@craeft/serializer";
 import { log, pow } from "mathjs";
 
-import config from "../config";
+import config from "./config";
 // storage
 import ls from "local-storage";
 import zip from "lz-string/libs/lz-string";
 import Items from "./items/items";
 import Craefters from "./craefter/craefters";
 import Bosses from "./boss/bosses";
-import { generate } from "@craeft/map-generator/src/map/generator";
-import Map from "@craeft/map-generator/src/map/map";
-import { TerrainTypes } from "@craeft/map-generator/src/TerrainTypes";
+import { generate } from "@craeft/map-generator/dist/map/generator";
+import Map from "@craeft/map-generator/dist/map/map";
+import { TerrainTypes } from "@craeft/map-generator/dist/TerrainTypes";
 import Item from "./items/item";
 
 const version = `v${process.env.REACT_APP_VERSION}`;
@@ -263,7 +263,7 @@ export default class Craeft {
   }
 
   public disentchant(itemId): void {
-    console.log(this.items);
+    // console.log(this.items);
 
     const result = this.items.disentchant(itemId);
 

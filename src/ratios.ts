@@ -2,13 +2,9 @@ import { Unknown, ResourceTypes } from "./data/types";
 
 // todo make this more generic, it is really resource centric
 export default class Ratios {
-  // @ts-ignore
   [ResourceTypes.Wood] = 0;
-  // @ts-ignore
   [ResourceTypes.Metal] = 0;
-  // @ts-ignore
   [ResourceTypes.Cloth] = 0;
-  // @ts-ignore
   [ResourceTypes.Diamond] = 0;
 
   getHighest() {

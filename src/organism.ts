@@ -5,7 +5,7 @@ import { log } from "mathjs";
 
 import { getRandomId } from "./tools/rand";
 
-import config from "../config";
+import config from "./config";
 
 export default class Organism extends Tickable {
   id: string;

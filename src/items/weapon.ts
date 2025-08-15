@@ -4,7 +4,7 @@ import { getRandomInt } from "../tools/rand";
 import { Unknown, ItemCategories, WeaponTypes, Rarities } from "../data/types";
 
 import { ItemNames, RarityNames } from "../data/names";
-import config from "../../config";
+import config from "../config";
 
 export default class Weapon extends Item {
   private readonly _atk: number = 0;

@@ -2,12 +2,12 @@ import { log } from "mathjs";
 import { getRandomArrayItem, getRandomInt } from "./tools/rand";
 import Organism from "./organism";
 import Equipment from "./equipment";
-import config from "../config";
+import config from "./config";
 import { ClassNames, FirstNames, SurNames } from "./data/names";
 import Armor from "./items/armor";
 import Weapon from "./items/weapon";
 import { Classes } from "./data/types";
-import { getRandomEnumEntry } from "../../map-generator/src/tools/rand";
+import { getRandomEnumEntry } from "@craeft/map-generator/dist/tools/rand";
 
 export default class Player extends Organism {
   equipment = new Equipment();

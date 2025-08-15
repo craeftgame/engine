@@ -2,7 +2,7 @@
   "name": "@craeft/engine",
   "version": "1.6.1",
   "description": "Cräft! engine",
-  "main": "src",
+  "main": "dist",
   "scripts": {
     "prettier": "prettier ./src --write",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -14,7 +14,7 @@
   "author": "Sebastian Gerske",
   "license": "MIT",
   "dependencies": {
-    "@craeft/map-generator": "git+https://github.com/craeftgame/map-generator.git#v1.3.0",
+    "@craeft/map-generator": "git+https://github.com/craeftgame/map-generator.git#v1.4.0",
     "@craeft/serializer": "git+https://github.com/craeftgame/serializer.git#v1.3.0",
     "local-storage": "^2.0.0",
     "lz-string": "^1.4.4",

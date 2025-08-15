@@ -7,7 +7,7 @@ import { getRandomId, getRandomInt } from "../tools/rand";
 import { ItemNames, RarityNames, SlotNames } from "../data/names";
 
 import Resources from "../resources";
-import config from "../../config";
+import config from "../config";
 
 export default class Item {
   equipped = false;

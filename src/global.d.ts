@@ -1,4 +1,4 @@
-import Craeft from "./src/craeft";
+import Craeft from "./craeft";
 
 declare global {
     namespace NodeJS {

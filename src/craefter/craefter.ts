@@ -1,17 +1,17 @@
-import { getRandomArrayItem, getRandomId } from "../tools/rand";
-import { Unknown } from "../data/types";
-import Organism from "../organism";
-import Delay from "../delay";
-import config from "../../config";
+import config from "../config";
 import { FirstNames, SurNames } from "../data/names";
-import Resources from "../resources";
+import { Unknown } from "../data/types";
+import Delay from "../delay";
 import PreItem from "../items/PreItem";
+import Organism from "../organism";
+import Resources from "../resources";
+import { getRandomArrayItem, getRandomId } from "../tools/rand";
 
 export default class Craefter extends Organism {
   isCraefting: boolean = false;
   itemId: string | null = null;
   onDoneCreating: any = null;
-  type: any;
+  type: symbol;
 
   str: number;
   int: number;

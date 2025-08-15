@@ -5,9 +5,9 @@ import { ResourceTypes } from "./data/types";
 
 import { getRandomArrayItem, getRandomInt } from "./tools/rand";
 
-import { pow, log } from "mathjs";
+import { log, pow } from "mathjs";
 
-import config from "../config";
+import config from "./config";
 import Player from "./player";
 
 export default class Farm {
@@ -65,7 +65,7 @@ export default class Farm {
       amount = amount * (player.atk() + player.matk());
 
       const resources = new Resources();
-      const resTypes = [
+      const resourceTypes = [
         ResourceTypes.Wood,
         ResourceTypes.Metal,
         ResourceTypes.Cloth,
@@ -74,11 +74,13 @@ export default class Farm {
 
       // now distribute
       while (amount > 0) {
-        const resType = getRandomArrayItem({
-          array: resTypes,
+        const resourceType = getRandomArrayItem({
+          array: resourceTypes,
         });
 
-        resources[resType] = resources[resType] ? resources[resType]++ : 1;
+        resources[resourceType] = resources[resourceType]
+          ? resources[resourceType]++
+          : 1;
 
         amount--;
       }

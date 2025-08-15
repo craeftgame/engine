@@ -13,7 +13,7 @@ import {
 import { getRandomInt, getRandomObjectEntry } from "../tools/rand";
 import Resources from "../resources";
 import PreItem from "../items/PreItem";
-import config from "../../config";
+import config from "../config";
 
 export default class ArmorCraefter extends Craefter {
   constructor({
