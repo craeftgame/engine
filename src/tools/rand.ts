@@ -1,38 +1,51 @@
-function getRandomInt(min, max) {
+export const getRandomInt = (min: number, max: number) => {
   min = Math.ceil(min);
   max = Math.floor(max);
 
   //The maximum is exclusive and the minimum is inclusive
   return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+};
 
-function getRandomArrayItem({ array, start = 0 }) {
+export const getRandomArrayItem = <T>({
+  array,
+  start = 0,
+}: {
+  array: T[];
+  start?: number;
+}) => {
   const randomIndex = getRandomInt(start, array.length - 1);
   return array[randomIndex];
-}
+};
 
-function getRandomObjectEntry({ object, start = 0 }) {
+export const getRandomObjectEntry = <T>({
+  object,
+  start = 0,
+}: {
+  object: { [key: string]: T };
+  start?: number;
+}) => {
   const array = Object.keys(object);
 
-  const randomIndex = getRandomArrayItem({
+  const randomIndex = getRandomArrayItem<string>({
     array,
     start,
   });
 
   return object[randomIndex];
-}
+};
 
-function getRandomId() {
+export const getRandomId = (): string => {
   let num = "";
 
   const array = new Uint8Array(30);
-  window.crypto.getRandomValues(array);
+
+  if (typeof window !== "undefined") {
+    window.crypto.getRandomValues(array);
+  }
 
   for (const n of array) {
     num += n.toString(16);
   }
 
   return num;
-}
-
-export { getRandomInt, getRandomId, getRandomArrayItem, getRandomObjectEntry };
+};

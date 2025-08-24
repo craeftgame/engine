@@ -1,18 +1,16 @@
-import item from "../items/item";
-
-export default class ExtendedArray<T> extends Array<any> {
+export class ExtendedArray<T> extends Array {
   count = 0;
 
-  public findById = (id) => {
+  public findById = (id: string) => {
     return this.find((obj) => obj.id === id);
   };
 
-  public removeItem = (item) => {
+  public removeItem = (item: T) => {
     return this.splice(this.indexOf(item), 1);
   };
 
-  public wipeItem = (item) => {
-    return (this[this.indexOf(item)] = null);
+  public wipeItem = (item: T) => {
+    return (this[this.indexOf(item)] = undefined);
   };
 
   public push = (...items: T[]): number => {

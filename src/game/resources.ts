@@ -1,23 +1,27 @@
 import { gcd } from "mathjs";
-import { ResourceTypes } from "./data/types";
-import Ratios from "./ratios";
+import { ResourceTypes } from "../data";
+import { Ratios } from "./ratios";
 
-export default class Resources {
+export type fu = {
+  [key in ResourceTypes]: number;
+};
+
+export class Resources implements fu {
   [ResourceTypes.Wood]: number;
-  [ResourceTypes.Metal]: number;
   [ResourceTypes.Cloth]: number;
+  [ResourceTypes.Metal]: number;
   [ResourceTypes.Diamond]: number;
 
   constructor(
     {
       initialResources = 0,
-      resources = {} as Resources,
+      resources,
     }: {
       initialResources?: number;
-      resources?: Resources;
+      resources: Partial<fu>;
     } = {
       initialResources: 0,
-      resources: {} as Resources,
+      resources: {},
     },
   ) {
     this[ResourceTypes.Wood] = resources[ResourceTypes.Wood]
@@ -34,25 +38,11 @@ export default class Resources {
       : initialResources;
   }
 
-  static hydrate(obj) {
-    return Object.assign(new Resources(), obj);
+  static hydrate(resources: Resources) {
+    return Object.assign(new Resources(), resources);
   }
 
-  map(cb: { (type, name: string, i: number): any }) {
-    const rv: any[] = [];
-    const symbols = Object.getOwnPropertySymbols(this);
-
-    symbols.forEach((sym: symbol, i: number) => {
-      const name = Symbol.keyFor(sym)?.toString();
-      const nameCapitalized = `${name?.charAt(0).toUpperCase()}${name?.slice(1)}`;
-
-      rv.push(cb(sym, nameCapitalized, i));
-    });
-
-    return rv;
-  }
-
-  add(resources) {
+  add(resources: Resources) {
     this[ResourceTypes.Wood] += resources[ResourceTypes.Wood];
     this[ResourceTypes.Metal] += resources[ResourceTypes.Metal];
     this[ResourceTypes.Cloth] += resources[ResourceTypes.Cloth];
@@ -60,7 +50,7 @@ export default class Resources {
     return this;
   }
 
-  sub(resources) {
+  sub(resources: Resources) {
     this[ResourceTypes.Wood] -= resources[ResourceTypes.Wood];
     this[ResourceTypes.Metal] -= resources[ResourceTypes.Metal];
     this[ResourceTypes.Cloth] -= resources[ResourceTypes.Cloth];

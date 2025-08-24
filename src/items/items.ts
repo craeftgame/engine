@@ -1,13 +1,13 @@
-import ExtendedArray from "../tools/ExtendedArray";
-import Item from "./item";
-import Resources from "../resources";
-import { ItemCategories } from "../data/types";
-import Weapon from "./weapon";
-import Armor from "./armor";
+import { ItemCategories } from "../data";
+import { Resources } from "../game";
+import { ExtendedArray } from "../tools";
+import { Armor } from "./armor";
+import { Item } from "./item";
+import { Weapon } from "./weapon";
 
-export default class Items extends ExtendedArray<Item> {
+export class Items extends ExtendedArray<Item> {
   public disentchant = (
-    itemId,
+    itemId: string,
   ): {
     name: string;
     resources: Resources;

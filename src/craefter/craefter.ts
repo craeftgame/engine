@@ -1,17 +1,22 @@
-import config from "../config";
-import { FirstNames, SurNames } from "../data/names";
-import { Unknown } from "../data/types";
-import Delay from "../delay";
-import PreItem from "../items/PreItem";
-import Organism from "../organism";
-import Resources from "../resources";
-import { getRandomArrayItem, getRandomId } from "../tools/rand";
+import { config } from "../config";
+import {
+  CraefterTypes,
+  FirstNames,
+  ResourceTypes,
+  SurNames,
+  Types,
+  Unknown,
+} from "../data";
+import { Ratios, Resources } from "../game";
+import { Item, PreItem } from "../items";
+import { Organism } from "../organism";
+import { Delay, getRandomArrayItem, getRandomId } from "../tools";
 
-export default class Craefter extends Organism {
+export abstract class Craefter<T = typeof Unknown> extends Organism {
   isCraefting: boolean = false;
-  itemId: string | null = null;
-  onDoneCreating: any = null;
-  type: symbol;
+  itemId?: string;
+  onDoneCreating?: (exp: number) => void;
+  type: CraefterTypes | typeof Unknown;
 
   str: number;
   int: number;
@@ -20,7 +25,7 @@ export default class Craefter extends Organism {
 
   delay: Delay;
 
-  constructor({
+  protected constructor({
     type = Unknown,
     name = getRandomArrayItem({
       array: FirstNames,
@@ -35,7 +40,16 @@ export default class Craefter extends Organism {
     dex = 0,
     luk = 0,
     sta = config.craefterInitialSta,
-  } = {}) {
+  }: Partial<{
+    type: CraefterTypes | typeof Unknown;
+    name: string;
+    delay: number;
+    str: number;
+    int: number;
+    dex: number;
+    luk: number;
+    sta: number;
+  }> = {}) {
     super({
       name,
       sta,
@@ -64,7 +78,7 @@ export default class Craefter extends Organism {
     this.luk = luk;
   }
 
-  static hydrate(craefter, obj) {
+  static hydrate(craefter: Craefter, obj: Craefter) {
     craefter.delay = Delay.hydrate(obj.delay);
   }
 
@@ -75,11 +89,11 @@ export default class Craefter extends Organism {
     }
   }
 
-  static calculateMaterialImpact(material) {
+  static calculateMaterialImpact(material: number) {
     return ((material ? material : 0.1) / 100) * 80;
   }
 
-  protected evaluateItemType(ratios, highestResource) {
+  protected evaluateItemType(ratios: Ratios, highestResource: ResourceTypes) {
     // stub please override
   }
 
@@ -92,7 +106,7 @@ export default class Craefter extends Organism {
       resources: new Resources(),
     },
     // @ts-ignore
-  ): PreItem {
+  ): PreItem<T> {
     // stub please override
   }
 
@@ -104,7 +118,8 @@ export default class Craefter extends Organism {
     } = {
       resources: new Resources(),
     },
-  ) {
+    // @ts-ignore
+  ): Item {
     // stub please override
     this.isCraefting = true;
 
@@ -112,17 +127,17 @@ export default class Craefter extends Organism {
     this.exhaust(1);
   }
 
-  public finishCraefting(exp) {
+  public finishCraefting(exp: number) {
     this.isCraefting = false;
-    this.itemId = null;
+    this.itemId = undefined;
 
     // todo inlcude resource heaviness / complexity
     this.addExp(exp);
   }
 
-  protected evaluateSlot(type) {}
+  protected evaluateSlot(type: Types) {}
 
-  public exhaust(sta) {
+  public exhaust(sta: number) {
     super.exhaust(sta);
 
     if (Math.floor(this.staCurrent) === 0) {

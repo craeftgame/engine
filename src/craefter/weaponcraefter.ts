@@ -1,23 +1,22 @@
-import Weapon from "../items/weapon";
-import Craefter from "./craefter";
+import { log, round } from "mathjs";
+
+import { config } from "../config";
 
 import {
   CraefterTypes,
   ItemCategories,
   ResourceTypes,
+  Types,
   Unknown,
   WeaponTypes,
-} from "../data/types";
+} from "../data";
+import { Ratios, Resources } from "../game";
+import { PreItem, Weapon } from "../items";
 
-import { getRandomInt } from "../tools/rand";
+import { getRandomInt } from "../tools";
+import { Craefter } from "./craefter";
 
-import { log, round } from "mathjs";
-
-import config from "../config";
-import Resources from "../resources";
-import PreItem from "../items/PreItem";
-
-export default class WeaponCraefter extends Craefter {
+export class WeaponCraefter extends Craefter<WeaponTypes> {
   constructor({
     delay = config.initialCraefterDelay,
     str = config.weaponCraefterInitialStr,
@@ -37,7 +36,7 @@ export default class WeaponCraefter extends Craefter {
     this.expMax = config.weaponCraefterInitialRequiredExp;
   }
 
-  static hydrate(obj) {
+  static hydrate(obj: Craefter) {
     const weaponcraefter = Object.assign(new WeaponCraefter(), obj);
 
     Craefter.hydrate(weaponcraefter, obj);
@@ -45,8 +44,11 @@ export default class WeaponCraefter extends Craefter {
     return weaponcraefter;
   }
 
-  protected evaluateItemType(ratios, highestResource) {
-    let type = Unknown;
+  protected evaluateItemType(
+    ratios: Ratios,
+    highestResource: ResourceTypes | typeof Unknown,
+  ) {
+    let type: Types = Unknown;
 
     switch (highestResource) {
       case ResourceTypes.Metal:
@@ -102,7 +104,7 @@ export default class WeaponCraefter extends Craefter {
     return type;
   }
 
-  public evaluateItem(
+  public override evaluateItem(
     {
       resources,
     }: {
@@ -110,7 +112,7 @@ export default class WeaponCraefter extends Craefter {
     } = {
       resources: new Resources(),
     },
-  ): PreItem {
+  ): PreItem<WeaponTypes> {
     // 2 percent of all resources is the base
     const baseline = resources.sum() / 100;
 
@@ -172,8 +174,8 @@ export default class WeaponCraefter extends Craefter {
       level: this.level,
       craefterId: this.id,
       // todo include luk
-      atk: getRandomInt(atk, atkMax),
-      matk: getRandomInt(matk, matkMax),
+      atk: atk && atkMax ? getRandomInt(atk, atkMax) : 0,
+      matk: matk && matkMax ? getRandomInt(matk, matkMax) : 0,
     });
 
     this.itemId = item.id;

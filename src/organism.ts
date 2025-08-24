@@ -1,13 +1,10 @@
-/* globals craeft */
-import Tickable from "./tickable";
-
 import { log } from "mathjs";
 
-import { getRandomId } from "./tools/rand";
+import { config } from "./config";
+import type { Tickable } from "./tools";
+import { getRandomId, log as logger } from "./tools";
 
-import config from "./config";
-
-export default class Organism extends Tickable {
+export abstract class Organism implements Tickable {
   id: string;
   name: string;
   level: number;
@@ -24,7 +21,7 @@ export default class Organism extends Tickable {
   hpCurrent: number;
   hpMax: number;
 
-  constructor(
+  protected constructor(
     {
       name,
       sta,
@@ -37,8 +34,6 @@ export default class Organism extends Tickable {
       name: "Organism",
     },
   ) {
-    super();
-
     this.dead = false;
     this.isFarming = false;
 
@@ -60,10 +55,10 @@ export default class Organism extends Tickable {
   protected levelUp(): void {
     this.level++;
     this.expMax = Math.floor(this.expMax + 50 * log(this.level, 10));
-    global.craeft.logs.push(`"${this.name}" has reached Level ${this.level}`);
+    logger(`"${this.name}" has reached Level ${this.level}`);
   }
 
-  public addExp(exp): void {
+  public addExp(exp: number): void {
     if (!this.dead) {
       if (this.expCurrent + exp >= this.expMax) {
         const nextExp = this.expCurrent + exp - this.expMax;
@@ -78,7 +73,7 @@ export default class Organism extends Tickable {
     }
   }
 
-  public exhaust(sta): void {
+  public exhaust(sta: number): void {
     this.staCurrent -= sta;
 
     if (this.staCurrent < 0) {
@@ -86,12 +81,10 @@ export default class Organism extends Tickable {
     }
   }
 
-  public takeDamage(dmg): boolean {
+  public takeDamage(dmg: number): boolean {
     this.hpCurrent -= dmg;
 
-    global.craeft.logs.push(
-      `${this.name} has taken ${Math.floor(dmg)} Damage!`,
-    );
+    logger(`${this.name} has taken ${Math.floor(dmg)} Damage!`);
 
     if (Math.floor(this.hpCurrent) <= 0) {
       // killed

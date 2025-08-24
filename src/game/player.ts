@@ -1,15 +1,14 @@
-import { log } from "mathjs";
-import { getRandomArrayItem, getRandomInt } from "./tools/rand";
-import Organism from "./organism";
-import Equipment from "./equipment";
-import config from "./config";
-import { ClassNames, FirstNames, SurNames } from "./data/names";
-import Armor from "./items/armor";
-import Weapon from "./items/weapon";
-import { Classes } from "./data/types";
 import { getRandomEnumEntry } from "@craeft/map-generator/dist/tools/rand";
+import { log } from "mathjs";
+import { config } from "../config";
+import { craeft } from "../craeft";
+import { Classes, ClassNames, FirstNames, SurNames, Unknown } from "../data";
+import { Equipment } from "../game";
+import { Armor, Weapon } from "../items";
+import { Organism } from "../organism";
+import { getRandomArrayItem, getRandomInt, log as logger } from "../tools";
 
-export default class Player extends Organism {
+export class Player extends Organism {
   equipment = new Equipment();
 
   private _dex: number;
@@ -18,7 +17,7 @@ export default class Player extends Organism {
   private _vit: number;
   private _agi: number;
 
-  private _class: any;
+  private _class: Classes;
 
   constructor({
     name = getRandomArrayItem({
@@ -58,7 +57,7 @@ export default class Player extends Organism {
     this.level = config.playerStartLevel;
   }
 
-  static hydrate(obj): Player {
+  static hydrate(obj: Player): Player {
     const player = Object.assign(new Player(), obj);
 
     player.equipment = Equipment.hydrate(obj.equipment);
@@ -116,7 +115,7 @@ export default class Player extends Organism {
   }
 
   public className(): string {
-    return ClassNames[this._class];
+    return ClassNames[this._class] ?? Unknown;
   }
 
   public dex() {
@@ -187,12 +186,12 @@ export default class Player extends Organism {
     return mdef;
   }
 
-  public takeDamage(dmg): boolean {
+  public takeDamage(dmg: number): boolean {
     const dead: boolean = super.takeDamage(dmg);
 
     if (dead) {
-      global.craeft.logs.push(`${this.className()} ${this.name} died!`);
-      global.craeft.stop(true);
+      logger(`${this.className()} ${this.name} died!`);
+      craeft.stop(true);
     }
 
     return dead;

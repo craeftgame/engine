@@ -1,8 +1,8 @@
 import assert from "assert";
 import {
   getRandomArrayItem,
-  getRandomObjectEntry,
   getRandomInt,
+  getRandomObjectEntry,
 } from "../rand";
 
 describe("rand", () => {

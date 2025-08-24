@@ -1,30 +1,36 @@
-import Delay from "../delay";
+import { config } from "../config";
 
-import { Rarities, ResourceTypes } from "../data/types";
+import {
+  ItemCategories,
+  ItemNames,
+  Rarities,
+  RarityNames,
+  ResourceTypes,
+  SlotNames,
+  Slots,
+  Types,
+  Unknown,
+} from "../data";
 
-import { getRandomId, getRandomInt } from "../tools/rand";
+import { Resources } from "../game";
+import { Delay, getRandomId, getRandomInt } from "../tools";
 
-import { ItemNames, RarityNames, SlotNames } from "../data/names";
-
-import Resources from "../resources";
-import config from "../config";
-
-export default class Item {
+export class Item {
   equipped = false;
   isMultiSlot = false;
   delay: Delay;
-  onDoneCreating;
-  id;
+  onDoneCreating?: (craefterId: string, exp: number) => void;
+  id: string;
 
-  type;
-  craefterId;
-  slot;
+  type?: Types;
+  craefterId?: string;
+  slot?: Slots;
   category;
-  rarity;
-  material;
-  level;
-  name;
-  private readonly resources: Resources;
+  rarity?: Rarities;
+  material?: ResourceTypes | typeof Unknown;
+  level: number;
+  name?: string;
+  private readonly resources?: Resources;
 
   constructor({
     category,
@@ -38,16 +44,16 @@ export default class Item {
     resources,
     delay = config.initialItemDelay,
   }: {
-    category?: any;
+    category?: ItemCategories;
     delay?: number;
     name?: string;
     craefterId?: string;
-    slot?: any;
+    slot?: Slots;
     level?: number;
-    type?: any;
-    rarity?: any;
-    material?: any;
-    resources?: any;
+    type?: Types;
+    rarity?: Rarities;
+    material?: ResourceTypes | typeof Unknown;
+    resources?: Resources;
   } = {}) {
     this.id = getRandomId();
 
@@ -76,7 +82,7 @@ export default class Item {
   }
 
   public evaluateItemName(): string {
-    return `${RarityNames[this.rarity]} ${SlotNames[this.slot]} ${ItemNames[this.type]}`;
+    return `${this.rarity ? RarityNames[this.rarity] : Unknown} ${this.slot ? SlotNames[this.slot] : Unknown} ${this.type ? ItemNames[this.type] : Unknown}`;
   }
 
   static evaluateRarity() {
@@ -100,13 +106,12 @@ export default class Item {
   }
 
   private meterialize() {
-    if (this.onDoneCreating) {
-      this.onDoneCreating(
+    this.craefterId &&
+      this.onDoneCreating?.(
         this.craefterId,
         // todo evaluate exp properly
-        this.resources.sum() * 2,
+        (this.resources?.sum() ?? 1) * 2,
       );
-    }
   }
 
   public disentchant() {
@@ -116,7 +121,7 @@ export default class Item {
       return new Resources({
         resources: {
           [ResourceTypes.Wood]: 1,
-        } as unknown as Resources,
+        },
       });
     }
 
@@ -162,11 +167,11 @@ export default class Item {
               config.disentchantRecyclingPercentTo,
           ),
         ),
-      } as Resources,
+      },
     });
   }
 
-  static hydrate(item, obj) {
+  static hydrate(item: Item, obj: Item) {
     item.delay = Delay.hydrate(obj.delay);
   }
 }

@@ -5,26 +5,31 @@
   "main": "dist",
   "scripts": {
     "prettier": "prettier ./src --write",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "tsc -b .",
+    "test": "jest",
     "build": "tsc -b .",
     "start": "tsc -b . --watch"
   },
   "keywords": [],
-  "author": "Sebastian Gerske",
+  "author": "Umlaut Games",
   "license": "MIT",
   "dependencies": {
-    "@craeft/map-generator": "git+https://github.com/craeftgame/map-generator.git#v1.4.0",
-    "@craeft/serializer": "git+https://github.com/craeftgame/serializer.git#v1.3.0",
+    "@craeft/map-generator": "git+https://github.com/craeftgame/map-generator.git#v1.5.0",
+    "@craeft/serializer": "git+https://github.com/craeftgame/serializer.git#v1.3.1",
     "local-storage": "^2.0.0",
     "lz-string": "^1.4.4",
-    "mathjs": "^7.5.1"
+    "mathjs": "^14.6.0"
   },
   "devDependencies": {
-    "@types/core-js": "^2.5.8",
+    "@jest/globals": "^30.0.5",
+    "@testing-library/jest-dom": "^6.7.0",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.2.1",
+    "@types/lz-string": "^1.5.0",
+    "@types/node": "^24.3.0",
+    "jest": "^30.0.5",
+    "jest-environment-jsdom": "^30.0.5",
     "prettier": "^3.6.2",
+    "ts-jest": "^29.4.1",
     "typescript": "^5.9.2"
   },
   "repository": {

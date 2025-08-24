@@ -1,5 +1,4 @@
-import Armor from "../items/armor";
-import Craefter from "./craefter";
+import { config } from "../config";
 
 import {
   ArmorSlots,
@@ -8,14 +7,14 @@ import {
   ItemCategories,
   ResourceTypes,
   Unknown,
-} from "../data/types";
+} from "../data";
+import { Ratios, Resources } from "../game";
+import { Armor, PreItem } from "../items";
 
-import { getRandomInt, getRandomObjectEntry } from "../tools/rand";
-import Resources from "../resources";
-import PreItem from "../items/PreItem";
-import config from "../config";
+import { getRandomInt, getRandomObjectEntry } from "../tools";
+import { Craefter } from "./craefter";
 
-export default class ArmorCraefter extends Craefter {
+export class ArmorCraefter extends Craefter<ArmorTypes> {
   constructor({
     delay = config.initialCraefterDelay,
     str = config.armorCraefterInitialStr,
@@ -35,7 +34,7 @@ export default class ArmorCraefter extends Craefter {
     this.expMax = config.armorCraefterInitialRequiredExp;
   }
 
-  static hydrate(obj) {
+  static hydrate(obj: Craefter) {
     const armorCraefter = Object.assign(new ArmorCraefter(), obj);
 
     Craefter.hydrate(armorCraefter, obj);
@@ -43,8 +42,11 @@ export default class ArmorCraefter extends Craefter {
     return armorCraefter;
   }
 
-  protected evaluateItemType(ratios, highestResource) {
-    let type = Unknown;
+  protected evaluateItemType(
+    ratios: Ratios,
+    highestResource: ResourceTypes | typeof Unknown,
+  ) {
+    let type: ArmorTypes | typeof Unknown = Unknown;
 
     switch (highestResource) {
       case ResourceTypes.Metal:
@@ -75,7 +77,7 @@ export default class ArmorCraefter extends Craefter {
     return type;
   }
 
-  public evaluateItem(
+  public override evaluateItem(
     {
       resources,
     }: {
@@ -83,7 +85,7 @@ export default class ArmorCraefter extends Craefter {
     } = {
       resources: new Resources(),
     },
-  ): PreItem {
+  ): PreItem<ArmorTypes> {
     // 2 percent of all resources is the base
     const baseline = resources.sum() / 100;
 
@@ -118,10 +120,7 @@ export default class ArmorCraefter extends Craefter {
     };
   }
 
-  protected evaluateSlot(
-    /* eslint-disable-next-line no-unused-vars */
-    type,
-  ) {
+  protected evaluateSlot(type: ArmorTypes | typeof Unknown): ArmorSlots {
     return getRandomObjectEntry({
       object: ArmorSlots,
       start: 0,
@@ -155,8 +154,8 @@ export default class ArmorCraefter extends Craefter {
       delay: resources.sum() / this.level,
       craefterId: this.id,
       level: this.level,
-      def: getRandomInt(def, defMax),
-      mdef: getRandomInt(mdef, mdefMax),
+      def: def && defMax ? getRandomInt(def, defMax) : 0,
+      mdef: mdef && mdefMax ? getRandomInt(mdef, mdefMax) : 0,
     });
 
     this.itemId = item.id;

@@ -1,19 +1,19 @@
-import config from "../config";
+import { config } from "../config";
 
-export default class Timer {
+export class Timer {
   delay: number = 0;
   remaining: number = 0;
   startDate: Date = new Date();
   running: boolean = false;
-  callback: { (): void };
-  ticker: number | null = null;
+  callback?: () => void;
+  ticker?: number;
 
   constructor({
     callback,
     delay,
     autoStart = true,
   }: {
-    callback?: any;
+    callback?: () => void;
     delay?: number;
     autoStart?: boolean;
   } = {}) {
@@ -33,7 +33,7 @@ export default class Timer {
     }
   }
 
-  static hydrate(obj) {
+  static hydrate(obj: Timer) {
     const timer = Object.assign(new Timer(), obj);
 
     if (timer.remaining > 0) {
@@ -64,10 +64,12 @@ export default class Timer {
     this.running = true;
     this.startDate = new Date();
 
-    this.ticker = window.setInterval(
-      () => this.tick(),
-      config.tickerTick * 1000,
-    );
+    if (typeof window !== "undefined") {
+      this.ticker = window.setInterval(
+        () => this.tick(),
+        config.tickerTick * 1000,
+      );
+    }
 
     this.tick();
   }
@@ -77,7 +79,7 @@ export default class Timer {
 
     if (this.ticker) {
       window.clearInterval(this.ticker);
-      this.ticker = null;
+      this.ticker = undefined;
     }
   }
 

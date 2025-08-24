@@ -2,39 +2,42 @@ import {
   ArmorSlots,
   ItemCategories,
   JewelerySlots,
+  Slots,
   WeaponSlots,
-} from "./data/types";
-import Item from "./items/item";
+} from "../data";
+import { Item } from "../items";
 
-export default class Equipment {
-  [ArmorSlots.Head]: Item | null = null;
-  [ArmorSlots.Body]: Item | null = null;
-  [ArmorSlots.Legs]: Item | null = null;
-  [ArmorSlots.Feet]: Item | null = null;
+type EquipmentSlots = {
+  [key in Slots]?: Item;
+};
 
-  [WeaponSlots.LeftHand]: Item | null = null;
-  [WeaponSlots.RightHand]: Item | null = null;
+export class Equipment implements EquipmentSlots {
+  [ArmorSlots.Head]?: Item;
+  [ArmorSlots.Body]?: Item;
+  [ArmorSlots.Feet]?: Item;
+  [ArmorSlots.Legs]?: Item;
 
-  [JewelerySlots.Left]: Item | null = null;
-  [JewelerySlots.Right]: Item | null = null;
+  [WeaponSlots.LeftHand]?: Item;
+  [WeaponSlots.RightHand]?: Item;
 
-  private findSlotByItemId(itemId: string): symbol | null {
-    const slots = Object.getOwnPropertySymbols(this);
+  [JewelerySlots.Left]?: Item;
+  [JewelerySlots.Right]?: Item;
 
-    for (const slot of slots) {
-      if (this[slot]?.id === itemId) {
-        return slot;
+  private findSlotByItemId(itemId: string): Slots | undefined {
+    for (const slot in this) {
+      if ((this[slot] as Item)?.id === itemId) {
+        return slot as Slots;
       }
     }
 
-    return null;
+    return;
   }
 
   public getEquipped(): Item[] {
     const equipped: Item[] = [];
 
-    for (const equipmentSymbol of Object.getOwnPropertySymbols(this)) {
-      const equipment: Item | null = this[equipmentSymbol] as Item;
+    for (const slot in this) {
+      const equipment: Item | undefined = this[slot] as Item;
       if (equipment && equipped.indexOf(equipment) < 0) {
         equipped.push(equipment);
       }
@@ -51,14 +54,12 @@ export default class Equipment {
       // if it's a multi slit
       if (item.isMultiSlot) {
         // unequip right
-        if (this[WeaponSlots.RightHand]) {
-          this[WeaponSlots.RightHand]!.equipped = false;
-        }
+        if (this[WeaponSlots.RightHand])
+          this[WeaponSlots.RightHand].equipped = false;
 
         // unequip left
-        if (this[WeaponSlots.LeftHand]) {
-          this[WeaponSlots.LeftHand]!.equipped = false;
-        }
+        if (this[WeaponSlots.LeftHand])
+          this[WeaponSlots.LeftHand].equipped = false;
 
         // equip both
         this[WeaponSlots.RightHand] = item;
@@ -84,7 +85,7 @@ export default class Equipment {
 
             // if we unquipped a multi slot weapon, unequip the other hand as well
             if (this[WeaponSlots.RightHand]?.isMultiSlot) {
-              this[WeaponSlots.LeftHand] = null;
+              delete this[WeaponSlots.LeftHand];
             }
 
             // unequip what ever is in right hand
@@ -100,11 +101,11 @@ export default class Equipment {
     } else if (item.category === ItemCategories.Armor) {
       const { slot } = item;
 
-      if (this[slot]) {
-        this[slot].equipped = false;
+      if (slot) {
+        if (this[slot]) this[slot].equipped = false;
+        this[slot] = item;
       }
 
-      this[slot] = item;
       equipped = true;
     } else if (item.category === ItemCategories.Jewelery) {
       // we have a jewelery, assign to hand
@@ -124,18 +125,14 @@ export default class Equipment {
   }
 
   public unequip(itemId: string): boolean {
-    // @ts-ignore
-    this[this.findSlotByItemId(itemId)] = null;
-    // @ts-ignore
-    this[this.findSlotByItemId(itemId)] = null;
+    const slot = this.findSlotByItemId(itemId);
+    delete this[slot!];
 
     return true;
   }
 
-  static hydrate(obj): Equipment {
-    const equipment = Object.assign(new Equipment(), obj);
-
-    return equipment;
+  static hydrate(obj: Equipment): Equipment {
+    return Object.assign(new Equipment(), obj);
   }
 
   public tick() {

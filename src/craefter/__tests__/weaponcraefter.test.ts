@@ -1,7 +1,6 @@
-/* globals describe, test, expect */
-import WeaponCraefter from "../weaponcraefter";
-import { ResourceTypes, Unknown, WeaponTypes } from "../../data/types";
-import Resources from "../../resources";
+import { WeaponCraefter } from "../";
+import { ResourceTypes, Unknown, WeaponTypes } from "../../data";
+import { Resources } from "../../game";
 
 describe("WeaponCraefter", () => {
   describe("evaluateItem", () => {

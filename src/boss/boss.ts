@@ -1,6 +1,6 @@
-import Organism from "../organism";
+import { Organism } from "../organism";
 
-export default class Boss extends Organism {
+export class Boss extends Organism {
   type: string;
 
   constructor(

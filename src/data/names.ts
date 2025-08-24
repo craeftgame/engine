@@ -1,27 +1,32 @@
+import { english as FirstNames } from "./lists/firstnames";
+import { english as SurNames } from "./lists/surnames";
+import ArmorNames from "./lists/weaponnames";
+import WeaponNames from "./lists/weaponnames";
 import {
   ArmorSlots,
   ArmorTypes,
   Classes,
   CraefterTypes,
   Rarities,
+  Slots,
+  Types,
   Unknown,
   WeaponTypes,
 } from "./types";
 
-import { english as FirstNames } from "./lists/firstnames";
-import { english as SurNames } from "./lists/surnames";
-import ArmorNames from "./lists/weaponnames";
-import WeaponNames from "./lists/weaponnames";
-
-export const CraefterTypeNames = {
+export const CraefterTypeNames: Partial<{
+  [key in CraefterTypes | typeof Unknown]: string;
+}> = {
   [Unknown]: "???",
   [CraefterTypes.WeaponCraefter]: "Weaponcräfter",
   [CraefterTypes.ArmorCraefter]: "Armorcräfter",
   [CraefterTypes.JewelCraefter]: "Jewelcräfter",
   [CraefterTypes.Alchemist]: "Alchemist",
-} as const;
+};
 
-export const ItemNames = {
+export const ItemNames: Partial<{
+  [key in Types]: string;
+}> = {
   [Unknown]: "???",
   [WeaponTypes.Sword]: "Sword",
   [WeaponTypes.JewelSword]: "Jewel Sword",
@@ -36,27 +41,33 @@ export const ItemNames = {
   [ArmorTypes.MetalChainmail]: "Metal Chainmail",
   [ArmorTypes.Woven]: "Woven",
   [ArmorTypes.JewelWoven]: "Jewel Woven",
-} as const;
+};
 
-export const SlotNames = {
+export const SlotNames: Partial<{
+  [key in Slots]: string;
+}> = {
   [ArmorSlots.Head]: "Head",
   [ArmorSlots.Body]: "Body",
   [ArmorSlots.Legs]: "Legs",
   [ArmorSlots.Feet]: "Feet",
-} as const;
+};
 
-export const RarityNames = {
+export const RarityNames: Partial<{
+  [key in Rarities]: string;
+}> = {
   [Rarities.Common]: "Common",
   [Rarities.Rare]: "Rare",
   [Rarities.Epic]: "Epic",
   [Rarities.Legendary]: "Legendary",
-} as const;
+};
 
-export const ClassNames = {
+export const ClassNames: Partial<{
+  [key in Classes]: string;
+}> = {
   [Classes.Novice]: "Novice",
   [Classes.Mage]: "Mage",
   [Classes.Swordsman]: "Swordsman",
   [Classes.Hunter]: "Hunter",
-} as const;
+};
 
 export { FirstNames, SurNames, WeaponNames, ArmorNames };

@@ -1,12 +1,15 @@
 // create debug flag to fall back to debug values
-import { Rarities } from "./data/types";
+import { Rarities } from "./data";
 
-const debug = process.env.NODE_ENV === "development" && false;
+const debug =
+  process.env.NODE_ENV === "development" &&
+  process.env.NEXT_PUBLIC_DEBUG === "true";
 
-export default {
+export const config = {
   // detect debug
   debug,
 
+  name: "Cräft!",
   subLogo: "Alpha",
 
   // general config
@@ -42,7 +45,7 @@ export default {
   initialFarmDelay: debug ? 1 : 2,
 
   // play initial stats
-  playerStartLevel: 1,
+  playerStartLevel: 10,
 
   playerInitialHp: 50,
   playerInitialSta: 25,

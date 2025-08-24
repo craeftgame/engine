@@ -1,19 +1,16 @@
-import Timer from "./tools/timer";
-import Resources from "./resources";
-
-import { ResourceTypes } from "./data/types";
-
-import { getRandomArrayItem, getRandomInt } from "./tools/rand";
-
 import { log, pow } from "mathjs";
 
-import config from "./config";
-import Player from "./player";
+import { config } from "../config";
 
-export default class Farm {
+import { ResourceTypes } from "../data";
+import { Player, Resources } from "../game";
+
+import { getRandomArrayItem, getRandomInt, Timer } from "../tools";
+
+export class Farm {
   timer;
   delay: number;
-  counter;
+  counter: number;
 
   constructor(
     {
@@ -34,7 +31,7 @@ export default class Farm {
     this.counter = 0;
   }
 
-  static hydrate(obj) {
+  static hydrate(obj: Farm) {
     const farm = Object.assign(new Farm(), obj);
 
     farm.timer = Timer.hydrate(obj.timer);
@@ -42,7 +39,23 @@ export default class Farm {
     return farm;
   }
 
-  start({ player, callback }: { player: Player; callback?: any }) {
+  start({
+    player,
+    callback,
+  }: {
+    player: Player;
+    callback?: ({
+      result,
+      dmg,
+      exp,
+      usedStamina,
+    }: {
+      result: Resources;
+      dmg: number;
+      exp: number;
+      usedStamina: number;
+    }) => void;
+  }) {
     let delay: number = this.delay * pow(log(this.counter + 2), 5);
 
     if (player.dex() > 0) {
@@ -95,7 +108,7 @@ export default class Farm {
         dmg = 0;
       }
 
-      callback({
+      callback?.({
         result: new Resources({
           resources,
         }),

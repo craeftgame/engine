@@ -1,7 +1,7 @@
-import Timer from "./tools/timer";
+import { Timer } from "./timer";
 
-export default class Delay {
-  timer;
+export class Delay {
+  timer: Timer;
   onDelayExpired;
 
   isDelaying = true;
@@ -34,7 +34,7 @@ export default class Delay {
     }
   }
 
-  static hydrate(obj) {
+  static hydrate(obj: Delay) {
     const delay = Object.assign(new Delay(), obj);
 
     delay.timer = Timer.hydrate(obj.timer);

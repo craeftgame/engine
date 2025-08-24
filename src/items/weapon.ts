@@ -1,18 +1,27 @@
-import Item from "./item";
-import { getRandomInt } from "../tools/rand";
+import { Resources } from "game";
+import { config } from "../config";
 
-import { Unknown, ItemCategories, WeaponTypes, Rarities } from "../data/types";
+import {
+  ItemCategories,
+  ItemNames,
+  Rarities,
+  RarityNames,
+  ResourceTypes,
+  Slots,
+  Types,
+  Unknown,
+  WeaponTypes,
+} from "../data";
+import { getRandomInt } from "../tools";
+import { Item } from "./item";
 
-import { ItemNames, RarityNames } from "../data/names";
-import config from "../config";
-
-export default class Weapon extends Item {
+export class Weapon extends Item {
   private readonly _atk: number = 0;
   private readonly _matk: number = 0;
 
   constructor({
     type = Unknown,
-    slot = Unknown,
+    slot,
     craefterId,
     name,
     level = 1,
@@ -25,15 +34,15 @@ export default class Weapon extends Item {
   }: {
     delay?: number;
     name?: string;
-    type?: any;
-    slot?: any;
+    type?: Types;
+    slot?: Slots;
     craefterId?: string;
-    material?: any;
-    rarity?: any;
+    material?: ResourceTypes | typeof Unknown;
+    rarity?: Rarities;
     level?: number;
     atk?: number;
     matk?: number;
-    resources?: any;
+    resources?: Resources;
   } = {}) {
     super({
       category: ItemCategories.Weapon,
@@ -55,11 +64,19 @@ export default class Weapon extends Item {
   }
 
   public atk() {
-    return this._atk * this.level * config.rarityMultiplier[this.rarity];
+    return (
+      this._atk *
+      this.level *
+      (this.rarity ? config.rarityMultiplier[this.rarity] : 1)
+    );
   }
 
   public matk() {
-    return this._matk * this.level * config.rarityMultiplier[this.rarity];
+    return (
+      this._matk *
+      this.level *
+      (this.rarity ? config.rarityMultiplier[this.rarity] : 1)
+    );
   }
 
   private canBeTwoHanded() {
@@ -74,8 +91,8 @@ export default class Weapon extends Item {
   evaluateItemName() {
     const prefixes: string[] = [];
 
-    if (this.rarity !== Rarities.Common) {
-      prefixes.push(RarityNames[this.rarity]);
+    if (this.rarity && this.rarity !== Rarities.Common) {
+      prefixes.push(RarityNames[this.rarity] ?? Unknown);
     }
 
     if (this.canBeTwoHanded()) {
@@ -85,12 +102,12 @@ export default class Weapon extends Item {
     const parts: string[] = [];
 
     parts.push(...prefixes);
-    parts.push(ItemNames[this.type]);
+    if (this.type) parts.push(ItemNames[this.type] ?? Unknown);
 
     return parts.join(" ");
   }
 
-  static hydrate(obj) {
+  static hydrate(obj: Item) {
     const weapon = Object.assign(new Weapon(), obj);
 
     Item.hydrate(weapon, obj);

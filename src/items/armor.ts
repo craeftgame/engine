@@ -1,15 +1,24 @@
-import Item from "./item";
-import { Unknown, ItemCategories, Rarities } from "../data/types";
-import { ItemNames, RarityNames, SlotNames } from "../data/names";
-import Resources from "../resources";
+import {
+  ItemCategories,
+  ItemNames,
+  Rarities,
+  RarityNames,
+  ResourceTypes,
+  SlotNames,
+  Slots,
+  Types,
+  Unknown,
+} from "../data";
+import { Resources } from "../game";
+import { Item } from "./item";
 
-export default class Armor extends Item {
+export class Armor extends Item {
   private readonly _def: number = 0;
   private readonly _mdef: number = 0;
 
   constructor({
     type = Unknown,
-    slot = Unknown,
+    slot,
     craefterId,
     name,
     level,
@@ -20,15 +29,15 @@ export default class Armor extends Item {
     resources,
     delay,
   }: {
-    type?: any;
-    slot?: any;
+    type?: Types;
+    slot?: Slots;
     craefterId?: string;
     name?: string;
     level?: number;
-    rarity?: any;
+    rarity?: Rarities;
     def?: number;
     mdef?: number;
-    material?: string;
+    material?: ResourceTypes | typeof Unknown;
     resources?: Resources;
     delay?: number;
   } = {}) {
@@ -60,21 +69,22 @@ export default class Armor extends Item {
   evaluateItemName() {
     const prefixes: string[] = [];
 
-    if (this.rarity !== Rarities.Common) {
-      prefixes.push(RarityNames[this.rarity]);
+    if (this.rarity && this.rarity !== Rarities.Common) {
+      if (RarityNames[this.rarity])
+        prefixes.push(RarityNames[this.rarity] ?? Unknown);
     }
 
     const parts: string[] = [];
 
     parts.push(...prefixes);
 
-    parts.push(SlotNames[this.slot]);
-    parts.push(ItemNames[this.type]);
+    if (this.slot) parts.push(SlotNames[this.slot] ?? Unknown);
+    if (this.type) parts.push(ItemNames[this.type] ?? Unknown);
 
     return parts.join(" ");
   }
 
-  static hydrate(obj) {
+  static hydrate(obj: Item) {
     const armor = Object.assign(new Armor(), obj);
 
     Item.hydrate(armor, obj);

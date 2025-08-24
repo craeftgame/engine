@@ -1,11 +1,11 @@
-import ExtendedArray from "../tools/ExtendedArray";
-import Craefter from "./craefter";
-import { CraefterTypes } from "../data/types";
-import WeaponCraefter from "./weaponcraefter";
-import ArmorCraefter from "./armorcraefter";
+import { CraefterTypes, Types } from "../data";
+import { ExtendedArray } from "../tools";
+import { ArmorCraefter } from "./armorcraefter";
+import { Craefter } from "./craefter";
+import { WeaponCraefter } from "./weaponcraefter";
 
-export default class Craefters extends ExtendedArray<Craefter> {
-  public bury = (craefterId): string => {
+export class Craefters extends ExtendedArray<Craefter<Types>> {
+  public bury = (craefterId: string): string => {
     const craefter = this.findById(craefterId);
     const name = craefter.name;
     this.removeItem(craefter);

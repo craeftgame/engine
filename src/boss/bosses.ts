@@ -1,12 +1,12 @@
-import ExtendedArray from "../tools/ExtendedArray";
-import Boss from "./boss";
+import { ExtendedArray } from "../tools";
+import { Boss } from "./boss";
 
 /**
  * Spider - Tsuchigumo
  * Dragon - Tatsu
  * Fish - Namazu
  */
-export default class Bosses extends ExtendedArray<Boss> {
+export class Bosses extends ExtendedArray<Boss> {
   constructor() {
     super();
 
@@ -37,8 +37,6 @@ export default class Bosses extends ExtendedArray<Boss> {
   }
 
   static hydrate(obj: Boss[]): Bosses {
-    const bosses = Object.assign(new Bosses(), obj);
-
-    return bosses;
+    return Object.assign(new Bosses(), obj);
   }
 }
