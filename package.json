@@ -5,7 +5,7 @@
   "main": "dist",
   "scripts": {
     "prettier": "prettier ./src --write",
-    "postinstall": "tsc -b .",
+    "postinstall": "yarn build",
     "test": "jest",
     "lint": "eslint ./src",
     "build": "tsc -b .",
