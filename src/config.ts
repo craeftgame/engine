@@ -45,7 +45,7 @@ export const config = {
   initialFarmDelay: debug ? 1 : 2,
 
   // play initial stats
-  playerStartLevel: 10,
+  playerStartLevel: debug ? 10 : 1,
 
   playerInitialHp: 50,
   playerInitialSta: 25,

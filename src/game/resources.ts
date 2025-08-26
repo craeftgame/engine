@@ -2,15 +2,17 @@ import { gcd } from "mathjs";
 import { ResourceTypes } from "../data";
 import { Ratios } from "./ratios";
 
-export type fu = {
+export type ResourcesCollection = {
   [key in ResourceTypes]: number;
 };
 
-export class Resources implements fu {
+export class Resources implements ResourcesCollection {
   [ResourceTypes.Wood]: number;
   [ResourceTypes.Cloth]: number;
   [ResourceTypes.Metal]: number;
   [ResourceTypes.Diamond]: number;
+  [ResourceTypes.Water]: number;
+  [ResourceTypes.Earth]: number;
 
   constructor(
     {
@@ -18,7 +20,7 @@ export class Resources implements fu {
       resources,
     }: {
       initialResources?: number;
-      resources: Partial<fu>;
+      resources: Partial<ResourcesCollection>;
     } = {
       initialResources: 0,
       resources: {},

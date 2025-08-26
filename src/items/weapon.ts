@@ -16,34 +16,34 @@ import { getRandomInt } from "../tools";
 import { Item } from "./item";
 
 export class Weapon extends Item {
-  private readonly _atk: number = 0;
-  private readonly _matk: number = 0;
+  private readonly _atk: number;
+  private readonly _matk: number;
 
   constructor({
-    type = Unknown,
+    type,
     slot,
     craefterId,
     name,
-    level = 1,
+    level,
     rarity,
     atk = 0,
     matk = 0,
     material,
     resources,
     delay,
-  }: {
+  }: Partial<{
     delay?: number;
     name?: string;
     type?: Types;
     slot?: Slots;
     craefterId?: string;
-    material?: ResourceTypes | typeof Unknown;
+    material: ResourceTypes | typeof Unknown;
     rarity?: Rarities;
     level?: number;
     atk?: number;
     matk?: number;
     resources?: Resources;
-  } = {}) {
+  }> = {}) {
     super({
       category: ItemCategories.Weapon,
       name,
@@ -52,7 +52,7 @@ export class Weapon extends Item {
       level,
       type,
       rarity,
-      material,
+      material: material ?? Unknown,
       resources,
       delay,
     });

@@ -23,22 +23,20 @@ export class Equipment implements EquipmentSlots {
   [JewelerySlots.Left]?: Item;
   [JewelerySlots.Right]?: Item;
 
-  private findSlotByItemId(itemId: string): Slots | undefined {
+  private findSlotByItemId(item: Item): Slots | undefined {
     for (const slot in this) {
-      if ((this[slot] as Item)?.id === itemId) {
+      if (this[slot] === item) {
         return slot as Slots;
       }
     }
-
-    return;
   }
 
   public getEquipped(): Item[] {
     const equipped: Item[] = [];
 
     for (const slot in this) {
-      const equipment: Item | undefined = this[slot] as Item;
-      if (equipment && equipped.indexOf(equipment) < 0) {
+      const equipment = this[slot];
+      if (equipment instanceof Item && equipped.indexOf(equipment) < 0) {
         equipped.push(equipment);
       }
     }
@@ -54,12 +52,14 @@ export class Equipment implements EquipmentSlots {
       // if it's a multi slit
       if (item.isMultiSlot) {
         // unequip right
-        if (this[WeaponSlots.RightHand])
+        if (this[WeaponSlots.RightHand]) {
           this[WeaponSlots.RightHand].equipped = false;
+        }
 
         // unequip left
-        if (this[WeaponSlots.LeftHand])
+        if (this[WeaponSlots.LeftHand]) {
           this[WeaponSlots.LeftHand].equipped = false;
+        }
 
         // equip both
         this[WeaponSlots.RightHand] = item;
@@ -124,9 +124,17 @@ export class Equipment implements EquipmentSlots {
     return equipped;
   }
 
-  public unequip(itemId: string): boolean {
-    const slot = this.findSlotByItemId(itemId);
-    delete this[slot!];
+  public unequip(item: Item): boolean {
+    // we need to do this twice because we have items that occupy more than one slot
+    let slot = this.findSlotByItemId(item);
+    if (slot) {
+      delete this[slot];
+    }
+
+    slot = this.findSlotByItemId(item);
+    if (slot) {
+      delete this[slot];
+    }
 
     return true;
   }
@@ -136,6 +144,9 @@ export class Equipment implements EquipmentSlots {
   }
 
   public tick() {
-    // todo tick equipment
+    for (const slot in this) {
+      const item = this[slot];
+      if (item instanceof Item) item?.tick();
+    }
   }
 }

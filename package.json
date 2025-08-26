@@ -7,34 +7,40 @@
     "prettier": "prettier ./src --write",
     "postinstall": "tsc -b .",
     "test": "jest",
+    "lint": "eslint ./src",
     "build": "tsc -b .",
-    "start": "tsc -b . --watch"
+    "dev": "yarn build --watch"
   },
   "keywords": [],
   "author": "Umlaut Games",
   "license": "MIT",
   "dependencies": {
-    "@craeft/map-generator": "git+https://github.com/craeftgame/map-generator.git#v1.5.0",
-    "@craeft/serializer": "git+https://github.com/craeftgame/serializer.git#v1.3.1",
+    "@craeft/map-generator": "git+https://github.com/craeftgame/map-generator.git#v1.5.1",
+    "@craeft/serializer": "git+https://github.com/craeftgame/serializer.git#v1.3.2",
     "local-storage": "^2.0.0",
     "lz-string": "^1.4.4",
     "mathjs": "^14.6.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.34.0",
     "@jest/globals": "^30.0.5",
     "@testing-library/jest-dom": "^6.7.0",
     "@types/jest": "^30.0.0",
     "@types/lz-string": "^1.5.0",
     "@types/node": "^24.3.0",
+    "eslint": "^9.34.0",
+    "globals": "^16.3.0",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
+    "jiti": "^2.5.1",
     "prettier": "^3.6.2",
     "ts-jest": "^29.4.1",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.40.0"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/craeftgame/engine.git"
   },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "packageManager": "yarn@4.9.4"
 }

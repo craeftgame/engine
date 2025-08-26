@@ -1,8 +1,10 @@
 import { config } from "../config";
+import { craeft } from "../craeft";
 import {
   CraefterTypes,
   FirstNames,
   ResourceTypes,
+  Slots,
   SurNames,
   Types,
   Unknown,
@@ -15,15 +17,15 @@ import { Delay, getRandomArrayItem, getRandomId } from "../tools";
 export abstract class Craefter<T = typeof Unknown> extends Organism {
   isCraefting: boolean = false;
   itemId?: string;
-  onDoneCreating?: (exp: number) => void;
+  public onDoneCreating?: (exp: number) => void;
   type: CraefterTypes | typeof Unknown;
 
-  str: number;
-  int: number;
-  dex: number;
-  luk: number;
+  public str: number;
+  public int: number;
+  public dex: number;
+  public luk: number;
 
-  delay: Delay;
+  public delay: Delay;
 
   protected constructor({
     type = Unknown,
@@ -82,8 +84,8 @@ export abstract class Craefter<T = typeof Unknown> extends Organism {
     craefter.delay = Delay.hydrate(obj.delay);
   }
 
-  public tick(tick: number) {
-    if (this.staCurrent < this.staMax) {
+  public tick(_tick: number) {
+    if (this.staCurrent < this.staMax && !this.dead) {
       // todo calculate some creafter parameters in
       this.staCurrent += 0.1;
     }
@@ -93,22 +95,16 @@ export abstract class Craefter<T = typeof Unknown> extends Organism {
     return ((material ? material : 0.1) / 100) * 80;
   }
 
-  protected evaluateItemType(ratios: Ratios, highestResource: ResourceTypes) {
-    // stub please override
-  }
+  protected abstract evaluateItemType(
+    ratios: Ratios,
+    highestResource: ResourceTypes,
+  ): T | typeof Unknown;
 
-  public evaluateItem(
-    {
-      resources,
-    }: {
-      resources: Resources;
-    } = {
-      resources: new Resources(),
-    },
-    // @ts-ignore
-  ): PreItem<T> {
-    // stub please override
-  }
+  public abstract evaluateItem({
+    resources,
+  }: {
+    resources: Resources;
+  }): PreItem<T>;
 
   public craeft(
     {
@@ -118,30 +114,38 @@ export abstract class Craefter<T = typeof Unknown> extends Organism {
     } = {
       resources: new Resources(),
     },
-    // @ts-ignore
+    // @ts-expect-error base class implementation
   ): Item {
     // stub please override
     this.isCraefting = true;
 
     // todo include resource heaviness / complexity
-    this.exhaust(1);
+    this.exhaust(Math.floor(resources.sum() * 0.75));
   }
 
   public finishCraefting(exp: number) {
     this.isCraefting = false;
-    this.itemId = undefined;
+    delete this.itemId;
 
-    // todo inlcude resource heaviness / complexity
-    this.addExp(exp);
+    if (this.dead) {
+      craeft.logs.push(`Cräfter "${this.name}" has died!`);
+    } else {
+      // todo include resource heaviness / complexity
+      this.addExp(exp);
+    }
   }
 
-  protected evaluateSlot(type: Types) {}
+  protected evaluateSlot(_type: Types): Slots | typeof Unknown {
+    return Unknown;
+  }
 
   public exhaust(sta: number) {
     super.exhaust(sta);
 
     if (Math.floor(this.staCurrent) === 0) {
       this.dead = true;
+
+      this.finishCraefting(0);
     }
   }
 }

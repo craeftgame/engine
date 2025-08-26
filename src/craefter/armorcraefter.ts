@@ -6,6 +6,7 @@ import {
   CraefterTypes,
   ItemCategories,
   ResourceTypes,
+  Slots,
   Unknown,
 } from "../data";
 import { Ratios, Resources } from "../game";
@@ -120,7 +121,7 @@ export class ArmorCraefter extends Craefter<ArmorTypes> {
     };
   }
 
-  protected evaluateSlot(type: ArmorTypes | typeof Unknown): ArmorSlots {
+  protected evaluateSlot(_type: ArmorTypes | typeof Unknown): Slots {
     return getRandomObjectEntry({
       object: ArmorSlots,
       start: 0,

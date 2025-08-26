@@ -43,8 +43,8 @@ export const getRandomId = (): string => {
     window.crypto.getRandomValues(array);
   }
 
-  for (const n of array) {
-    num += n.toString(16);
+  for (const char of array) {
+    num += char.toString(16);
   }
 
   return num;

@@ -95,7 +95,5 @@ export abstract class Organism implements Tickable {
     return this.dead;
   }
 
-  public tick(tick: number): void {
-    // stub please override
-  }
+  public tick(_tick: number): void {}
 }

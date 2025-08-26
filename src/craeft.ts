@@ -2,7 +2,7 @@ import { generate } from "@craeft/map-generator/dist/map/generator";
 import Map from "@craeft/map-generator/dist/map/map";
 import { TerrainTypes } from "@craeft/map-generator/dist/TerrainTypes";
 
-// @ts-ignore
+// @ts-expect-error bad exports on serializer
 import Serializer from "@craeft/serializer";
 // local storage
 import { get, remove, set } from "local-storage";
@@ -25,7 +25,6 @@ import { Item, Items, Weapon } from "./items";
 const version = `v${process.env.NEXT_PUBLIC_CRAEFT_VERSION}`;
 const versionMsg = `Welcome to Cräft! version: ${version}`;
 
-/* eslint-disable-next-line no-console */
 console.log(versionMsg);
 
 if (config.debug) {
@@ -57,8 +56,8 @@ export default class Craeft {
     this.bosses = new Bosses();
 
     generate({
-      height: 200,
-      width: 200,
+      height: 256,
+      width: 256,
       treeChance: 30,
       pondMax: 5,
     }).then((map) => (this.map = map));
@@ -69,7 +68,7 @@ export default class Craeft {
     });
 
     const knife = new Weapon({
-      name: "Newbie Knife",
+      name: "Novice Knife",
       type: WeaponTypes.Knife,
       material: ResourceTypes.Metal,
       rarity: Rarities.Common,
@@ -99,15 +98,17 @@ export default class Craeft {
       const results = this.map.move(direction);
 
       if (results.hasMoved) {
-        let a = 1;
+        let staminaConsumption = 1;
 
         if (results.terrain === TerrainTypes.Tree) {
-          a *= 2;
+          staminaConsumption *= 2;
         } else if (results.terrain === TerrainTypes.Water) {
-          a *= 4;
+          staminaConsumption *= 4;
         }
 
-        this.player.exhaust(a);
+        this.player.exhaust(staminaConsumption);
+
+        this.update();
       }
     }
   }
@@ -180,7 +181,7 @@ export default class Craeft {
       window.clearInterval(this.gameTick);
     }
 
-    this.gameTick = undefined;
+    delete this.gameTick;
 
     // final tick
     this.tick();
@@ -190,7 +191,7 @@ export default class Craeft {
     }
   }
 
-  public startFarming({ callback }: { callback: () => void }) {
+  public startFarming({ callback }: { callback?: () => void } = {}) {
     if (!this.player.isFarming && this.player.staCurrent > 0) {
       this.player.isFarming = true;
       this.farm.start({
@@ -204,9 +205,12 @@ export default class Craeft {
 
           this.player.isFarming = false;
 
-          callback();
+          callback?.();
+          this.update();
         },
       });
+
+      this.update();
     }
   }
 
@@ -214,7 +218,7 @@ export default class Craeft {
     this.resources.sub(resourcesConsumed);
 
     item.onDoneCreating = (craefterId: string, exp: number) => {
-      const craefter = this.craefters.findById(craefterId);
+      const craefter: Craefter = this.craefters.findById(craefterId);
       craefter.finishCraefting(exp);
 
       this.logs.push(`"${item.getName()}" cräfted by ${craefter.name}! `);
@@ -250,10 +254,12 @@ export default class Craeft {
     craefter.onDoneCreating = (exp: number) => {
       this.player.addExp(exp);
     };
+
+    this.update();
   }
 
-  public disentchant(itemId: string): void {
-    const result = this.items.disentchant(itemId);
+  public disentchant(item: Item): void {
+    const result = this.items.disentchant(item);
 
     this.resources = new Resources({
       resources: this.resources,
@@ -262,6 +268,8 @@ export default class Craeft {
     this.logs.push(
       `"${result.name}" disenchanted! ${result.resources.sum()} resource(s) retrieved!`,
     );
+
+    this.update();
   }
 
   public equipItem(item: Item): boolean {
@@ -273,7 +281,9 @@ export default class Craeft {
       if (equipped) {
         item.equipped = equipped;
 
-        this.logs.push(`"${item.getName()}" put on.`);
+        this.logs.push(`"${item.getName()}" put ${item.slot}.`);
+
+        this.update();
       } else {
         this.logs.push("Equip failed!");
       }
@@ -282,20 +292,17 @@ export default class Craeft {
     return equipped;
   }
 
-  public unEquipItem(itemId: string): boolean {
+  public unEquipItem(item: Item): boolean {
     let unequipped = false;
 
     if (!this.player.isFarming) {
-      unequipped = this.player.equipment.unequip(itemId);
+      unequipped = this.player.equipment.unequip(item);
 
       if (unequipped) {
-        const item = this.items.find((i) => i.id === itemId);
-
         item.equipped = !unequipped;
 
         this.logs.push(`"${item.getName()}" taken off.`);
-
-        craeft.update();
+        this.update();
       } else {
         this.logs.push("Unequip failed!");
       }

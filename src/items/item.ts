@@ -16,45 +16,59 @@ import { Resources } from "../game";
 import { Delay, getRandomId, getRandomInt } from "../tools";
 
 export class Item {
-  equipped = false;
-  isMultiSlot = false;
+  public equipped = false;
+  public isMultiSlot = false;
   delay: Delay;
-  onDoneCreating?: (craefterId: string, exp: number) => void;
+  onDoneCreating?: (crafterId: string, exp: number) => void;
   id: string;
 
-  type?: Types;
-  craefterId?: string;
-  slot?: Slots;
-  category;
-  rarity?: Rarities;
-  material?: ResourceTypes | typeof Unknown;
-  level: number;
-  name?: string;
+  // item type
+  protected readonly type?: Types;
+  // original craefter id
+  private readonly craefterId?: string;
+  // in which slot does this item fit?
+  public readonly slot?: Slots;
+  // item category
+  public readonly category: ItemCategories | typeof Unknown;
+  // rarity of the item
+  public readonly rarity?: Rarities;
+  // leading material that lead to the crafting of this item
+  public readonly material: ResourceTypes | typeof Unknown;
+  // item level
+  public readonly level: number;
+  // the name of the item
+  private readonly name?: string;
+  // resources used to craeft this item
   private readonly resources?: Resources;
 
-  constructor({
-    category,
-    name,
-    craefterId,
-    slot,
-    level = 1,
-    type,
-    rarity,
-    material,
-    resources,
-    delay = config.initialItemDelay,
-  }: {
-    category?: ItemCategories;
-    delay?: number;
-    name?: string;
-    craefterId?: string;
-    slot?: Slots;
-    level?: number;
-    type?: Types;
-    rarity?: Rarities;
-    material?: ResourceTypes | typeof Unknown;
-    resources?: Resources;
-  } = {}) {
+  constructor(
+    {
+      category,
+      name,
+      craefterId,
+      slot,
+      level = 1,
+      type,
+      rarity,
+      material,
+      resources,
+      delay = config.initialItemDelay,
+    }: {
+      category: ItemCategories | typeof Unknown;
+      delay?: number;
+      name?: string;
+      craefterId?: string;
+      slot?: Slots;
+      level?: number;
+      type?: Types;
+      rarity?: Rarities;
+      material: ResourceTypes | typeof Unknown;
+      resources?: Resources;
+    } = {
+      category: Unknown,
+      material: Unknown,
+    },
+  ) {
     this.id = getRandomId();
 
     this.category = category;
@@ -72,7 +86,7 @@ export class Item {
     this.delay = new Delay({
       delayInSeconds: delay,
       onDelayExpired: () => {
-        this.meterialize();
+        this.materialize();
       },
     });
   }
@@ -105,13 +119,14 @@ export class Item {
     // todo: tick, tock
   }
 
-  private meterialize() {
-    this.craefterId &&
+  private materialize() {
+    if (this.craefterId) {
       this.onDoneCreating?.(
         this.craefterId,
         // todo evaluate exp properly
         (this.resources?.sum() ?? 1) * 2,
       );
+    }
   }
 
   public disentchant() {

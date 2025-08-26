@@ -79,7 +79,7 @@ export class Timer {
 
     if (this.ticker) {
       window.clearInterval(this.ticker);
-      this.ticker = undefined;
+      delete this.ticker;
     }
   }
 

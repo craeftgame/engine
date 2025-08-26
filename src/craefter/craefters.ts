@@ -5,8 +5,7 @@ import { Craefter } from "./craefter";
 import { WeaponCraefter } from "./weaponcraefter";
 
 export class Craefters extends ExtendedArray<Craefter<Types>> {
-  public bury = (craefterId: string): string => {
-    const craefter = this.findById(craefterId);
+  public bury = (craefter: Craefter): string => {
     const name = craefter.name;
     this.removeItem(craefter);
 

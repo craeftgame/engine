@@ -14,14 +14,12 @@ export class Delay {
   }
 
   constructor({
-    // @ts-ignore
     delayInSeconds,
-    // @ts-ignore
     onDelayExpired,
-  } = {}) {
+  }: { delayInSeconds?: number; onDelayExpired?: () => void } = {}) {
     this.onDelayExpired = onDelayExpired;
 
-    if (delayInSeconds > -1) {
+    if (delayInSeconds && delayInSeconds > -1) {
       this.timer = new Timer({
         callback: () => {
           this.finish();

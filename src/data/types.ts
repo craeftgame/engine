@@ -58,6 +58,8 @@ export enum ResourceTypes {
   Metal = "metal",
   Cloth = "cloth",
   Diamond = "diamond",
+  Water = "water",
+  Earth = "earth",
 }
 
 export enum Rarities {

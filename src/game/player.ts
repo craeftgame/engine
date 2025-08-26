@@ -89,7 +89,7 @@ export class Player extends Organism {
     }
   }
 
-  public tick(tick: number): void {
+  public tick(_tick: number): void {
     // do not tick when farming
     if (this.isFarming) {
       return;

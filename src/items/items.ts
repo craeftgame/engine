@@ -7,12 +7,11 @@ import { Weapon } from "./weapon";
 
 export class Items extends ExtendedArray<Item> {
   public disentchant = (
-    itemId: string,
+    item: Item,
   ): {
     name: string;
     resources: Resources;
   } => {
-    const item = this.findById(itemId);
     const name = item.getName();
     const resources = item.disentchant();
 

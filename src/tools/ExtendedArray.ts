@@ -14,9 +14,9 @@ export class ExtendedArray<T> extends Array {
   };
 
   public push = (...items: T[]): number => {
-    const n = super.push(...items);
+    const length = super.push(...items);
     this.count += items.length;
 
-    return n;
+    return length;
   };
 }

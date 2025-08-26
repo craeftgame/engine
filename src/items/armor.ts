@@ -13,11 +13,11 @@ import { Resources } from "../game";
 import { Item } from "./item";
 
 export class Armor extends Item {
-  private readonly _def: number = 0;
-  private readonly _mdef: number = 0;
+  private readonly _def: number;
+  private readonly _mdef: number;
 
   constructor({
-    type = Unknown,
+    type,
     slot,
     craefterId,
     name,
@@ -28,7 +28,7 @@ export class Armor extends Item {
     material,
     resources,
     delay,
-  }: {
+  }: Partial<{
     type?: Types;
     slot?: Slots;
     craefterId?: string;
@@ -37,10 +37,10 @@ export class Armor extends Item {
     rarity?: Rarities;
     def?: number;
     mdef?: number;
-    material?: ResourceTypes | typeof Unknown;
+    material: ResourceTypes | typeof Unknown;
     resources?: Resources;
     delay?: number;
-  } = {}) {
+  }> = {}) {
     super({
       category: ItemCategories.Armor,
       name,
@@ -49,7 +49,7 @@ export class Armor extends Item {
       level,
       type,
       rarity,
-      material,
+      material: material ?? Unknown,
       resources,
       delay,
     });
