@@ -1,4 +1,3 @@
-import { Resources } from "game";
 import { config } from "../config";
 
 import {
@@ -12,6 +11,7 @@ import {
   Unknown,
   WeaponTypes,
 } from "../data";
+import { Resources } from "../game";
 import { getRandomInt } from "../tools";
 import { Item } from "./item";
 

@@ -1,4 +1,4 @@
-import { ResourcesCollection } from "game/resources";
+import { ResourcesCollection } from "../game/resources";
 import { ResourceTypes, Unknown } from "../data";
 
 // todo make this more generic, it is really resource centric
