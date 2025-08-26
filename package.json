@@ -18,13 +18,13 @@
     "@craeft/map-generator": "git+https://github.com/craeftgame/map-generator.git#v1.5.1",
     "@craeft/serializer": "git+https://github.com/craeftgame/serializer.git#v1.3.2",
     "local-storage": "^2.0.0",
-    "lz-string": "^1.4.4",
+    "lz-string": "^1.5.0",
     "mathjs": "^14.6.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.34.0",
     "@jest/globals": "^30.0.5",
-    "@testing-library/jest-dom": "^6.7.0",
+    "@testing-library/jest-dom": "^6.8.0",
     "@types/jest": "^30.0.0",
     "@types/lz-string": "^1.5.0",
     "@types/node": "^24.3.0",
@@ -36,7 +36,7 @@
     "prettier": "^3.6.2",
     "ts-jest": "^29.4.1",
     "typescript": "^5.9.2",
-    "typescript-eslint": "^8.40.0"
+    "typescript-eslint": "^8.41.0"
   },
   "repository": {
     "type": "git",
