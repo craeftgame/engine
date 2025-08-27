@@ -422,7 +422,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@craeft/engine@workspace:."
   dependencies:
-    "@craeft/map-generator": "git+https://github.com/craeftgame/map-generator.git#v1.5.1"
+    "@craeft/map-generator": "git+https://github.com/craeftgame/map-generator.git#v1.5.2"
     "@craeft/serializer": "git+https://github.com/craeftgame/serializer.git#v1.3.2"
     "@eslint/js": "npm:^9.34.0"
     "@jest/globals": "npm:^30.0.5"
@@ -445,10 +445,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@craeft/map-generator@git+https://github.com/craeftgame/map-generator.git#v1.5.1":
-  version: 1.5.1
-  resolution: "@craeft/map-generator@https://github.com/craeftgame/map-generator.git#commit=bfed8ca31bf501cf6d0daab5d59dd7733351bc5e"
-  checksum: 10c0/e94523d01588766767350f77975aa8643ae5d8e90a273a948d91f2c2634582463893ac4df970e6a9eb21ad511cac5b7ff1465fb8a84918957ba3f0c2f92bc1cc
+"@craeft/map-generator@git+https://github.com/craeftgame/map-generator.git#v1.5.2":
+  version: 1.5.2
+  resolution: "@craeft/map-generator@https://github.com/craeftgame/map-generator.git#commit=df691a1a2c358b2c61b57dafd9bb84ee8b3d0e96"
+  checksum: 10c0/15fb17f09a375b2788d1224798ad9d5818885977da5fd5dc228d43cef6352decac181fc2dd303b28defa06a2c034ad0d4a373c88436462fb81ada695e1d2301a
   languageName: node
   linkType: hard
 

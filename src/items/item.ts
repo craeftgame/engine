@@ -15,6 +15,7 @@ import {
 import { Resources } from "../game";
 import { Delay, getRandomId, getRandomInt } from "../tools";
 import { Craefter } from "../craefter";
+import { secureRandom } from "@craeft/map-generator/dist/tools/rand";
 
 export class Item {
   public equipped = false;
@@ -101,7 +102,7 @@ export class Item {
   }
 
   static evaluateRarity() {
-    const chance = Math.random() * 100;
+    const chance = secureRandom() * 100;
 
     if (chance < config.rarityChancePercentCommon) {
       return Rarities.Common;
