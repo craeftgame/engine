@@ -1,3 +1,3 @@
 export interface Tickable {
-  tick(tick: number): void;
+  tick(delta: number): void;
 }

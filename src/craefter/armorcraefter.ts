@@ -153,7 +153,7 @@ export class ArmorCraefter extends Craefter<ArmorTypes> {
       resources,
       slot,
       delay: resources.sum() / this.level,
-      craefterId: this.id,
+      craefter: this,
       level: this.level,
       def: def && defMax ? getRandomInt(def, defMax) : 0,
       mdef: mdef && mdefMax ? getRandomInt(mdef, mdefMax) : 0,

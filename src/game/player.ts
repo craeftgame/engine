@@ -89,7 +89,7 @@ export class Player extends Organism {
     }
   }
 
-  public tick(_tick: number): void {
+  public tick(delta: number): void {
     // do not tick when farming
     if (this.isFarming) {
       return;
@@ -111,7 +111,7 @@ export class Player extends Organism {
       }
     }
 
-    this.equipment.tick();
+    this.equipment.tick(delta);
   }
 
   public className(): string {

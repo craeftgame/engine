@@ -8,7 +8,7 @@ import { Player, Resources } from "../game";
 import { getRandomArrayItem, getRandomInt, Timer } from "../tools";
 
 export class Farm {
-  timer;
+  public timer: Timer;
   delay: number;
   counter: number;
 
@@ -44,7 +44,7 @@ export class Farm {
     callback,
   }: {
     player: Player;
-    callback?: ({
+    callback: ({
       result,
       dmg,
       exp,
@@ -68,15 +68,16 @@ export class Farm {
 
     delay = delay < 1 ? this.delay : delay;
 
-    const cb = () => {
+    const timerCallback = () => {
       this.timer.pause();
 
       // calculate amount of all resources first
       let amount = player.level;
 
       // todo fine tune this
-      amount = amount * (player.atk() + player.matk());
+      amount *= (player.atk() + player.matk()) / (this.counter + 1);
 
+      console.log({ amount });
       const resources = new Resources();
       const resourceTypes = [
         ResourceTypes.Wood,
@@ -87,16 +88,15 @@ export class Farm {
 
       // now distribute
       while (amount > 0) {
-        const resourceType = getRandomArrayItem({
+        const resourceType = getRandomArrayItem<ResourceTypes>({
           array: resourceTypes,
         });
 
-        resources[resourceType] = resources[resourceType]
-          ? resources[resourceType]++
-          : 1;
-
+        resources[resourceType] += 1;
         amount--;
       }
+
+      console.log({ resources });
 
       this.counter++;
 
@@ -108,7 +108,7 @@ export class Farm {
         dmg = 0;
       }
 
-      callback?.({
+      callback({
         result: new Resources({
           resources,
         }),
@@ -122,7 +122,7 @@ export class Farm {
 
     this.timer = new Timer({
       delay,
-      callback: cb,
+      callback: timerCallback,
     });
   }
 }

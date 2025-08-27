@@ -17,7 +17,7 @@ export const config = {
   compressLocalStorage: true,
 
   // game parameters
-  startResources: debug ? 1000 : 0,
+  startResources: debug ? 100 : 0,
   startDelay: 1, // 1 second
 
   // everything happens instantly

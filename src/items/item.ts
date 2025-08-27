@@ -14,18 +14,19 @@ import {
 
 import { Resources } from "../game";
 import { Delay, getRandomId, getRandomInt } from "../tools";
+import { Craefter } from "../craefter";
 
 export class Item {
   public equipped = false;
   public isMultiSlot = false;
   delay: Delay;
-  onDoneCreating?: (crafterId: string, exp: number) => void;
-  id: string;
+  onDoneCreating?: (craefter: Craefter, exp: number) => void;
+  readonly id: string;
 
   // item type
   protected readonly type?: Types;
   // original craefter id
-  private readonly craefterId?: string;
+  private readonly craefter?: Craefter;
   // in which slot does this item fit?
   public readonly slot?: Slots;
   // item category
@@ -45,7 +46,7 @@ export class Item {
     {
       category,
       name,
-      craefterId,
+      craefter,
       slot,
       level = 1,
       type,
@@ -57,7 +58,7 @@ export class Item {
       category: ItemCategories | typeof Unknown;
       delay?: number;
       name?: string;
-      craefterId?: string;
+      craefter?: Craefter;
       slot?: Slots;
       level?: number;
       type?: Types;
@@ -72,7 +73,7 @@ export class Item {
     this.id = getRandomId();
 
     this.category = category;
-    this.craefterId = craefterId;
+    this.craefter = craefter;
     this.slot = slot;
     this.level = level;
     this.type = type;
@@ -115,16 +116,16 @@ export class Item {
     }
   }
 
-  public tick() {
+  public tick(_delta: number) {
     // todo: tick, tock
   }
 
   private materialize() {
-    if (this.craefterId) {
+    if (this.craefter) {
       this.onDoneCreating?.(
-        this.craefterId,
+        this.craefter,
         // todo evaluate exp properly
-        (this.resources?.sum() ?? 1) * 2,
+        (this.resources?.sum() || 1) * 2,
       );
     }
   }

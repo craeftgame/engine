@@ -11,6 +11,7 @@ import {
 } from "../data";
 import { Resources } from "../game";
 import { Item } from "./item";
+import { Craefter } from "../craefter";
 
 export class Armor extends Item {
   private readonly _def: number;
@@ -19,7 +20,7 @@ export class Armor extends Item {
   constructor({
     type,
     slot,
-    craefterId,
+    craefter,
     name,
     level,
     rarity,
@@ -31,7 +32,7 @@ export class Armor extends Item {
   }: Partial<{
     type?: Types;
     slot?: Slots;
-    craefterId?: string;
+    craefter?: Craefter;
     name?: string;
     level?: number;
     rarity?: Rarities;
@@ -44,7 +45,7 @@ export class Armor extends Item {
     super({
       category: ItemCategories.Armor,
       name,
-      craefterId,
+      craefter,
       slot,
       level,
       type,

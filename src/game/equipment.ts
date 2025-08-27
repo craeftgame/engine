@@ -23,7 +23,7 @@ export class Equipment implements EquipmentSlots {
   [JewelerySlots.Left]?: Item;
   [JewelerySlots.Right]?: Item;
 
-  private findSlotByItemId(item: Item): Slots | undefined {
+  public findSlotByItem(item: Item): Slots | undefined {
     for (const slot in this) {
       if (this[slot] === item) {
         return slot as Slots;
@@ -126,12 +126,12 @@ export class Equipment implements EquipmentSlots {
 
   public unequip(item: Item): boolean {
     // we need to do this twice because we have items that occupy more than one slot
-    let slot = this.findSlotByItemId(item);
+    let slot = this.findSlotByItem(item);
     if (slot) {
       delete this[slot];
     }
 
-    slot = this.findSlotByItemId(item);
+    slot = this.findSlotByItem(item);
     if (slot) {
       delete this[slot];
     }
@@ -143,10 +143,10 @@ export class Equipment implements EquipmentSlots {
     return Object.assign(new Equipment(), obj);
   }
 
-  public tick() {
+  public tick(delta: number) {
     for (const slot in this) {
       const item = this[slot];
-      if (item instanceof Item) item?.tick();
+      if (item instanceof Item) item?.tick(delta);
     }
   }
 }

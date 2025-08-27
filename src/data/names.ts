@@ -11,6 +11,7 @@ import {
   Slots,
   Types,
   Unknown,
+  WeaponSlots,
   WeaponTypes,
 } from "./types";
 
@@ -50,6 +51,8 @@ export const SlotNames: Partial<{
   [ArmorSlots.Body]: "Body",
   [ArmorSlots.Legs]: "Legs",
   [ArmorSlots.Feet]: "Feet",
+  [WeaponSlots.RightHand]: "Right Hand",
+  [WeaponSlots.LeftHand]: "Left Hand",
 };
 
 export const RarityNames: Partial<{

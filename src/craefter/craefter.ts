@@ -14,7 +14,7 @@ import { Item, PreItem } from "../items";
 import { Organism } from "../organism";
 import { Delay, getRandomArrayItem, getRandomId } from "../tools";
 
-export abstract class Craefter<T = typeof Unknown> extends Organism {
+export abstract class Craefter<T = Types> extends Organism {
   isCraefting: boolean = false;
   itemId?: string;
   public onDoneCreating?: (exp: number) => void;
@@ -60,12 +60,7 @@ export abstract class Craefter<T = typeof Unknown> extends Organism {
     this.delay = new Delay({
       delayInSeconds: delay,
       onDelayExpired: () => {
-        if (this.onDoneCreating) {
-          this.onDoneCreating(
-            // todo evaluate exp properly
-            5,
-          );
-        }
+        this.onDoneCreating?.(5);
       },
     });
 
@@ -127,11 +122,11 @@ export abstract class Craefter<T = typeof Unknown> extends Organism {
     this.isCraefting = false;
     delete this.itemId;
 
+    console.log("fin", { exp });
+    this.addExp(exp);
+
     if (this.dead) {
       craeft.logs.push(`Cräfter "${this.name}" has died!`);
-    } else {
-      // todo include resource heaviness / complexity
-      this.addExp(exp);
     }
   }
 
@@ -144,8 +139,6 @@ export abstract class Craefter<T = typeof Unknown> extends Organism {
 
     if (Math.floor(this.staCurrent) === 0) {
       this.dead = true;
-
-      this.finishCraefting(0);
     }
   }
 }

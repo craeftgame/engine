@@ -172,7 +172,7 @@ export class WeaponCraefter extends Craefter<WeaponTypes> {
       resources,
       delay: resources.sum() / this.level,
       level: this.level,
-      craefterId: this.id,
+      craefter: this,
       // todo include luk
       atk: atk && atkMax ? getRandomInt(atk, atkMax) : 0,
       matk: matk && matkMax ? getRandomInt(matk, matkMax) : 0,

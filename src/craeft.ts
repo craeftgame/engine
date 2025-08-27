@@ -16,6 +16,7 @@ import {
   CraefterTypes,
   Rarities,
   ResourceTypes,
+  SlotNames,
   Types,
   WeaponTypes,
 } from "./data";
@@ -32,21 +33,21 @@ if (config.debug) {
 }
 
 export default class Craeft {
-  logs: string[] = [versionMsg];
+  readonly logs: string[] = [versionMsg];
 
-  player: Player;
-  farm: Farm;
-  craefters: Craefters;
-  items: Items;
-  resources: Resources;
-  bosses: Bosses;
-  map?: Map;
+  public readonly player: Player;
+  public readonly farm: Farm;
+  public readonly craefters: Craefters;
+  public readonly items: Items;
+  public readonly resources: Resources;
+  public readonly bosses: Bosses;
+  public map?: Map;
 
-  gameTick?: number;
-  private onTick?: { (): void };
-  private onUpdate?: { (): void };
+  private gameTick?: number;
+  private onTick?: () => void;
+  private onUpdate?: () => void;
 
-  ticker: number = 0;
+  private ticker: number = 0;
 
   constructor() {
     this.player = new Player();
@@ -158,8 +159,8 @@ export default class Craeft {
     onTick,
     onUpdate,
   }: {
-    onTick?: { (): void };
-    onUpdate?: { (): void };
+    onTick?: () => void;
+    onUpdate?: () => void;
   } = {}): void {
     // re-render every second
     const timeoutInSeconds = 1;
@@ -197,7 +198,7 @@ export default class Craeft {
       this.farm.start({
         player: this.player,
         callback: ({ result, dmg, exp, usedStamina }) => {
-          this.resources = new Resources().add(this.resources).add(result);
+          this.resources.add(result);
 
           this.player.takeDamage(dmg);
           this.player.addExp(exp);
@@ -217,8 +218,7 @@ export default class Craeft {
   public addItem(item: Item, resourcesConsumed: Resources) {
     this.resources.sub(resourcesConsumed);
 
-    item.onDoneCreating = (craefterId: string, exp: number) => {
-      const craefter: Craefter = this.craefters.findById(craefterId);
+    item.onDoneCreating = (craefter: Craefter, exp: number) => {
       craefter.finishCraefting(exp);
 
       this.logs.push(`"${item.getName()}" cräfted by ${craefter.name}! `);
@@ -252,6 +252,7 @@ export default class Craeft {
     this.craefters.push(craefter);
 
     craefter.onDoneCreating = (exp: number) => {
+      console.log({ exp });
       this.player.addExp(exp);
     };
 
@@ -260,10 +261,7 @@ export default class Craeft {
 
   public disentchant(item: Item): void {
     const result = this.items.disentchant(item);
-
-    this.resources = new Resources({
-      resources: this.resources,
-    }).add(result.resources);
+    this.resources.add(result.resources);
 
     this.logs.push(
       `"${result.name}" disenchanted! ${result.resources.sum()} resource(s) retrieved!`,
@@ -280,8 +278,10 @@ export default class Craeft {
 
       if (equipped) {
         item.equipped = equipped;
+        const slot = this.player.equipment.findSlotByItem(item);
+        const slotName = slot ? SlotNames[slot] : "???";
 
-        this.logs.push(`"${item.getName()}" put ${item.slot}.`);
+        this.logs.push(`"${item.getName()}" put in ${slotName}.`);
 
         this.update();
       } else {

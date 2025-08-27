@@ -14,6 +14,7 @@ import {
 import { Resources } from "../game";
 import { getRandomInt } from "../tools";
 import { Item } from "./item";
+import { Craefter } from "../craefter";
 
 export class Weapon extends Item {
   private readonly _atk: number;
@@ -22,7 +23,7 @@ export class Weapon extends Item {
   constructor({
     type,
     slot,
-    craefterId,
+    craefter,
     name,
     level,
     rarity,
@@ -36,7 +37,7 @@ export class Weapon extends Item {
     name?: string;
     type?: Types;
     slot?: Slots;
-    craefterId?: string;
+    craefter?: Craefter;
     material: ResourceTypes | typeof Unknown;
     rarity?: Rarities;
     level?: number;
@@ -47,7 +48,7 @@ export class Weapon extends Item {
     super({
       category: ItemCategories.Weapon,
       name,
-      craefterId,
+      craefter,
       slot,
       level,
       type,
