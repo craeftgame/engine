@@ -77,8 +77,8 @@ export class Farm {
       // todo fine tune this
       amount *= (player.atk() + player.matk()) / (this.counter + 1);
 
-      console.log({ amount });
       const resources = new Resources();
+
       const resourceTypes = [
         ResourceTypes.Wood,
         ResourceTypes.Metal,
@@ -96,8 +96,6 @@ export class Farm {
         amount--;
       }
 
-      console.log({ resources });
-
       this.counter++;
 
       // todo calculate dmg based on defense and dmg dealt
@@ -109,9 +107,7 @@ export class Farm {
       }
 
       callback({
-        result: new Resources({
-          resources,
-        }),
+        result: resources,
         // todo calculate exp based on farm level
         exp: 4 * this.counter,
         dmg,

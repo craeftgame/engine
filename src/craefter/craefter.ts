@@ -12,7 +12,7 @@ import {
 import { Ratios, Resources } from "../game";
 import { Item, PreItem } from "../items";
 import { Organism } from "../organism";
-import { Delay, getRandomArrayItem, getRandomId } from "../tools";
+import { Delay, getRandomArrayItem } from "../tools";
 
 export abstract class Craefter<T = Types> extends Organism {
   isCraefting: boolean = false;
@@ -64,8 +64,6 @@ export abstract class Craefter<T = Types> extends Organism {
       },
     });
 
-    this.id = getRandomId();
-
     this.type = type;
     this.name = name;
 
@@ -80,7 +78,7 @@ export abstract class Craefter<T = Types> extends Organism {
   }
 
   public tick(_tick: number) {
-    if (this.staCurrent < this.staMax && !this.dead) {
+    if (this.staCurrent < this.staMax && !this.isDead) {
       // todo calculate some creafter parameters in
       this.staCurrent += 0.1;
     }
@@ -88,6 +86,10 @@ export abstract class Craefter<T = Types> extends Organism {
 
   static calculateMaterialImpact(material: number) {
     return ((material ? material : 0.1) / 100) * 80;
+  }
+
+  public static calculateExhaustion(resources: Resources) {
+    return Math.floor(resources.sum() * 0.75);
   }
 
   protected abstract evaluateItemType(
@@ -115,17 +117,16 @@ export abstract class Craefter<T = Types> extends Organism {
     this.isCraefting = true;
 
     // todo include resource heaviness / complexity
-    this.exhaust(Math.floor(resources.sum() * 0.75));
+    this.exhaust(Craefter.calculateExhaustion(resources));
   }
 
   public finishCraefting(exp: number) {
     this.isCraefting = false;
     delete this.itemId;
 
-    console.log("fin", { exp });
     this.addExp(exp);
 
-    if (this.dead) {
+    if (this.isDead) {
       craeft.logs.push(`Cräfter "${this.name}" has died!`);
     }
   }
@@ -138,7 +139,7 @@ export abstract class Craefter<T = Types> extends Organism {
     super.exhaust(sta);
 
     if (Math.floor(this.staCurrent) === 0) {
-      this.dead = true;
+      this.isDead = true;
     }
   }
 }

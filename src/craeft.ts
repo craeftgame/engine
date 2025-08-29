@@ -23,7 +23,7 @@ import {
 import { Farm, Player, Resources } from "./game";
 import { Item, Items, Weapon } from "./items";
 
-const version = `v${process.env.NEXT_PUBLIC_CRAEFT_VERSION}`;
+const version = `v${process.env.NEXT_PUBLIC_CRAEFT_VERSION ?? "Test"}`;
 const versionMsg = `Welcome to Cräft! version: ${version}`;
 
 console.log(versionMsg);
@@ -78,7 +78,7 @@ export default class Craeft {
       delay: -1,
     });
 
-    knife.equipped = this.player.equipment.equip(knife);
+    knife.isEquipped = this.player.equipment.equip(knife);
 
     this.items.push(knife);
   }
@@ -252,7 +252,6 @@ export default class Craeft {
     this.craefters.push(craefter);
 
     craefter.onDoneCreating = (exp: number) => {
-      console.log({ exp });
       this.player.addExp(exp);
     };
 
@@ -277,7 +276,7 @@ export default class Craeft {
       equipped = this.player.equipment.equip(item);
 
       if (equipped) {
-        item.equipped = equipped;
+        item.isEquipped = equipped;
         const slot = this.player.equipment.findSlotByItem(item);
         const slotName = slot ? SlotNames[slot] : "???";
 
@@ -299,7 +298,7 @@ export default class Craeft {
       unequipped = this.player.equipment.unequip(item);
 
       if (unequipped) {
-        item.equipped = !unequipped;
+        item.isEquipped = !unequipped;
 
         this.logs.push(`"${item.getName()}" taken off.`);
         this.update();
@@ -312,7 +311,7 @@ export default class Craeft {
   }
 
   public static saveState(): boolean {
-    if (config.useLocalStorage && !craeft.player.dead) {
+    if (config.useLocalStorage && !craeft.player.isDead) {
       const state = craeft.serialize();
 
       set("state", config.compressLocalStorage ? compress(state) : state);

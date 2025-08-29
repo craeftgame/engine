@@ -31,7 +31,7 @@ export class Bosses extends ExtendedArray<Boss> {
       }),
     ];
 
-    bosses[0].dead = true;
+    bosses[0].isDead = true;
 
     this.push(...bosses);
   }

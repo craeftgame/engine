@@ -5,21 +5,21 @@ import type { Tickable } from "./tools";
 import { getRandomId, log as logger } from "./tools";
 
 export abstract class Organism implements Tickable {
-  id: string;
-  name: string;
-  level: number;
-  dead: boolean;
+  public readonly id: string;
 
-  isFarming: boolean;
+  public name: string;
+  public level: number = 1;
 
-  staCurrent: number;
-  staMax: number;
+  public isDead: boolean;
 
-  expCurrent: number;
-  expMax: number;
+  public staCurrent: number;
+  public staMax: number;
 
-  hpCurrent: number;
-  hpMax: number;
+  public expCurrent: number = 0;
+  public expMax: number;
+
+  public hpCurrent: number;
+  public hpMax: number;
 
   protected constructor(
     {
@@ -34,15 +34,12 @@ export abstract class Organism implements Tickable {
       name: "Organism",
     },
   ) {
-    this.dead = false;
-    this.isFarming = false;
+    this.isDead = false;
 
     this.id = getRandomId();
 
-    this.level = 1;
     this.name = name;
 
-    this.expCurrent = 0;
     this.expMax = config.organismInitialRequiredExp;
 
     this.staCurrent = sta ? sta : 0;
@@ -59,7 +56,7 @@ export abstract class Organism implements Tickable {
   }
 
   public addExp(exp: number): void {
-    if (!this.dead) {
+    if (!this.isDead) {
       if (this.expCurrent + exp >= this.expMax) {
         const nextExp = this.expCurrent + exp - this.expMax;
         // level up
@@ -89,10 +86,10 @@ export abstract class Organism implements Tickable {
     if (Math.floor(this.hpCurrent) <= 0) {
       // killed
       this.hpCurrent = 0;
-      this.dead = true;
+      this.isDead = true;
     }
 
-    return this.dead;
+    return this.isDead;
   }
 
   public tick(_tick: number): void {}

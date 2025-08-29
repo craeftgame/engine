@@ -53,12 +53,12 @@ export class Equipment implements EquipmentSlots {
       if (item.isMultiSlot) {
         // unequip right
         if (this[WeaponSlots.RightHand]) {
-          this[WeaponSlots.RightHand].equipped = false;
+          this[WeaponSlots.RightHand].isEquipped = false;
         }
 
         // unequip left
         if (this[WeaponSlots.LeftHand]) {
-          this[WeaponSlots.LeftHand].equipped = false;
+          this[WeaponSlots.LeftHand].isEquipped = false;
         }
 
         // equip both
@@ -89,7 +89,7 @@ export class Equipment implements EquipmentSlots {
             }
 
             // unequip what ever is in right hand
-            this[WeaponSlots.RightHand]!.equipped = false;
+            this[WeaponSlots.RightHand]!.isEquipped = false;
 
             // equip ro right hand
             this[WeaponSlots.RightHand] = item;
@@ -102,7 +102,7 @@ export class Equipment implements EquipmentSlots {
       const { slot } = item;
 
       if (slot) {
-        if (this[slot]) this[slot].equipped = false;
+        if (this[slot]) this[slot].isEquipped = false;
         this[slot] = item;
       }
 
@@ -114,7 +114,7 @@ export class Equipment implements EquipmentSlots {
         equipped = true;
       } else {
         if (this[JewelerySlots.Right]) {
-          this[JewelerySlots.Right]!.equipped = false;
+          this[JewelerySlots.Right]!.isEquipped = false;
         }
         this[JewelerySlots.Right] = item;
         equipped = true;

@@ -18,11 +18,14 @@ import { Craefter } from "../craefter";
 import { secureRandom } from "@craeft/map-generator/dist/tools/rand";
 
 export class Item {
-  public equipped = false;
-  public isMultiSlot = false;
-  delay: Delay;
-  onDoneCreating?: (craefter: Craefter, exp: number) => void;
   readonly id: string;
+
+  public isEquipped = false;
+  public isMultiSlot = false;
+  public isBroken = false;
+
+  public delay: Delay;
+  public onDoneCreating?: (craefter: Craefter, exp: number) => void;
 
   // item type
   protected readonly type?: Types;
@@ -72,16 +75,15 @@ export class Item {
     },
   ) {
     this.id = getRandomId();
+    this.name = name;
 
     this.category = category;
     this.craefter = craefter;
     this.slot = slot;
     this.level = level;
     this.type = type;
-    this.rarity = rarity;
     this.material = material;
     this.resources = resources;
-    this.name = name;
 
     this.rarity = rarity || Item.evaluateRarity();
 
@@ -94,7 +96,7 @@ export class Item {
   }
 
   public getName(): string {
-    return this.name || this.evaluateItemName();
+    return `${this.isBroken ? "Broken " : ""}${this.name || this.evaluateItemName()}`;
   }
 
   public evaluateItemName(): string {
@@ -128,6 +130,10 @@ export class Item {
         // todo evaluate exp properly
         (this.resources?.sum() || 1) * 2,
       );
+
+      if (this.craefter.isDead) {
+        this.isBroken = true;
+      }
     }
   }
 

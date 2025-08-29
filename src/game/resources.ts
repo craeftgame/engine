@@ -6,6 +6,25 @@ export type ResourcesCollection = {
   [key in ResourceTypes]: number;
 };
 
+export const toEnum = <T extends { [key: string]: string }>(
+  enumObj: T,
+  key: string,
+): T[keyof T] | undefined => {
+  // Try matching against keys first (case-insensitive)
+  const matchedKey = Object.keys(enumObj).find(
+    (tempKey) => tempKey.toLowerCase() === key.toLowerCase(),
+  );
+  if (matchedKey) return enumObj[matchedKey as keyof T];
+
+  // If no match, try matching against values (case-insensitive)
+  const matchedValue = Object.values(enumObj).find(
+    (tmpValue) => tmpValue.toLowerCase() === key.toLowerCase(),
+  );
+  if (matchedValue) return matchedValue as T[keyof T];
+
+  return undefined; // not found
+};
+
 export class Resources implements ResourcesCollection {
   [ResourceTypes.Wood]: number;
   [ResourceTypes.Cloth]: number;
@@ -22,22 +41,21 @@ export class Resources implements ResourcesCollection {
       initialResources?: number;
       resources: Partial<ResourcesCollection>;
     } = {
-      initialResources: 0,
       resources: {},
     },
   ) {
-    this[ResourceTypes.Wood] = resources[ResourceTypes.Wood]
-      ? resources[ResourceTypes.Wood]
-      : initialResources;
-    this[ResourceTypes.Metal] = resources[ResourceTypes.Metal]
-      ? resources[ResourceTypes.Metal]
-      : initialResources;
-    this[ResourceTypes.Cloth] = resources[ResourceTypes.Cloth]
-      ? resources[ResourceTypes.Cloth]
-      : initialResources;
-    this[ResourceTypes.Diamond] = resources[ResourceTypes.Diamond]
-      ? resources[ResourceTypes.Diamond]
-      : initialResources;
+    // propagate all the fields
+    for (const resource in ResourceTypes) {
+      const key = toEnum(ResourceTypes, resource);
+
+      if (key) {
+        this[key] = resources[key]
+          ? resources[key]
+          : initialResources
+            ? initialResources
+            : 0;
+      }
+    }
   }
 
   static hydrate(resources: Resources) {
@@ -45,47 +63,53 @@ export class Resources implements ResourcesCollection {
   }
 
   add(resources: Resources) {
-    this[ResourceTypes.Wood] += resources[ResourceTypes.Wood];
-    this[ResourceTypes.Metal] += resources[ResourceTypes.Metal];
-    this[ResourceTypes.Cloth] += resources[ResourceTypes.Cloth];
-    this[ResourceTypes.Diamond] += resources[ResourceTypes.Diamond];
+    for (const resource of Object.keys(this)) {
+      const key = toEnum(ResourceTypes, resource);
+      if (key) this[key] += resources[key];
+    }
+
     return this;
   }
 
   sub(resources: Resources) {
-    this[ResourceTypes.Wood] -= resources[ResourceTypes.Wood];
-    this[ResourceTypes.Metal] -= resources[ResourceTypes.Metal];
-    this[ResourceTypes.Cloth] -= resources[ResourceTypes.Cloth];
-    this[ResourceTypes.Diamond] -= resources[ResourceTypes.Diamond];
+    for (const resource of Object.keys(this)) {
+      const key = toEnum(ResourceTypes, resource);
+      if (key) this[key] -= resources[key];
+    }
+
     return this;
   }
 
   sum() {
-    return (
-      this[ResourceTypes.Wood] +
-      this[ResourceTypes.Metal] +
-      this[ResourceTypes.Cloth] +
-      this[ResourceTypes.Diamond]
-    );
+    let sum = 0;
+
+    for (const resource of Object.keys(this)) {
+      const key = toEnum(ResourceTypes, resource);
+      if (key) sum += this[key];
+    }
+
+    return sum;
   }
 
   gcd() {
-    return gcd(
-      this[ResourceTypes.Wood],
-      this[ResourceTypes.Metal],
-      this[ResourceTypes.Cloth],
-      this[ResourceTypes.Diamond],
-    );
+    const gcdValues: number[] = [];
+
+    for (const resource of Object.keys(this)) {
+      const key = toEnum(ResourceTypes, resource);
+      if (key) gcdValues.push(this[key]);
+    }
+
+    return gcd(...gcdValues);
   }
 
-  ratios() {
+  public ratios() {
     const gcd = this.gcd();
     const ratios = new Ratios();
 
-    ratios[ResourceTypes.Wood] = this[ResourceTypes.Wood] / gcd;
-    ratios[ResourceTypes.Metal] = this[ResourceTypes.Metal] / gcd;
-    ratios[ResourceTypes.Cloth] = this[ResourceTypes.Cloth] / gcd;
-    ratios[ResourceTypes.Diamond] = this[ResourceTypes.Diamond] / gcd;
+    for (const resource of Object.keys(this)) {
+      const key = toEnum(ResourceTypes, resource);
+      if (key) ratios[key] = this[key] / gcd;
+    }
 
     return ratios;
   }

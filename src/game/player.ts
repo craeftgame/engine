@@ -9,7 +9,9 @@ import { Organism } from "../organism";
 import { getRandomArrayItem, getRandomInt, log as logger } from "../tools";
 
 export class Player extends Organism {
-  equipment = new Equipment();
+  public equipment = new Equipment();
+
+  public isFarming: boolean;
 
   private _dex: number;
   private _str: number;
@@ -45,6 +47,8 @@ export class Player extends Organism {
       sta,
       hp,
     });
+
+    this.isFarming = false;
 
     this._dex = dex;
     this._str = str;
@@ -187,13 +191,13 @@ export class Player extends Organism {
   }
 
   public takeDamage(dmg: number): boolean {
-    const dead: boolean = super.takeDamage(dmg);
+    const isDead: boolean = super.takeDamage(dmg);
 
-    if (dead) {
+    if (isDead) {
       logger(`${this.className()} ${this.name} died!`);
       craeft.stop(true);
     }
 
-    return dead;
+    return isDead;
   }
 }
