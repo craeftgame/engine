@@ -19,10 +19,22 @@ import { Craefter } from "./craefter";
 export class WeaponCraefter extends Craefter<WeaponTypes> {
   constructor({
     delay = config.initialCraefterDelay,
-    str = config.weaponCraefterInitialStr,
-    int = config.weaponCraefterInitialInt,
-    dex = config.weaponCraefterInitialDex,
-    luk = config.weaponCraefterInitialLuk,
+    str = getRandomInt(
+      config.weaponCraefterInitialStrFrom,
+      config.weaponCraefterInitialStrTo,
+    ),
+    int = getRandomInt(
+      config.weaponCraefterInitialIntFrom,
+      config.weaponCraefterInitialIntTo,
+    ),
+    dex = getRandomInt(
+      config.weaponCraefterInitialDexFrom,
+      config.weaponCraefterInitialDexTo,
+    ),
+    luk = getRandomInt(
+      config.weaponCraefterInitialLukFrom,
+      config.weaponCraefterInitialLukTo,
+    ),
   } = {}) {
     super({
       type: CraefterTypes.WeaponCraefter,
@@ -142,10 +154,10 @@ export class WeaponCraefter extends Craefter<WeaponTypes> {
       material: highestResource,
       atk,
       // todo: let this be influenced by luk
-      atkMax: round(atk + atk * log(2)) || 1,
+      atkMax: round(atk + atk * log(2)) ?? 1,
       matk,
       // todo: let this be influenced by luk
-      matkMax: round(matk + matk * log(2)) || 1,
+      matkMax: round(matk + matk * log(2)) ?? 1,
     };
   }
 

@@ -88,7 +88,7 @@ export class Farm {
 
       // now distribute
       while (amount > 0) {
-        const resourceType = getRandomArrayItem<ResourceTypes>({
+        const resourceType = getRandomArrayItem({
           array: resourceTypes,
         });
 

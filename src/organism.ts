@@ -21,6 +21,8 @@ export abstract class Organism implements Tickable {
   public hpCurrent: number;
   public hpMax: number;
 
+  public onLevelUp?: () => void;
+
   protected constructor(
     {
       name,
@@ -42,16 +44,19 @@ export abstract class Organism implements Tickable {
 
     this.expMax = config.organismInitialRequiredExp;
 
-    this.staCurrent = sta ? sta : 0;
-    this.staMax = sta ? sta : 0;
+    this.staMax = sta ?? 0;
+    this.staCurrent = this.staMax;
 
-    this.hpCurrent = hp ? hp : 0;
-    this.hpMax = hp ? hp : 0;
+    this.hpMax = hp ?? 0;
+    this.hpCurrent = this.hpMax;
   }
 
   protected levelUp(): void {
     this.level++;
     this.expMax = Math.floor(this.expMax + 50 * log(this.level, 10));
+    this.staMax = this.staMax * 2;
+
+    this.onLevelUp?.();
     logger(`"${this.name}" has reached Level ${this.level}`);
   }
 

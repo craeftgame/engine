@@ -101,7 +101,7 @@ export class Player extends Organism {
 
     // regenerate stamina
     if (this.staCurrent < this.staMax) {
-      this.staCurrent += 0.1;
+      this.staCurrent += (100 / this.staMax) * 0.1;
       if (this.staCurrent > this.staMax) {
         this.staCurrent = this.staMax;
       }

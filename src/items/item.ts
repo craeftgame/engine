@@ -85,7 +85,7 @@ export class Item {
     this.material = material;
     this.resources = resources;
 
-    this.rarity = rarity || Item.evaluateRarity();
+    this.rarity = rarity ?? Item.evaluateRarity();
 
     this.delay = new Delay({
       delayInSeconds: delay,
@@ -96,7 +96,7 @@ export class Item {
   }
 
   public getName(): string {
-    return `${this.isBroken ? "Broken " : ""}${this.name || this.evaluateItemName()}`;
+    return `${this.name ?? this.evaluateItemName()}`;
   }
 
   public evaluateItemName(): string {
@@ -128,7 +128,7 @@ export class Item {
       this.onDoneCreating?.(
         this.craefter,
         // todo evaluate exp properly
-        (this.resources?.sum() || 1) * 2,
+        (this.resources?.sum() ?? 1) * 2,
       );
 
       if (this.craefter.isDead) {

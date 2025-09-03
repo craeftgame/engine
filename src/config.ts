@@ -52,32 +52,36 @@ export const config = {
 
   playerInitialStrFrom: 1,
   playerInitialStrTo: 5,
-
   playerInitialVitFrom: 1,
   playerInitialVitTo: 2,
-
   playerInitialIntFrom: 0,
   playerInitialIntTo: 7,
-
   playerInitialDexFrom: 0,
   playerInitialDexTo: 2,
-
   playerInitialAgiFrom: 0,
   playerInitialAgiTo: 2,
 
   // craefter initial stats
   craefterInitialSta: 5,
 
-  weaponCraefterInitialStr: 9,
-  weaponCraefterInitialInt: 3,
-  weaponCraefterInitialDex: 5,
-  weaponCraefterInitialLuk: 6,
+  weaponCraefterInitialStrFrom: 3,
+  weaponCraefterInitialStrTo: 9,
+  weaponCraefterInitialIntFrom: 1,
+  weaponCraefterInitialIntTo: 3,
+  weaponCraefterInitialDexFrom: 2,
+  weaponCraefterInitialDexTo: 5,
+  weaponCraefterInitialLukFrom: 0,
+  weaponCraefterInitialLukTo: 6,
   weaponCraefterInitialRequiredExp: 5,
 
-  armorCraefterInitialStr: 4,
-  armorCraefterInitialInt: 2,
-  armorCraefterInitialDex: 3,
-  armorCraefterInitialLuk: 9,
+  armorCraefterInitialStrFrom: 1,
+  armorCraefterInitialStrTo: 4,
+  armorCraefterInitialIntFrom: 0,
+  armorCraefterInitialIntTo: 2,
+  armorCraefterInitialDexFrom: 1,
+  armorCraefterInitialDexTo: 3,
+  armorCraefterInitialLukFrom: 2,
+  armorCraefterInitialLukTo: 9,
   armorCraefterInitialRequiredExp: 10,
 
   organismInitialRequiredExp: 20,

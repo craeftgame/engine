@@ -28,7 +28,7 @@ export const getRandomObjectEntry = <T>({
 }) => {
   const array = Object.keys(object);
 
-  const randomIndex = getRandomArrayItem<string>({
+  const randomIndex = getRandomArrayItem({
     array,
     start,
   });

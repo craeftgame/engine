@@ -37,10 +37,10 @@ export abstract class Craefter<T = Types> extends Organism {
         array: SurNames,
       }),
     delay = config.initialCraefterDelay,
-    str = 0,
-    int = 0,
-    dex = 0,
-    luk = 0,
+    str,
+    int,
+    dex,
+    luk,
     sta = config.craefterInitialSta,
   }: Partial<{
     type: CraefterTypes | typeof Unknown;
@@ -67,10 +67,10 @@ export abstract class Craefter<T = Types> extends Organism {
     this.type = type;
     this.name = name;
 
-    this.str = str;
-    this.int = int;
-    this.dex = dex;
-    this.luk = luk;
+    this.str = str ?? 0;
+    this.int = int ?? 0;
+    this.dex = dex ?? 0;
+    this.luk = luk ?? 0;
   }
 
   static hydrate(craefter: Craefter, obj: Craefter) {

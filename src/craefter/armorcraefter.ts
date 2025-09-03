@@ -18,10 +18,22 @@ import { Craefter } from "./craefter";
 export class ArmorCraefter extends Craefter<ArmorTypes> {
   constructor({
     delay = config.initialCraefterDelay,
-    str = config.armorCraefterInitialStr,
-    int = config.armorCraefterInitialInt,
-    dex = config.armorCraefterInitialDex,
-    luk = config.armorCraefterInitialLuk,
+    str = getRandomInt(
+      config.armorCraefterInitialStrFrom,
+      config.armorCraefterInitialStrTo,
+    ),
+    int = getRandomInt(
+      config.armorCraefterInitialIntFrom,
+      config.armorCraefterInitialIntTo,
+    ),
+    dex = getRandomInt(
+      config.armorCraefterInitialDexFrom,
+      config.armorCraefterInitialDexTo,
+    ),
+    luk = getRandomInt(
+      config.armorCraefterInitialLukFrom,
+      config.armorCraefterInitialLukTo,
+    ),
   } = {}) {
     super({
       type: CraefterTypes.ArmorCraefter,
@@ -115,9 +127,9 @@ export class ArmorCraefter extends Craefter<ArmorTypes> {
       rarity: Unknown,
       material: highestResource,
       def,
-      defMax: Math.round(def + def * Math.log(2)) || 1,
+      defMax: Math.round(def + def * Math.log(2)) ?? 1,
       mdef,
-      mdefMax: Math.round(mdef + mdef * Math.log(2)) || 1,
+      mdefMax: Math.round(mdef + mdef * Math.log(2)) ?? 1,
     };
   }
 

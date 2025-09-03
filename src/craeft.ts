@@ -22,6 +22,7 @@ import {
 } from "./data";
 import { Farm, Player, Resources } from "./game";
 import { Item, Items, Weapon } from "./items";
+import { getRandomArrayItem } from "./tools";
 
 const version = `v${process.env.NEXT_PUBLIC_CRAEFT_VERSION ?? "Test"}`;
 const versionMsg = `Welcome to Cräft! version: ${version}`;
@@ -68,19 +69,24 @@ export default class Craeft {
       resources: {},
     });
 
-    const knife = new Weapon({
-      name: "Novice Knife",
-      type: WeaponTypes.Knife,
-      material: ResourceTypes.Metal,
-      rarity: Rarities.Common,
-      atk: 1,
-      matk: 1,
-      delay: -1,
+    const weapons = [
+      new Weapon({
+        name: "Novice Knife",
+        type: WeaponTypes.Knife,
+        material: ResourceTypes.Metal,
+        rarity: Rarities.Common,
+        atk: 1,
+        delay: -1,
+      }),
+    ];
+
+    const startWeapon = getRandomArrayItem({
+      array: weapons,
     });
 
-    knife.isEquipped = this.player.equipment.equip(knife);
+    startWeapon.isEquipped = this.player.equipment.equip(startWeapon);
 
-    this.items.push(knife);
+    this.items.push(startWeapon);
   }
 
   public serialize(): string {
