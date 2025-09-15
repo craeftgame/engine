@@ -3,7 +3,7 @@ import { CraeftMixin, HydrateableMixin } from "./mixins";
 import type { ICraeft } from "../interfaces";
 
 export class Delay extends CraeftMixin(HydrateableMixin()) {
-  timer: Timer;
+  timer: Timer | undefined;
   onDelayExpired?: () => void;
 
   isDelaying = true;
@@ -44,7 +44,9 @@ export class Delay extends CraeftMixin(HydrateableMixin()) {
   public static hydrate(craeft: ICraeft, delay: Delay): Delay {
     const newDelay = Object.assign(new Delay({ craeft }), delay);
 
-    newDelay.timer = Timer.hydrate(craeft, delay.timer);
+    if (delay.timer) {
+      newDelay.timer = Timer.hydrate(craeft, delay.timer);
+    }
 
     return newDelay;
   }

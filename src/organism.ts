@@ -42,9 +42,7 @@ export abstract class Organism
     this.id = getRandomId();
     this.isDead = false;
 
-    if (name) {
-      this.name = name;
-    }
+    this.name = name ?? "Unknown";
 
     this.expMax = config.organismInitialRequiredExp;
 

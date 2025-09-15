@@ -3,12 +3,12 @@ import { toEnum } from "../tools";
 
 // TODO: make this more generic, it is really resource centric
 export class Ratios implements ResourcesCollection {
-  [ResourceTypes.Wood]: number;
-  [ResourceTypes.Metal]: number;
-  [ResourceTypes.Cloth]: number;
-  [ResourceTypes.Gemstone]: number;
-  [ResourceTypes.Water]: number;
-  [ResourceTypes.Earth]: number;
+  [ResourceTypes.Wood]: number = 0;
+  [ResourceTypes.Metal]: number = 0;
+  [ResourceTypes.Cloth]: number = 0;
+  [ResourceTypes.Gemstone]: number = 0;
+  [ResourceTypes.Water]: number = 0;
+  [ResourceTypes.Earth]: number = 0;
 
   constructor() {
     for (const resource in this) {

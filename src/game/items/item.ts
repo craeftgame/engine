@@ -98,6 +98,13 @@ export abstract class Item
 
     this.rarity = rarity ?? Item.evaluateRarity();
 
+    // init
+    this._str = 0;
+    this._int = 0;
+    this._vit = 0;
+    this._dex = 0;
+    this._agi = 0;
+
     this.delay = new Delay({
       craeft,
       delayInSeconds: delay,
