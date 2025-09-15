@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rm -rf ./dist ./node_modules ./.yarn",
     "prettier": "prettier ./src --write",
-    "postinstall": "yarn build",
+    "postinstall": "tsc -b .",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint ./src",
