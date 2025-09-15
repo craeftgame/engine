@@ -1,4 +1,4 @@
-import { log, pow } from "mathjs";
+import { log, multiply, pow } from "mathjs";
 
 import { config } from "../config";
 
@@ -64,12 +64,13 @@ export class Farm extends CraeftMixin(HydrateableMixin()) {
       usedStamina: number;
     }) => void;
   }) {
-    let delay: number =
-      this.delay *
+    let delay: number = multiply(
+      this.delay,
       pow(
         log(this.counter + config.farmDelayCurve.floor),
         config.farmDelayCurve.top,
-      );
+      ),
+    ).valueOf() as number;
 
     if (player.dex() > 0) {
       delay /= player.dex() * player.level;
@@ -119,7 +120,7 @@ export class Farm extends CraeftMixin(HydrateableMixin()) {
       let dmg = pow(
         log(this.counter + config.craefterDelayCurve.floor),
         config.craefterDelayCurve.top,
-      );
+      ).valueOf() as number;
 
       dmg -= def;
 

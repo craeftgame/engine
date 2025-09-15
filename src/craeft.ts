@@ -7,7 +7,7 @@ import Serializer from "@craeft/serializer";
 // local storage
 import { get, remove, set } from "local-storage";
 import { compress, decompress } from "lz-string";
-import { log, pow } from "mathjs";
+import { log, multiply, pow } from "mathjs";
 import {
   ArmorCraefter,
   Bosses,
@@ -254,12 +254,13 @@ export default class Craeft implements ICraeft {
   public addCraefter(which: CraefterTypes) {
     let craefter: Craefter;
 
-    const delay =
-      config.startDelay *
+    const delay = multiply(
+      config.startDelay,
       pow(
         log(this.craefters.count + config.craefterDelayCurve.floor),
         config.craefterDelayCurve.top,
-      );
+      ),
+    ).valueOf() as number;
 
     switch (which) {
       case CraefterTypes.WeaponCraefter:
