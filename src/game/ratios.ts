@@ -37,7 +37,7 @@ export class Ratios implements ResourcesCollection {
       return first.amount - second.amount;
     });
 
-    const highest: ResourceTypes = sortable[sortable.length - 1].resource;
+    const highest: ResourceTypes = sortable[sortable.length - 1]!.resource;
 
     if (this[highest] === 0) {
       return Unknown;

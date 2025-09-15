@@ -31,7 +31,7 @@ export class Items extends ExtendedArray<Item> {
       const item = items[itemIndex];
       let ti;
 
-      switch (item.category) {
+      switch (item?.category) {
         case ItemCategories.Weapon:
           ti = Weapon.hydrate(craeft, item);
           break;

@@ -20,7 +20,7 @@ export class Craefters extends ExtendedArray<Craefter<ItemTypes>> {
       const craefter = craefters[craefterIndex];
       let tc;
 
-      switch (craefter.type) {
+      switch (craefter?.type) {
         case CraefterTypes.WeaponCraefter:
           tc = WeaponCraefter.hydrate(craeft, craefter);
           break;

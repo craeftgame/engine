@@ -16,9 +16,9 @@ export const getRandomArrayItem = <T>({
 }: {
   array: T[];
   start?: number;
-}) => {
+}): NonNullable<T> => {
   const randomIndex = getRandomInt(start, array.length - 1);
-  return array[randomIndex];
+  return array[randomIndex]!;
 };
 
 export const getRandomObjectEntry = <T>({
@@ -27,7 +27,7 @@ export const getRandomObjectEntry = <T>({
 }: {
   object: { [key: string]: T };
   start?: number;
-}) => {
+}): T => {
   const array = Object.keys(object);
 
   const randomIndex = getRandomArrayItem({
@@ -35,7 +35,7 @@ export const getRandomObjectEntry = <T>({
     start,
   });
 
-  return object[randomIndex];
+  return object[randomIndex]!;
 };
 
 export const getRandomId = (): string => {
