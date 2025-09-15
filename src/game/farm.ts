@@ -8,7 +8,6 @@ import { Player, Resources } from "../game";
 import {
   CraeftMixin,
   getRandomArrayItem,
-  getRandomInt,
   HydrateableMixin,
   Timer,
 } from "../tools";
