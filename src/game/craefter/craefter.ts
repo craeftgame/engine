@@ -1,33 +1,37 @@
-import { config } from "../config";
-import { craeft } from "../craeft";
+import { config } from "../../config";
 import {
   CraefterTypes,
   FirstNames,
+  ItemSlots,
+  ItemTypes,
   ResourceTypes,
-  Slots,
   SurNames,
-  Types,
   Unknown,
-} from "../data";
-import { Ratios, Resources } from "../game";
-import { Item, PreItem } from "../items";
-import { Organism } from "../organism";
-import { Delay, getRandomArrayItem } from "../tools";
+} from "../../data";
+import { Ratios, Resources } from "..";
+import { Item } from "../items";
+import { Organism } from "../../organism";
+import { Delay, getRandomArrayItem } from "../../tools";
+import type { CraefterStats, ICraeft, PreItem } from "../../interfaces";
 
-export abstract class Craefter<T = Types> extends Organism {
-  isCraefting: boolean = false;
-  itemId?: string;
+export abstract class Craefter<T = ItemTypes>
+  extends Organism
+  implements CraefterStats
+{
+  public isCraefting: boolean = false;
+  public itemId?: string;
   public onDoneCreating?: (exp: number) => void;
-  type: CraefterTypes | typeof Unknown;
+  public type: CraefterTypes | typeof Unknown;
 
-  public str: number;
-  public int: number;
-  public dex: number;
-  public luk: number;
+  protected _str: number;
+  protected _int: number;
+  protected _dex: number;
+  protected _luk: number;
 
   public delay: Delay;
 
   protected constructor({
+    craeft,
     type = Unknown,
     name = getRandomArrayItem({
       array: FirstNames,
@@ -42,7 +46,7 @@ export abstract class Craefter<T = Types> extends Organism {
     dex,
     luk,
     sta = config.craefterInitialSta,
-  }: Partial<{
+  }: { craeft: ICraeft } & Partial<{
     type: CraefterTypes | typeof Unknown;
     name: string;
     delay: number;
@@ -51,13 +55,15 @@ export abstract class Craefter<T = Types> extends Organism {
     dex: number;
     luk: number;
     sta: number;
-  }> = {}) {
+  }>) {
     super({
       name,
+      craeft,
       sta,
     });
 
     this.delay = new Delay({
+      craeft: this.craeft,
       delayInSeconds: delay,
       onDelayExpired: () => {
         this.onDoneCreating?.(5);
@@ -67,19 +73,37 @@ export abstract class Craefter<T = Types> extends Organism {
     this.type = type;
     this.name = name;
 
-    this.str = str ?? 0;
-    this.int = int ?? 0;
-    this.dex = dex ?? 0;
-    this.luk = luk ?? 0;
+    this._str = str ?? 0;
+    this._int = int ?? 0;
+    this._dex = dex ?? 0;
+    this._luk = luk ?? 0;
   }
 
-  static hydrate(craefter: Craefter, obj: Craefter) {
-    craefter.delay = Delay.hydrate(obj.delay);
+  public str(): number {
+    return this._str;
+  }
+
+  public int(): number {
+    return this._int;
+  }
+
+  public dex(): number {
+    return this._dex;
+  }
+
+  public luk(): number {
+    return this._luk;
+  }
+
+  public static hydrate(craeft: ICraeft, craefter: Craefter, obj: Craefter) {
+    craefter.delay = Delay.hydrate(craeft, obj.delay);
+
+    return craefter;
   }
 
   public tick(_tick: number) {
     if (this.staCurrent < this.staMax && !this.isDead) {
-      // todo calculate some creafter parameters in
+      // TODO: calculate some craefter parameters in
       this.staCurrent += 0.1;
     }
   }
@@ -89,7 +113,9 @@ export abstract class Craefter<T = Types> extends Organism {
   }
 
   public static calculateExhaustion(resources: Resources) {
-    return Math.floor(resources.sum() * 0.75);
+    return Math.floor(
+      resources.sum() * config.craefterMaterialExhaustionMultiplier,
+    );
   }
 
   protected abstract evaluateItemType(
@@ -103,20 +129,20 @@ export abstract class Craefter<T = Types> extends Organism {
     resources: Resources;
   }): PreItem<T>;
 
-  public craeft(
+  public craeftItem(
     {
       resources,
     }: {
       resources: Resources;
     } = {
-      resources: new Resources(),
+      resources: new Resources({ craeft: this.craeft }),
     },
     // @ts-expect-error base class implementation
   ): Item {
     // stub please override
     this.isCraefting = true;
 
-    // todo include resource heaviness / complexity
+    // TODO: include resource heaviness / complexity
     this.exhaust(Craefter.calculateExhaustion(resources));
   }
 
@@ -127,11 +153,11 @@ export abstract class Craefter<T = Types> extends Organism {
     this.addExp(exp);
 
     if (this.isDead) {
-      craeft.logs.push(`Cräfter "${this.name}" has died!`);
+      this.craeft.log(`Cräfter "${this.name}" has died!`);
     }
   }
 
-  protected evaluateSlot(_type: Types): Slots | typeof Unknown {
+  protected evaluateSlot(_type: ItemTypes): ItemSlots | typeof Unknown {
     return Unknown;
   }
 

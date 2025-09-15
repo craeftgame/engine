@@ -1,5 +1,6 @@
-import { ExtendedArray } from "../tools";
+import { ExtendedArray } from "../../tools";
 import { Boss } from "./boss";
+import type { ICraeft } from "../../interfaces";
 
 /**
  * Spider - Tsuchigumo
@@ -7,23 +8,26 @@ import { Boss } from "./boss";
  * Fish - Namazu
  */
 export class Bosses extends ExtendedArray<Boss> {
-  constructor() {
-    super();
+  constructor({ craeft }: { craeft: ICraeft }) {
+    super({ craeft });
 
     const bosses: Boss[] = [
       new Boss({
+        craeft,
         name: "Namazu",
         level: 12,
         type: "fish",
         hp: 123,
       }),
       new Boss({
+        craeft,
         name: "Tsuchigumo",
         level: 1,
         type: "spider",
         hp: 12,
       }),
       new Boss({
+        craeft,
         name: "Tatsu",
         level: 3,
         type: "dragon",
@@ -36,7 +40,7 @@ export class Bosses extends ExtendedArray<Boss> {
     this.push(...bosses);
   }
 
-  static hydrate(obj: Boss[]): Bosses {
-    return Object.assign(new Bosses(), obj);
+  public static hydrate(craeft: ICraeft, boss: Boss[]): Bosses {
+    return Object.assign(new Bosses({ craeft }), boss);
   }
 }

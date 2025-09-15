@@ -5,25 +5,34 @@ import { config } from "../config";
 import { ResourceTypes } from "../data";
 import { Player, Resources } from "../game";
 
-import { getRandomArrayItem, getRandomInt, Timer } from "../tools";
+import {
+  CraeftMixin,
+  getRandomArrayItem,
+  getRandomInt,
+  HydrateableMixin,
+  Timer,
+} from "../tools";
+import type { ICraeft } from "../interfaces";
 
-export class Farm {
+export class Farm extends CraeftMixin(HydrateableMixin()) {
   public timer: Timer;
   delay: number;
   counter: number;
 
-  constructor(
-    {
-      delay = config.initialFarmDelay,
-    }: {
-      delay: number;
-    } = {
-      delay: config.initialFarmDelay,
-    },
-  ) {
+  constructor({
+    craeft,
+    delay = config.initialFarmDelay,
+  }: {
+    craeft: ICraeft;
+  } & Partial<{
+    delay: number;
+  }>) {
+    super(craeft);
+
     this.delay = delay;
 
     this.timer = new Timer({
+      craeft: this.craeft,
       delay,
       autoStart: false,
     });
@@ -31,20 +40,20 @@ export class Farm {
     this.counter = 0;
   }
 
-  static hydrate(obj: Farm) {
-    const farm = Object.assign(new Farm(), obj);
+  public static hydrate(craeft: ICraeft, farm: Farm) {
+    const newFarm = Object.assign(new Farm({ craeft }), farm);
 
-    farm.timer = Timer.hydrate(obj.timer);
+    newFarm.timer = Timer.hydrate(craeft, farm.timer);
 
-    return farm;
+    return newFarm;
   }
 
   start({
     player,
-    callback,
+    onFarmEnd,
   }: {
     player: Player;
-    callback: ({
+    onFarmEnd: ({
       result,
       dmg,
       exp,
@@ -56,7 +65,12 @@ export class Farm {
       usedStamina: number;
     }) => void;
   }) {
-    let delay: number = this.delay * pow(log(this.counter + 2), 5);
+    let delay: number =
+      this.delay *
+      pow(
+        log(this.counter + config.farmDelayCurve.floor),
+        config.farmDelayCurve.top,
+      );
 
     if (player.dex() > 0) {
       delay /= player.dex() * player.level;
@@ -68,23 +82,23 @@ export class Farm {
 
     delay = delay < 1 ? this.delay : delay;
 
-    const timerCallback = () => {
+    const onTimerEnd = () => {
       this.timer.pause();
 
       // calculate amount of all resources first
       let amount = player.level;
 
-      // todo fine tune this
-      amount *= (player.atk() + player.matk()) / (this.counter + 1);
+      amount *=
+        // TODO: fine tune this
+        (player.atk() + player.matk()) / (this.counter + config.farmHardness);
 
-      const resources = new Resources();
+      const resources = new Resources({ craeft: this.craeft });
 
-      const resourceTypes = [
-        ResourceTypes.Wood,
-        ResourceTypes.Metal,
-        ResourceTypes.Cloth,
-        ResourceTypes.Diamond,
-      ];
+      const resourceTypes = [ResourceTypes.Wood, ResourceTypes.Metal];
+
+      if (this.craeft.player.level >= 5) {
+        resourceTypes.push(...[ResourceTypes.Cloth, ResourceTypes.Gemstone]);
+      }
 
       // now distribute
       while (amount > 0) {
@@ -92,33 +106,42 @@ export class Farm {
           array: resourceTypes,
         });
 
+        // TODO: factor in different types of material drop in different locations
+
         resources[resourceType] += 1;
         amount--;
       }
 
       this.counter++;
 
-      // todo calculate dmg based on defense and dmg dealt
-      let dmg =
-        getRandomInt(5, 15) * this.counter - (player.def() + player.mdef());
+      const def = player.def() + player.mdef();
+
+      // TODO: calculate dmg based on defense and dmg dealt
+      let dmg = pow(
+        log(this.counter + config.craefterDelayCurve.floor),
+        config.craefterDelayCurve.top,
+      );
+
+      dmg -= def;
 
       if (dmg < 0) {
         dmg = 0;
       }
 
-      callback({
+      onFarmEnd({
         result: resources,
-        // todo calculate exp based on farm level
+        // TODO: calculate exp based on farm level
         exp: 4 * this.counter,
         dmg,
-        // todo calculate stamina used
-        usedStamina: this.counter,
+        // TODO: calculate stamina used
+        usedStamina: 3 * this.counter,
       });
     };
 
     this.timer = new Timer({
+      craeft: this.craeft,
       delay,
-      callback: timerCallback,
+      onTimerEnd,
     });
   }
 }

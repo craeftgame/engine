@@ -1,12 +1,12 @@
 import {
   ItemCategories,
+  ItemTypes,
   Rarities,
   ResourceTypes,
-  Types,
   Unknown,
 } from "../data";
 
-export interface PreItem<T = Types> {
+export interface PreItem<T = ItemTypes> {
   category: ItemCategories;
   type: T | typeof Unknown;
   material: ResourceTypes | typeof Unknown;

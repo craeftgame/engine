@@ -1,23 +1,28 @@
 import { config } from "../config";
+import { CraeftMixin, HydrateableMixin } from "./mixins";
+import type { ICraeft } from "../interfaces";
 
-export class Timer {
+export class Timer extends CraeftMixin(HydrateableMixin()) {
   delay: number = 0;
   remaining: number = 0;
   startDate: Date = new Date();
   running: boolean = false;
-  callback?: () => void;
+  onTimerEnd?: () => void;
   ticker?: number;
 
   constructor({
-    callback,
+    craeft,
+    onTimerEnd,
     delay,
     autoStart = true,
-  }: {
-    callback?: () => void;
-    delay?: number;
-    autoStart?: boolean;
-  } = {}) {
-    this.callback = callback;
+  }: { craeft: ICraeft } & Partial<{
+    onTimerEnd: () => void;
+    delay: number;
+    autoStart: boolean;
+  }>) {
+    super(craeft);
+
+    this.onTimerEnd = onTimerEnd;
 
     // make it milliseconds
     this.delay = (delay ? delay : 0) * 1000;
@@ -33,15 +38,15 @@ export class Timer {
     }
   }
 
-  static hydrate(obj: Timer) {
-    const timer = Object.assign(new Timer(), obj);
+  public static hydrate(craeft: ICraeft, timer: Timer) {
+    const newTimer = Object.assign(new Timer({ craeft }), timer);
 
-    if (timer.remaining > 0) {
-      timer.delay = timer.remaining;
-      timer.start();
+    if (newTimer.remaining > 0) {
+      newTimer.delay = newTimer.remaining;
+      newTimer.start();
     }
 
-    return timer;
+    return newTimer;
   }
 
   private tick() {
@@ -53,8 +58,8 @@ export class Timer {
   }
 
   private triggerCallback() {
-    if (this.running && this.callback) {
-      this.callback();
+    if (this.running) {
+      this.onTimerEnd?.();
     }
 
     this.pause();

@@ -1,12 +1,12 @@
-import { ResourcesCollection, toEnum } from "./resources";
-import { ResourceTypes, Unknown } from "../data";
+import { ResourcesCollection, ResourceTypes, Unknown } from "../data";
+import { toEnum } from "../tools";
 
-// todo make this more generic, it is really resource centric
+// TODO: make this more generic, it is really resource centric
 export class Ratios implements ResourcesCollection {
   [ResourceTypes.Wood]: number;
   [ResourceTypes.Metal]: number;
   [ResourceTypes.Cloth]: number;
-  [ResourceTypes.Diamond]: number;
+  [ResourceTypes.Gemstone]: number;
   [ResourceTypes.Water]: number;
   [ResourceTypes.Earth]: number;
 

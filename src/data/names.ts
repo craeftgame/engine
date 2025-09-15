@@ -1,24 +1,30 @@
 import { english as FirstNames } from "./lists/firstnames";
 import { english as SurNames } from "./lists/surnames";
-import ArmorNames from "./lists/weaponnames";
+import ArmorNames from "./lists/armornames";
 import WeaponNames from "./lists/weaponnames";
+import WorldNames from "./lists/worldnames";
+import JeweleryNames from "./lists/jewelerynames";
+
 import {
   ArmorSlots,
   ArmorTypes,
   Classes,
   CraefterTypes,
+  ItemSlots,
+  ItemTypes,
   Rarities,
-  Slots,
-  Types,
+  ResourceTypes,
   Unknown,
   WeaponSlots,
   WeaponTypes,
 } from "./types";
 
+export const Mysterious = "???";
+
 export const CraefterTypeNames: Partial<{
   [key in CraefterTypes | typeof Unknown]: string;
 }> = {
-  [Unknown]: "???",
+  [Unknown]: Mysterious,
   [CraefterTypes.WeaponCraefter]: "Weaponcräfter",
   [CraefterTypes.ArmorCraefter]: "Armorcräfter",
   [CraefterTypes.JewelCraefter]: "Jewelcräfter",
@@ -26,9 +32,9 @@ export const CraefterTypeNames: Partial<{
 };
 
 export const ItemNames: Partial<{
-  [key in Types]: string;
+  [key in ItemTypes | string]: string;
 }> = {
-  [Unknown]: "???",
+  [Unknown]: Mysterious,
   [WeaponTypes.Sword]: "Sword",
   [WeaponTypes.JewelSword]: "Jewel Sword",
   [WeaponTypes.Knife]: "Knife",
@@ -45,7 +51,7 @@ export const ItemNames: Partial<{
 };
 
 export const SlotNames: Partial<{
-  [key in Slots]: string;
+  [key in ItemSlots]: string;
 }> = {
   [ArmorSlots.Head]: "Head",
   [ArmorSlots.Body]: "Body",
@@ -73,4 +79,22 @@ export const ClassNames: Partial<{
   [Classes.Hunter]: "Hunter",
 };
 
-export { FirstNames, SurNames, WeaponNames, ArmorNames };
+export const ResourceNames: Partial<{
+  [key in ResourceTypes]: string;
+}> = {
+  [ResourceTypes.Wood]: "Wood",
+  [ResourceTypes.Metal]: "Metal",
+  [ResourceTypes.Cloth]: "Cloth",
+  [ResourceTypes.Gemstone]: "Gemstone",
+  [ResourceTypes.Water]: "Water",
+  [ResourceTypes.Earth]: "Earth",
+};
+
+export {
+  FirstNames,
+  SurNames,
+  WeaponNames,
+  ArmorNames,
+  WorldNames,
+  JeweleryNames,
+};

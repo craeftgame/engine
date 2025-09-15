@@ -1,10 +1,12 @@
 import { secureRandom } from "@craeft/map-generator/dist/tools/rand";
 
+/**
+ * Returns a random integer between min (inclusive) and max (inclusive).
+ */
 export const getRandomInt = (min: number, max: number) => {
   min = Math.ceil(min);
   max = Math.floor(max);
 
-  //The maximum is exclusive and the minimum is inclusive
   return Math.floor(secureRandom() * (max - min + 1)) + min;
 };
 

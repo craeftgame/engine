@@ -1,55 +1,36 @@
 import { gcd } from "mathjs";
-import { ResourceTypes } from "../data";
+import { ResourcesCollection, ResourceTypes } from "../data";
 import { Ratios } from "./ratios";
+import { CraeftMixin, HydrateableMixin, toEnum } from "../tools";
+import type { ICraeft } from "../interfaces";
 
-export type ResourcesCollection = {
-  [key in ResourceTypes]: number;
-};
-
-export const toEnum = <T extends { [key: string]: string }>(
-  enumObj: T,
-  key: string,
-): T[keyof T] | undefined => {
-  // Try matching against keys first (case-insensitive)
-  const matchedKey = Object.keys(enumObj).find(
-    (tempKey) => tempKey.toLowerCase() === key.toLowerCase(),
-  );
-  if (matchedKey) return enumObj[matchedKey as keyof T];
-
-  // If no match, try matching against values (case-insensitive)
-  const matchedValue = Object.values(enumObj).find(
-    (tmpValue) => tmpValue.toLowerCase() === key.toLowerCase(),
-  );
-  if (matchedValue) return matchedValue as T[keyof T];
-
-  return undefined; // not found
-};
-
-export class Resources implements ResourcesCollection {
+export class Resources
+  extends CraeftMixin(HydrateableMixin())
+  implements ResourcesCollection
+{
   [ResourceTypes.Wood]: number;
   [ResourceTypes.Cloth]: number;
   [ResourceTypes.Metal]: number;
-  [ResourceTypes.Diamond]: number;
+  [ResourceTypes.Gemstone]: number;
   [ResourceTypes.Water]: number;
   [ResourceTypes.Earth]: number;
 
-  constructor(
-    {
-      initialResources = 0,
-      resources,
-    }: {
-      initialResources?: number;
-      resources: Partial<ResourcesCollection>;
-    } = {
-      resources: {},
-    },
-  ) {
+  constructor({
+    craeft,
+    initialResources = 0,
+    resources,
+  }: { craeft: ICraeft } & Partial<{
+    initialResources: number;
+    resources: Partial<ResourcesCollection>;
+  }>) {
+    super(craeft);
+
     // propagate all the fields
     for (const resource in ResourceTypes) {
       const key = toEnum(ResourceTypes, resource);
 
       if (key) {
-        this[key] = resources[key]
+        this[key] = resources?.[key]
           ? resources[key]
           : initialResources
             ? initialResources
@@ -58,8 +39,8 @@ export class Resources implements ResourcesCollection {
     }
   }
 
-  static hydrate(resources: Resources) {
-    return Object.assign(new Resources(), resources);
+  public static hydrate(craeft: ICraeft, resources: Resources) {
+    return Object.assign(new Resources({ craeft }), resources);
   }
 
   add(resources: Resources) {

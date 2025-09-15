@@ -2,9 +2,13 @@ import { log } from "mathjs";
 
 import { config } from "./config";
 import type { Tickable } from "./tools";
-import { getRandomId, log as logger } from "./tools";
+import { CraeftMixin, getRandomId, HydrateableMixin } from "./tools";
+import type { ICraeft } from "./interfaces";
 
-export abstract class Organism implements Tickable {
+export abstract class Organism
+  extends CraeftMixin(HydrateableMixin())
+  implements Tickable
+{
   public readonly id: string;
 
   public name: string;
@@ -23,24 +27,24 @@ export abstract class Organism implements Tickable {
 
   public onLevelUp?: () => void;
 
-  protected constructor(
-    {
-      name,
-      sta,
-      hp,
-    }: {
-      name: string;
-      sta?: number;
-      hp?: number;
-    } = {
-      name: "Organism",
-    },
-  ) {
-    this.isDead = false;
+  protected constructor({
+    name,
+    craeft,
+    sta,
+    hp,
+  }: { craeft: ICraeft } & Partial<{
+    name: string;
+    sta: number;
+    hp: number;
+  }>) {
+    super(craeft);
 
     this.id = getRandomId();
+    this.isDead = false;
 
-    this.name = name;
+    if (name) {
+      this.name = name;
+    }
 
     this.expMax = config.organismInitialRequiredExp;
 
@@ -57,7 +61,7 @@ export abstract class Organism implements Tickable {
     this.staMax = this.staMax * 2;
 
     this.onLevelUp?.();
-    logger(`"${this.name}" has reached Level ${this.level}`);
+    this.craeft.log(`"${this.name}" has reached Level ${this.level}`);
   }
 
   public addExp(exp: number): void {
@@ -86,7 +90,7 @@ export abstract class Organism implements Tickable {
   public takeDamage(dmg: number): boolean {
     this.hpCurrent -= dmg;
 
-    logger(`${this.name} has taken ${Math.floor(dmg)} Damage!`);
+    this.craeft.log(`${this.name} has taken ${Math.floor(dmg)} Damage!`);
 
     if (Math.floor(this.hpCurrent) <= 0) {
       // killed

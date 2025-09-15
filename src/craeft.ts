@@ -8,21 +8,31 @@ import Serializer from "@craeft/serializer";
 import { get, remove, set } from "local-storage";
 import { compress, decompress } from "lz-string";
 import { log, pow } from "mathjs";
-import { Bosses } from "./boss";
+import {
+  ArmorCraefter,
+  Bosses,
+  Craefter,
+  Craefters,
+  Farm,
+  Item,
+  Items,
+  Player,
+  Resources,
+  Weapon,
+  WeaponCraefter,
+} from "./game";
 
 import { config } from "./config";
-import { ArmorCraefter, Craefter, Craefters, WeaponCraefter } from "./craefter";
 import {
   CraefterTypes,
+  Mysterious,
   Rarities,
   ResourceTypes,
   SlotNames,
-  Types,
   WeaponTypes,
 } from "./data";
-import { Farm, Player, Resources } from "./game";
-import { Item, Items, Weapon } from "./items";
 import { getRandomArrayItem } from "./tools";
+import type { ICraeft } from "./interfaces";
 
 const version = `v${process.env.NEXT_PUBLIC_CRAEFT_VERSION ?? "Test"}`;
 const versionMsg = `Welcome to Cräft! version: ${version}`;
@@ -33,8 +43,8 @@ if (config.debug) {
   console.log("Running in debug mode!");
 }
 
-export default class Craeft {
-  readonly logs: string[] = [versionMsg];
+export default class Craeft implements ICraeft {
+  public readonly logs: string[] = [versionMsg];
 
   public readonly player: Player;
   public readonly farm: Farm;
@@ -44,18 +54,18 @@ export default class Craeft {
   public readonly bosses: Bosses;
   public map?: Map;
 
-  private gameTick?: number;
-  private onTick?: () => void;
-  private onUpdate?: () => void;
+  gameTick?: number;
+  onTick?: () => void;
+  onUpdate?: () => void;
 
-  private ticker: number = 0;
+  ticker: number = 0;
 
   constructor() {
-    this.player = new Player();
-    this.farm = new Farm();
-    this.craefters = new Craefters();
-    this.items = new Items();
-    this.bosses = new Bosses();
+    this.player = new Player({ craeft: this });
+    this.bosses = new Bosses({ craeft: this });
+    this.farm = new Farm({ craeft: this });
+    this.craefters = new Craefters({ craeft: this });
+    this.items = new Items({ craeft: this });
 
     generate({
       height: 256,
@@ -65,12 +75,14 @@ export default class Craeft {
     }).then((map) => (this.map = map));
 
     this.resources = new Resources({
+      craeft: this,
       initialResources: config.startResources,
       resources: {},
     });
 
     const weapons = [
       new Weapon({
+        craeft: this,
         name: "Novice Knife",
         type: WeaponTypes.Knife,
         material: ResourceTypes.Metal,
@@ -120,18 +132,18 @@ export default class Craeft {
     }
   }
 
-  static deserialize(json: string): Craeft {
+  public static deserialize(json: string): Craeft {
     const obj = Serializer.deserialize(json);
 
     const craeft = Object.assign(new Craeft(), obj);
 
-    craeft.resources = Resources.hydrate(obj.resources);
-    craeft.farm = Farm.hydrate(obj.farm);
-    craeft.items = Items.hydrate(obj.items);
-    craeft.craefters = Craefters.hydrate(obj.craefters);
-    craeft.bosses = Bosses.hydrate(obj.bosses);
+    craeft.resources = Resources.hydrate(craeft, obj.resources);
+    craeft.farm = Farm.hydrate(craeft, obj.farm);
+    craeft.items = Items.hydrate(craeft, obj.items);
+    craeft.craefters = Craefters.hydrate(craeft, obj.craefters);
+    craeft.bosses = Bosses.hydrate(craeft, obj.bosses);
 
-    craeft.player = Player.hydrate(obj.player);
+    craeft.player = Player.hydrate(craeft, obj.player);
 
     return craeft;
   }
@@ -156,6 +168,10 @@ export default class Craeft {
       this.onTick();
     }
   }
+
+  public log = (log: string) => {
+    this.logs.push(log);
+  };
 
   public update(): void {
     if (this.onUpdate) this.onUpdate();
@@ -198,12 +214,12 @@ export default class Craeft {
     }
   }
 
-  public startFarming({ callback }: { callback?: () => void } = {}) {
+  public startFarming({ onEndFarming }: { onEndFarming?: () => void } = {}) {
     if (!this.player.isFarming && this.player.staCurrent > 0) {
       this.player.isFarming = true;
       this.farm.start({
         player: this.player,
-        callback: ({ result, dmg, exp, usedStamina }) => {
+        onFarmEnd: ({ result, dmg, exp, usedStamina }) => {
           this.resources.add(result);
 
           this.player.takeDamage(dmg);
@@ -212,7 +228,7 @@ export default class Craeft {
 
           this.player.isFarming = false;
 
-          callback?.();
+          onEndFarming?.();
           this.update();
         },
       });
@@ -227,32 +243,41 @@ export default class Craeft {
     item.onDoneCreating = (craefter: Craefter, exp: number) => {
       craefter.finishCraefting(exp);
 
-      this.logs.push(`"${item.getName()}" cräfted by ${craefter.name}! `);
+      this.logs.push(
+        `"${item.isBroken ? "Broken " : ""}${item.getName()}" cräfted by ${craefter.name}! `,
+      );
     };
 
     this.items.push(item);
   }
 
   public addCraefter(which: CraefterTypes) {
-    let craefter: Craefter<Types>;
+    let craefter: Craefter;
 
-    const delay = config.startDelay * pow(log(this.craefters.count + 2), 20);
+    const delay =
+      config.startDelay *
+      pow(
+        log(this.craefters.count + config.craefterDelayCurve.floor),
+        config.craefterDelayCurve.top,
+      );
 
     switch (which) {
       case CraefterTypes.WeaponCraefter:
         craefter = new WeaponCraefter({
+          craeft: this,
           delay,
         });
         break;
 
       case CraefterTypes.ArmorCraefter:
         craefter = new ArmorCraefter({
+          craeft: this,
           delay,
         });
         break;
 
       default:
-        throw new Error("Unknown craefter type");
+        throw new Error(`Unknown craefter type: ${which}`);
     }
 
     this.craefters.push(craefter);
@@ -284,9 +309,9 @@ export default class Craeft {
       if (equipped) {
         item.isEquipped = equipped;
         const slot = this.player.equipment.findSlotByItem(item);
-        const slotName = slot ? SlotNames[slot] : "???";
+        const slotName = slot ? SlotNames[slot] : Mysterious;
 
-        this.logs.push(`"${item.getName()}" put in ${slotName}.`);
+        this.logs.push(`"${item.getName()}" put in slot ${slotName}.`);
 
         this.update();
       } else {
@@ -316,7 +341,7 @@ export default class Craeft {
     return unequipped;
   }
 
-  public static saveState(): boolean {
+  public static saveState(craeft: Craeft): boolean {
     if (config.useLocalStorage && !craeft.player.isDead) {
       const state = craeft.serialize();
 
@@ -327,7 +352,7 @@ export default class Craeft {
     return false;
   }
 
-  public static loadState(): void {
+  public static loadState(): Craeft | undefined {
     let state;
 
     if (config.useLocalStorage) {
@@ -341,7 +366,7 @@ export default class Craeft {
       }
 
       if (state) {
-        craeft = Craeft.deserialize(state);
+        return Craeft.deserialize(state);
       }
     }
   }
@@ -352,5 +377,3 @@ export default class Craeft {
     }
   }
 }
-
-export let craeft = new Craeft();

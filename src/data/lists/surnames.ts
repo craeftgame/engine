@@ -132,6 +132,7 @@ export const english = [
   "Alexander",
   "Anderson",
   // B
+  "Bacon",
   "Brown",
   // C
   "Campbell",

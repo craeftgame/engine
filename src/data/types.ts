@@ -1,3 +1,5 @@
+import type { Item } from "../game";
+
 export const Unknown = "unknown";
 
 export enum WeaponTypes {
@@ -19,7 +21,16 @@ export enum ArmorTypes {
   JewelWoven = "jewel_woven",
 }
 
-export type Types = ArmorTypes | WeaponTypes | typeof Unknown;
+export enum JeweleryTypes {
+  Finger = "finger",
+  Neck = "neck",
+}
+
+export type ItemTypes =
+  | ArmorTypes
+  | WeaponTypes
+  | JeweleryTypes
+  | typeof Unknown;
 
 export enum ItemCategories {
   Weapon = "weapon",
@@ -51,16 +62,24 @@ export enum JewelerySlots {
   Right = "right",
 }
 
-export type Slots = JewelerySlots | ArmorSlots | WeaponSlots;
+export type ItemSlots = JewelerySlots | ArmorSlots | WeaponSlots;
+
+export type EquipmentSlots = {
+  [key in ItemSlots]?: Item;
+};
 
 export enum ResourceTypes {
   Wood = "wood",
   Metal = "metal",
   Cloth = "cloth",
-  Diamond = "diamond",
+  Gemstone = "gemstone",
   Water = "water",
   Earth = "earth",
 }
+
+export type ResourcesCollection = {
+  [key in ResourceTypes]: number;
+};
 
 export enum Rarities {
   Common = "common",

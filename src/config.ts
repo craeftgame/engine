@@ -10,11 +10,13 @@ export const config = {
   debug,
 
   name: "Cräft!",
-  subLogo: "Alpha",
+  subLogo: "Beta",
 
   // general config
   useLocalStorage: false,
   compressLocalStorage: true,
+  // show boss screen
+  showBossScreen: debug,
 
   // game parameters
   startResources: debug ? 100 : 0,
@@ -28,7 +30,7 @@ export const config = {
 
   // disentchant
   disentchantRecyclingPercentFrom: 30,
-  disentchantRecyclingPercentTo: 75,
+  disentchantRecyclingPercentTo: 80,
 
   // item rarity
   // 0-79
@@ -39,10 +41,18 @@ export const config = {
   rarityChancePercentEpic: 98.0,
   // 98-99 - legendary
 
+  // two-handed chance
+  itemChanceTwoHanded: 3, // chance 1/3
+  itemBrokenMultiplier: 1 - 0.9, // 90% loss on item breaking
+
   // start delays
   initialItemDelay: debug ? 1 : 10,
   initialCraefterDelay: debug ? 1 : 5,
   initialFarmDelay: debug ? 1 : 2,
+
+  // farm
+  farmDelayCurve: { floor: 2, top: 5 },
+  farmHardness: 2,
 
   // play initial stats
   playerStartLevel: debug ? 10 : 1,
@@ -50,43 +60,31 @@ export const config = {
   playerInitialHp: 50,
   playerInitialSta: 25,
 
-  playerInitialStrFrom: 1,
-  playerInitialStrTo: 5,
-  playerInitialVitFrom: 1,
-  playerInitialVitTo: 2,
-  playerInitialIntFrom: 0,
-  playerInitialIntTo: 7,
-  playerInitialDexFrom: 0,
-  playerInitialDexTo: 2,
-  playerInitialAgiFrom: 0,
-  playerInitialAgiTo: 2,
+  playerInitialStr: { from: 1, to: 5 },
+  playerInitialVit: { from: 1, to: 2 },
+  playerInitialInt: { from: 0, to: 7 },
+  playerInitialDex: { from: 0, to: 2 },
+  playerInitialAgi: { from: 0, to: 2 },
 
   // craefter initial stats
   craefterInitialSta: 5,
+  craefterMaterialExhaustionMultiplier: 0.75,
+  craefterDelayCurve: { floor: 2, top: 7 },
 
-  weaponCraefterInitialStrFrom: 3,
-  weaponCraefterInitialStrTo: 9,
-  weaponCraefterInitialIntFrom: 1,
-  weaponCraefterInitialIntTo: 3,
-  weaponCraefterInitialDexFrom: 2,
-  weaponCraefterInitialDexTo: 5,
-  weaponCraefterInitialLukFrom: 0,
-  weaponCraefterInitialLukTo: 6,
+  weaponCraefterInitialStr: { from: 3, to: 9 },
+  weaponCraefterInitialInt: { from: 1, to: 3 },
+  weaponCraefterInitialDex: { from: 2, to: 5 },
+  weaponCraefterInitialLuk: { from: 0, to: 6 },
+
+  armorCraefterInitialStr: { from: 1, to: 4 },
+  armorCraefterInitialInt: { from: 0, to: 2 },
+  armorCraefterInitialDex: { from: 1, to: 3 },
+  armorCraefterInitialLuk: { from: 2, to: 9 },
+
+  // exp config
   weaponCraefterInitialRequiredExp: 5,
-
-  armorCraefterInitialStrFrom: 1,
-  armorCraefterInitialStrTo: 4,
-  armorCraefterInitialIntFrom: 0,
-  armorCraefterInitialIntTo: 2,
-  armorCraefterInitialDexFrom: 1,
-  armorCraefterInitialDexTo: 3,
-  armorCraefterInitialLukFrom: 2,
-  armorCraefterInitialLukTo: 9,
   armorCraefterInitialRequiredExp: 10,
-
   organismInitialRequiredExp: 20,
-
-  showBossScreen: debug,
 
   rarityMultiplier: {
     [Rarities.Common]: 1,

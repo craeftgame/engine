@@ -1,14 +1,17 @@
 import { WeaponCraefter } from "../";
-import { ResourceTypes, Unknown, WeaponTypes } from "../../data";
-import { Resources } from "../../game";
+import { ResourceTypes, Unknown, WeaponTypes } from "../../../data";
+import { Resources } from "../../../game";
+import Craeft from "../../../craeft";
 
 describe("WeaponCraefter", () => {
+  const craeft = new Craeft();
+
   describe("evaluateItem", () => {
     describe("Staff", () => {
       test("should return item type wand if only wood", () => {
-        const craefter = new WeaponCraefter();
+        const craefter = new WeaponCraefter({ craeft });
 
-        const resources = new Resources();
+        const resources = new Resources({ craeft });
         resources[ResourceTypes.Wood] = 100;
 
         const item = craefter.evaluateItem({ resources });
@@ -19,9 +22,9 @@ describe("WeaponCraefter", () => {
 
     describe("Sword", () => {
       test("should return item type sword if only metal", () => {
-        const weaponCraefter = new WeaponCraefter();
+        const weaponCraefter = new WeaponCraefter({ craeft });
 
-        const resources = new Resources();
+        const resources = new Resources({ craeft });
         resources[ResourceTypes.Metal] = 100;
         const item = weaponCraefter.evaluateItem({ resources });
 
@@ -29,9 +32,9 @@ describe("WeaponCraefter", () => {
       });
 
       test("should return item type sword if metal is way larger than wood", () => {
-        const weaponCraefter = new WeaponCraefter();
+        const weaponCraefter = new WeaponCraefter({ craeft });
 
-        const resources = new Resources();
+        const resources = new Resources({ craeft });
         resources[ResourceTypes.Metal] = 100;
         resources[ResourceTypes.Wood] = 20;
         const item = weaponCraefter.evaluateItem({ resources });
@@ -42,9 +45,9 @@ describe("WeaponCraefter", () => {
 
     describe("Knife", () => {
       test("should return item type knife if metal is a little bit larger than wood", () => {
-        const weaponCraefter = new WeaponCraefter();
+        const weaponCraefter = new WeaponCraefter({ craeft });
 
-        const resources = new Resources();
+        const resources = new Resources({ craeft });
         resources[ResourceTypes.Metal] = 30;
         resources[ResourceTypes.Wood] = 20;
         const item = weaponCraefter.evaluateItem({ resources });
@@ -55,12 +58,12 @@ describe("WeaponCraefter", () => {
 
     describe("JewelSword", () => {
       test("make jewel sword", () => {
-        const weaponCraefter = new WeaponCraefter();
+        const weaponCraefter = new WeaponCraefter({ craeft });
 
-        const resources = new Resources();
+        const resources = new Resources({ craeft });
         resources[ResourceTypes.Metal] = 5;
         resources[ResourceTypes.Wood] = 2;
-        resources[ResourceTypes.Diamond] = 11;
+        resources[ResourceTypes.Gemstone] = 11;
 
         const item = weaponCraefter.evaluateItem({ resources });
 
@@ -72,12 +75,12 @@ describe("WeaponCraefter", () => {
 
     describe("JewelKnife", () => {
       test("make jewel knife", () => {
-        const weaponCraefter = new WeaponCraefter();
+        const weaponCraefter = new WeaponCraefter({ craeft });
 
-        const resources = new Resources();
+        const resources = new Resources({ craeft });
         resources[ResourceTypes.Metal] = 5;
         resources[ResourceTypes.Wood] = 5;
-        resources[ResourceTypes.Diamond] = 11;
+        resources[ResourceTypes.Gemstone] = 11;
 
         const item = weaponCraefter.evaluateItem({ resources });
 
@@ -87,11 +90,11 @@ describe("WeaponCraefter", () => {
 
     describe("JewelWand", () => {
       test("make jewel wand", () => {
-        const weaponCraefter = new WeaponCraefter();
+        const weaponCraefter = new WeaponCraefter({ craeft });
 
-        const resources = new Resources();
+        const resources = new Resources({ craeft });
         resources[ResourceTypes.Wood] = 5;
-        resources[ResourceTypes.Diamond] = 11;
+        resources[ResourceTypes.Gemstone] = 11;
 
         const item = weaponCraefter.evaluateItem({ resources });
 
@@ -101,10 +104,10 @@ describe("WeaponCraefter", () => {
 
     describe("mysterious", () => {
       test("Should create", () => {
-        const weaponCraefter = new WeaponCraefter();
+        const weaponCraefter = new WeaponCraefter({ craeft });
 
-        const resources = new Resources();
-        resources[ResourceTypes.Diamond] = 50;
+        const resources = new Resources({ craeft });
+        resources[ResourceTypes.Gemstone] = 50;
 
         const item = weaponCraefter.evaluateItem({ resources });
 

@@ -1,17 +1,19 @@
 import {
   ArmorSlots,
+  EquipmentSlots,
   ItemCategories,
+  ItemSlots,
   JewelerySlots,
-  Slots,
   WeaponSlots,
 } from "../data";
-import { Item } from "../items";
+import { Item } from ".";
+import { CraeftMixin, HydrateableMixin } from "../tools";
+import type { ICraeft } from "../interfaces";
 
-type EquipmentSlots = {
-  [key in Slots]?: Item;
-};
-
-export class Equipment implements EquipmentSlots {
+export class Equipment
+  extends CraeftMixin(HydrateableMixin())
+  implements EquipmentSlots
+{
   [ArmorSlots.Head]?: Item;
   [ArmorSlots.Body]?: Item;
   [ArmorSlots.Feet]?: Item;
@@ -23,10 +25,10 @@ export class Equipment implements EquipmentSlots {
   [JewelerySlots.Left]?: Item;
   [JewelerySlots.Right]?: Item;
 
-  public findSlotByItem(item: Item): Slots | undefined {
+  public findSlotByItem(item: Item): ItemSlots | undefined {
     for (const slot in this) {
       if (this[slot] === item) {
-        return slot as Slots;
+        return slot as ItemSlots;
       }
     }
   }
@@ -139,8 +141,8 @@ export class Equipment implements EquipmentSlots {
     return true;
   }
 
-  static hydrate(obj: Equipment): Equipment {
-    return Object.assign(new Equipment(), obj);
+  public static hydrate(craeft: ICraeft, equipment: Equipment): Equipment {
+    return Object.assign(new Equipment({ craeft }), equipment);
   }
 
   public tick(delta: number) {

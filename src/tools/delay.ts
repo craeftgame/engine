@@ -1,8 +1,10 @@
 import { Timer } from "./timer";
+import { CraeftMixin, HydrateableMixin } from "./mixins";
+import type { ICraeft } from "../interfaces";
 
-export class Delay {
+export class Delay extends CraeftMixin(HydrateableMixin()) {
   timer: Timer;
-  onDelayExpired;
+  onDelayExpired?: () => void;
 
   isDelaying = true;
 
@@ -14,14 +16,21 @@ export class Delay {
   }
 
   constructor({
+    craeft,
     delayInSeconds,
     onDelayExpired,
-  }: { delayInSeconds?: number; onDelayExpired?: () => void } = {}) {
+  }: { craeft: ICraeft } & Partial<{
+    delayInSeconds: number;
+    onDelayExpired: () => void;
+  }>) {
+    super(craeft);
+
     this.onDelayExpired = onDelayExpired;
 
     if (delayInSeconds && delayInSeconds > -1) {
       this.timer = new Timer({
-        callback: () => {
+        craeft: this.craeft,
+        onTimerEnd: () => {
           this.finish();
         },
         delay: delayInSeconds,
@@ -32,11 +41,11 @@ export class Delay {
     }
   }
 
-  static hydrate(obj: Delay) {
-    const delay = Object.assign(new Delay(), obj);
+  public static hydrate(craeft: ICraeft, delay: Delay): Delay {
+    const newDelay = Object.assign(new Delay({ craeft }), delay);
 
-    delay.timer = Timer.hydrate(obj.timer);
+    newDelay.timer = Timer.hydrate(craeft, delay.timer);
 
-    return delay;
+    return newDelay;
   }
 }

@@ -1,42 +1,51 @@
-import { config } from "../config";
+import { config } from "../../config";
 
 import {
   ArmorSlots,
   ArmorTypes,
   CraefterTypes,
   ItemCategories,
+  ItemSlots,
   ResourceTypes,
-  Slots,
   Unknown,
-} from "../data";
-import { Ratios, Resources } from "../game";
-import { Armor, PreItem } from "../items";
+} from "../../data";
+import { Ratios, Resources } from "..";
+import { Armor } from "../items";
 
-import { getRandomInt, getRandomObjectEntry } from "../tools";
+import { getRandomInt, getRandomObjectEntry } from "../../tools";
 import { Craefter } from "./craefter";
+import type { ICraeft, PreItem } from "../../interfaces";
 
 export class ArmorCraefter extends Craefter<ArmorTypes> {
   constructor({
+    craeft,
     delay = config.initialCraefterDelay,
     str = getRandomInt(
-      config.armorCraefterInitialStrFrom,
-      config.armorCraefterInitialStrTo,
+      config.armorCraefterInitialStr.from,
+      config.armorCraefterInitialStr.to,
     ),
     int = getRandomInt(
-      config.armorCraefterInitialIntFrom,
-      config.armorCraefterInitialIntTo,
+      config.armorCraefterInitialInt.from,
+      config.armorCraefterInitialInt.to,
     ),
     dex = getRandomInt(
-      config.armorCraefterInitialDexFrom,
-      config.armorCraefterInitialDexTo,
+      config.armorCraefterInitialDex.from,
+      config.armorCraefterInitialDex.to,
     ),
     luk = getRandomInt(
-      config.armorCraefterInitialLukFrom,
-      config.armorCraefterInitialLukTo,
+      config.armorCraefterInitialLuk.from,
+      config.armorCraefterInitialLuk.to,
     ),
-  } = {}) {
+  }: { craeft: ICraeft } & Partial<{
+    delay: number;
+    str: number;
+    int: number;
+    dex: number;
+    luk: number;
+  }>) {
     super({
       type: CraefterTypes.ArmorCraefter,
+      craeft,
       delay,
       str,
       int,
@@ -47,10 +56,13 @@ export class ArmorCraefter extends Craefter<ArmorTypes> {
     this.expMax = config.armorCraefterInitialRequiredExp;
   }
 
-  static hydrate(obj: Craefter) {
-    const armorCraefter = Object.assign(new ArmorCraefter(), obj);
+  public static hydrate(craeft: ICraeft, craefter: Craefter) {
+    const armorCraefter = Object.assign(
+      new ArmorCraefter({ craeft }),
+      craefter,
+    );
 
-    Craefter.hydrate(armorCraefter, obj);
+    Craefter.hydrate(craeft, armorCraefter, craefter);
 
     return armorCraefter;
   }
@@ -79,7 +91,7 @@ export class ArmorCraefter extends Craefter<ArmorTypes> {
       case ResourceTypes.Cloth:
         type = ArmorTypes.Woven;
 
-        if (ratios[ResourceTypes.Diamond] > 0) {
+        if (ratios[ResourceTypes.Gemstone] > 0) {
           type = ArmorTypes.JewelWoven;
         }
         break;
@@ -96,14 +108,16 @@ export class ArmorCraefter extends Craefter<ArmorTypes> {
     }: {
       resources: Resources;
     } = {
-      resources: new Resources(),
+      resources: new Resources({
+        craeft: this.craeft,
+      }),
     },
   ): PreItem<ArmorTypes> {
     // 2 percent of all resources is the base
     const baseline = resources.sum() / 100;
 
     // add atk mainly based on metal
-    // todo add str influence
+    // TODO: add str influence
     const def =
       Math.round(
         baseline +
@@ -111,7 +125,7 @@ export class ArmorCraefter extends Craefter<ArmorTypes> {
       ) * this.level;
 
     // add matk mainly based on wood
-    // todo add int influence
+    // TODO: add int influence
     const mdef =
       Math.round(
         baseline +
@@ -133,23 +147,22 @@ export class ArmorCraefter extends Craefter<ArmorTypes> {
     };
   }
 
-  protected evaluateSlot(_type: ArmorTypes | typeof Unknown): Slots {
+  protected evaluateSlot(_type: ArmorTypes | typeof Unknown): ItemSlots {
     return getRandomObjectEntry({
       object: ArmorSlots,
-      start: 0,
     });
   }
 
-  public craeft(
+  public craeftItem(
     {
       resources,
     }: {
       resources: Resources;
     } = {
-      resources: new Resources(),
+      resources: new Resources({ craeft: this.craeft }),
     },
   ) {
-    super.craeft({
+    super.craeftItem({
       resources,
     });
 
@@ -160,6 +173,7 @@ export class ArmorCraefter extends Craefter<ArmorTypes> {
     const slot = this.evaluateSlot(type);
 
     const item = new Armor({
+      craeft: this.craeft,
       type,
       material,
       resources,

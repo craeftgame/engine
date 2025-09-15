@@ -1,25 +1,33 @@
-import { config } from "../config";
+import { config } from "../../config";
 
 import {
   ItemCategories,
   ItemNames,
+  ItemSlots,
+  ItemTypes,
   Rarities,
   RarityNames,
   ResourceTypes,
   SlotNames,
-  Slots,
-  Types,
   Unknown,
-} from "../data";
+} from "../../data";
 
-import { Resources } from "../game";
-import { Delay, getRandomId, getRandomInt } from "../tools";
+import { Resources } from "..";
+import {
+  CraeftMixin,
+  Delay,
+  getRandomArrayItem,
+  getRandomInt,
+  HydrateableMixin,
+} from "../../tools";
 import { Craefter } from "../craefter";
 import { secureRandom } from "@craeft/map-generator/dist/tools/rand";
+import type { ICraeft, PlayerStats } from "../../interfaces";
 
-export class Item {
-  readonly id: string;
-
+export abstract class Item
+  extends CraeftMixin(HydrateableMixin())
+  implements PlayerStats
+{
   public isEquipped = false;
   public isMultiSlot = false;
   public isBroken = false;
@@ -27,16 +35,22 @@ export class Item {
   public delay: Delay;
   public onDoneCreating?: (craefter: Craefter, exp: number) => void;
 
+  protected _str: number;
+  protected _int: number;
+  protected _vit: number;
+  protected _dex: number;
+  protected _agi: number;
+
   // item type
-  protected readonly type?: Types;
+  protected type: ItemTypes | string;
   // original craefter id
   private readonly craefter?: Craefter;
   // in which slot does this item fit?
-  public readonly slot?: Slots;
+  public readonly slot?: ItemSlots;
   // item category
   public readonly category: ItemCategories | typeof Unknown;
   // rarity of the item
-  public readonly rarity?: Rarities;
+  public readonly rarity: Rarities;
   // leading material that lead to the crafting of this item
   public readonly material: ResourceTypes | typeof Unknown;
   // item level
@@ -46,48 +60,46 @@ export class Item {
   // resources used to craeft this item
   private readonly resources?: Resources;
 
-  constructor(
-    {
-      category,
-      name,
-      craefter,
-      slot,
-      level = 1,
-      type,
-      rarity,
-      material,
-      resources,
-      delay = config.initialItemDelay,
-    }: {
-      category: ItemCategories | typeof Unknown;
-      delay?: number;
-      name?: string;
-      craefter?: Craefter;
-      slot?: Slots;
-      level?: number;
-      type?: Types;
-      rarity?: Rarities;
-      material: ResourceTypes | typeof Unknown;
-      resources?: Resources;
-    } = {
-      category: Unknown,
-      material: Unknown,
-    },
-  ) {
-    this.id = getRandomId();
+  constructor({
+    craeft,
+    category = Unknown,
+    name,
+    craefter,
+    slot,
+    level = 1,
+    type = Unknown,
+    rarity,
+    material = Unknown,
+    resources,
+    delay = config.initialItemDelay,
+  }: { craeft: ICraeft } & Partial<{
+    category: ItemCategories | typeof Unknown;
+    delay: number;
+    name: string;
+    craefter: Craefter;
+    slot: ItemSlots;
+    level: number;
+    type: ItemTypes;
+    rarity: Rarities;
+    material: ResourceTypes | typeof Unknown;
+    resources: Resources;
+  }>) {
+    super(craeft);
+
     this.name = name;
 
     this.category = category;
     this.craefter = craefter;
     this.slot = slot;
     this.level = level;
-    this.type = type;
+    this.type = type ?? Unknown;
     this.material = material;
     this.resources = resources;
 
     this.rarity = rarity ?? Item.evaluateRarity();
 
     this.delay = new Delay({
+      craeft,
       delayInSeconds: delay,
       onDelayExpired: () => {
         this.materialize();
@@ -95,15 +107,43 @@ export class Item {
     });
   }
 
+  public dex(): number {
+    return this.applyRarityMultiplier(this._dex);
+  }
+
+  public str(): number {
+    return this.applyRarityMultiplier(this._str);
+  }
+
+  public int(): number {
+    return this.applyRarityMultiplier(this._int);
+  }
+
+  public vit(): number {
+    return this.applyRarityMultiplier(this._vit);
+  }
+
+  public agi(): number {
+    return this.applyRarityMultiplier(this._agi);
+  }
+
+  protected applyRarityMultiplier(stat: number): number {
+    return Math.floor(
+      (stat ?? 0) *
+        this.level *
+        (this.rarity ? config.rarityMultiplier[this.rarity] : 1),
+    );
+  }
+
   public getName(): string {
     return `${this.name ?? this.evaluateItemName()}`;
   }
 
   public evaluateItemName(): string {
-    return `${this.rarity ? RarityNames[this.rarity] : Unknown} ${this.slot ? SlotNames[this.slot] : Unknown} ${this.type ? ItemNames[this.type] : Unknown}`;
+    return `${this.rarity ? RarityNames[this.rarity] : Unknown} ${this.slot ? SlotNames[this.slot] : Unknown} ${this.type && ItemNames[this.type] ? ItemNames[this.type] : this.type}`;
   }
 
-  static evaluateRarity() {
+  protected static evaluateRarity() {
     const chance = secureRandom() * 100;
 
     if (chance < config.rarityChancePercentCommon) {
@@ -120,20 +160,40 @@ export class Item {
   }
 
   public tick(_delta: number) {
-    // todo: tick, tock
+    // TODO: tick, tock
   }
 
-  private materialize() {
+  protected addedAdditionalAttributes() {
+    if (this.rarity === Rarities.Common) return;
+
+    const actions = [
+      () => (!this._str ? (this._str = 1) : this._str++),
+      () => (!this._int ? (this._int = 1) : this._int++),
+      () => (!this._vit ? (this._vit = 1) : this._vit++),
+      () => (!this._dex ? (this._dex = 1) : this._dex++),
+      () => (!this._agi ? (this._agi = 1) : this._agi++),
+    ];
+
+    const attribNum = Math.ceil(config.rarityMultiplier[this.rarity] / 2);
+
+    for (let index = 0; index < attribNum; index++) {
+      getRandomArrayItem({ array: actions })();
+    }
+  }
+
+  protected materialize() {
     if (this.craefter) {
       this.onDoneCreating?.(
         this.craefter,
-        // todo evaluate exp properly
+        // TODO: evaluate exp properly
         (this.resources?.sum() ?? 1) * 2,
       );
 
       if (this.craefter.isDead) {
         this.isBroken = true;
       }
+
+      this.addedAdditionalAttributes();
     }
   }
 
@@ -142,6 +202,7 @@ export class Item {
     if (!this.resources) {
       // return a dummy set
       return new Resources({
+        craeft: this.craeft,
         resources: {
           [ResourceTypes.Wood]: 1,
         },
@@ -149,6 +210,7 @@ export class Item {
     }
 
     return new Resources({
+      craeft: this.craeft,
       resources: {
         [ResourceTypes.Wood]: getRandomInt(
           Math.floor(
@@ -170,13 +232,13 @@ export class Item {
               config.disentchantRecyclingPercentTo,
           ),
         ),
-        [ResourceTypes.Diamond]: getRandomInt(
+        [ResourceTypes.Gemstone]: getRandomInt(
           Math.floor(
-            (this.resources[ResourceTypes.Diamond] / 100) *
+            (this.resources[ResourceTypes.Gemstone] / 100) *
               config.disentchantRecyclingPercentFrom,
           ),
           Math.floor(
-            (this.resources[ResourceTypes.Diamond] / 100) *
+            (this.resources[ResourceTypes.Gemstone] / 100) *
               config.disentchantRecyclingPercentTo,
           ),
         ),
@@ -194,7 +256,9 @@ export class Item {
     });
   }
 
-  static hydrate(item: Item, obj: Item) {
-    item.delay = Delay.hydrate(obj.delay);
+  public static hydrate(craeft: ICraeft, item: Item, obj: Item): Item {
+    item.delay = Delay.hydrate(craeft, obj.delay);
+
+    return item;
   }
 }

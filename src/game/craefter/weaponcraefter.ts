@@ -1,43 +1,52 @@
 import { log, round } from "mathjs";
 
-import { config } from "../config";
+import { config } from "../../config";
 
 import {
   CraefterTypes,
   ItemCategories,
+  ItemTypes,
   ResourceTypes,
-  Types,
   Unknown,
   WeaponTypes,
-} from "../data";
-import { Ratios, Resources } from "../game";
-import { PreItem, Weapon } from "../items";
+} from "../../data";
+import { Ratios, Resources } from "..";
+import { Weapon } from "../items";
 
-import { getRandomInt } from "../tools";
+import { getRandomInt } from "../../tools";
 import { Craefter } from "./craefter";
+import type { ICraeft, PreItem } from "../../interfaces";
 
 export class WeaponCraefter extends Craefter<WeaponTypes> {
   constructor({
+    craeft,
     delay = config.initialCraefterDelay,
     str = getRandomInt(
-      config.weaponCraefterInitialStrFrom,
-      config.weaponCraefterInitialStrTo,
+      config.weaponCraefterInitialStr.from,
+      config.weaponCraefterInitialStr.to,
     ),
     int = getRandomInt(
-      config.weaponCraefterInitialIntFrom,
-      config.weaponCraefterInitialIntTo,
+      config.weaponCraefterInitialInt.from,
+      config.weaponCraefterInitialInt.to,
     ),
     dex = getRandomInt(
-      config.weaponCraefterInitialDexFrom,
-      config.weaponCraefterInitialDexTo,
+      config.weaponCraefterInitialDex.from,
+      config.weaponCraefterInitialDex.to,
     ),
     luk = getRandomInt(
-      config.weaponCraefterInitialLukFrom,
-      config.weaponCraefterInitialLukTo,
+      config.weaponCraefterInitialLuk.from,
+      config.weaponCraefterInitialLuk.to,
     ),
-  } = {}) {
+  }: { craeft: ICraeft } & Partial<{
+    delay: number;
+    str: number;
+    int: number;
+    dex: number;
+    luk: number;
+  }>) {
     super({
       type: CraefterTypes.WeaponCraefter,
+      craeft,
       delay,
       str,
       int,
@@ -48,10 +57,13 @@ export class WeaponCraefter extends Craefter<WeaponTypes> {
     this.expMax = config.weaponCraefterInitialRequiredExp;
   }
 
-  static hydrate(obj: Craefter) {
-    const weaponcraefter = Object.assign(new WeaponCraefter(), obj);
+  public static hydrate(craeft: ICraeft, craefter: Craefter) {
+    const weaponcraefter = Object.assign(
+      new WeaponCraefter({ craeft }),
+      craefter,
+    );
 
-    Craefter.hydrate(weaponcraefter, obj);
+    Craefter.hydrate(craeft, weaponcraefter, craefter);
 
     return weaponcraefter;
   }
@@ -60,7 +72,7 @@ export class WeaponCraefter extends Craefter<WeaponTypes> {
     ratios: Ratios,
     highestResource: ResourceTypes | typeof Unknown,
   ) {
-    let type: Types = Unknown;
+    let type: ItemTypes = Unknown;
 
     switch (highestResource) {
       case ResourceTypes.Metal:
@@ -77,15 +89,15 @@ export class WeaponCraefter extends Craefter<WeaponTypes> {
       case ResourceTypes.Wood:
         type = WeaponTypes.Staff;
 
-        if (ratios[ResourceTypes.Diamond] > 0) {
+        if (ratios[ResourceTypes.Gemstone] > 0) {
           type = WeaponTypes.Wand;
         }
         break;
-      case ResourceTypes.Diamond:
+      case ResourceTypes.Gemstone:
         if (
           ratios[ResourceTypes.Wood] > 0 &&
           ratios[ResourceTypes.Wood] > ratios[ResourceTypes.Metal] * 2 &&
-          ratios[ResourceTypes.Diamond] > ratios[ResourceTypes.Wood] * 2
+          ratios[ResourceTypes.Gemstone] > ratios[ResourceTypes.Wood] * 2
         ) {
           type = WeaponTypes.JewelWand;
         }
@@ -93,7 +105,7 @@ export class WeaponCraefter extends Craefter<WeaponTypes> {
         if (
           ratios[ResourceTypes.Metal] > 0 &&
           ratios[ResourceTypes.Wood] > 0 &&
-          ratios[ResourceTypes.Diamond] >
+          ratios[ResourceTypes.Gemstone] >
             ratios[ResourceTypes.Metal] + ratios[ResourceTypes.Wood]
         ) {
           type = WeaponTypes.JewelKnife;
@@ -101,7 +113,7 @@ export class WeaponCraefter extends Craefter<WeaponTypes> {
 
         if (
           ratios[ResourceTypes.Metal] > 0 &&
-          ratios[ResourceTypes.Diamond] > ratios[ResourceTypes.Metal] * 2
+          ratios[ResourceTypes.Gemstone] > ratios[ResourceTypes.Metal] * 2
         ) {
           if (ratios[ResourceTypes.Metal] > ratios[ResourceTypes.Wood] * 2) {
             type = WeaponTypes.JewelSword;
@@ -122,14 +134,14 @@ export class WeaponCraefter extends Craefter<WeaponTypes> {
     }: {
       resources: Resources;
     } = {
-      resources: new Resources(),
+      resources: new Resources({ craeft: this.craeft }),
     },
   ): PreItem<WeaponTypes> {
     // 2 percent of all resources is the base
     const baseline = resources.sum() / 100;
 
     // add atk mainly based on metal
-    // todo add str influence
+    // TODO: add str influence
     const atk =
       round(
         baseline +
@@ -137,7 +149,7 @@ export class WeaponCraefter extends Craefter<WeaponTypes> {
       ) * this.level;
 
     // add matk mainly based on wood
-    // todo add int influence
+    // TODO: add int influence
     const matk =
       round(
         baseline +
@@ -153,24 +165,24 @@ export class WeaponCraefter extends Craefter<WeaponTypes> {
       rarity: Unknown,
       material: highestResource,
       atk,
-      // todo: let this be influenced by luk
+      // TODO: let this be influenced by luk
       atkMax: round(atk + atk * log(2)) ?? 1,
       matk,
-      // todo: let this be influenced by luk
+      // TODO: let this be influenced by luk
       matkMax: round(matk + matk * log(2)) ?? 1,
     };
   }
 
-  public craeft(
+  public craeftItem(
     {
       resources,
     }: {
       resources: Resources;
     } = {
-      resources: new Resources(),
+      resources: new Resources({ craeft: this.craeft }),
     },
   ) {
-    super.craeft({
+    super.craeftItem({
       resources,
     });
 
@@ -179,13 +191,14 @@ export class WeaponCraefter extends Craefter<WeaponTypes> {
     });
 
     const item = new Weapon({
+      craeft: this.craeft,
       type,
       material,
       resources,
       delay: resources.sum() / this.level,
       level: this.level,
       craefter: this,
-      // todo include luk
+      // TODO: include luk
       atk: atk && atkMax ? getRandomInt(atk, atkMax) : 0,
       matk: matk && matkMax ? getRandomInt(matk, matkMax) : 0,
     });

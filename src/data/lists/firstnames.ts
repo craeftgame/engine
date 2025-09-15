@@ -194,6 +194,7 @@ export const english = [
   "Chet",
   "Chip",
   "Chris",
+  "Chris P.",
   "Christian",
   "Christopher",
   "Claire",

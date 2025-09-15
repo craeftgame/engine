@@ -1,27 +1,35 @@
 import { getRandomEnumEntry } from "@craeft/map-generator/dist/tools/rand";
 import { log } from "mathjs";
 import { config } from "../config";
-import { craeft } from "../craeft";
 import { Classes, ClassNames, FirstNames, SurNames, Unknown } from "../data";
-import { Equipment } from "../game";
-import { Armor, Weapon } from "../items";
+import { Armor, Equipment, Weapon } from "../game";
 import { Organism } from "../organism";
-import { getRandomArrayItem, getRandomInt, log as logger } from "../tools";
+import { getRandomArrayItem, getRandomInt } from "../tools";
+import type {
+  ArmorStats,
+  ICraeft,
+  PlayerStats,
+  WeaponStats,
+} from "../interfaces";
 
-export class Player extends Organism {
-  public equipment = new Equipment();
+export class Player
+  extends Organism
+  implements PlayerStats, WeaponStats, ArmorStats
+{
+  public equipment = new Equipment({ craeft: this.craeft });
 
   public isFarming: boolean;
 
-  private _dex: number;
-  private _str: number;
-  private _int: number;
-  private _vit: number;
-  private _agi: number;
+  protected readonly _dex: number;
+  protected readonly _str: number;
+  protected readonly _int: number;
+  protected readonly _vit: number;
+  protected readonly _agi: number;
 
   private _class: Classes;
 
   constructor({
+    craeft,
     name = getRandomArrayItem({
       array: FirstNames,
     }) +
@@ -33,17 +41,42 @@ export class Player extends Organism {
     hp = config.playerInitialHp,
     sta = config.playerInitialSta,
     // physical attack power
-    str = getRandomInt(config.playerInitialStrFrom, config.playerInitialStrTo),
+    str = getRandomInt(
+      config.playerInitialStr.from,
+      config.playerInitialStr.to,
+    ),
     // regeneration and hit points
-    vit = getRandomInt(config.playerInitialVitFrom, config.playerInitialVitTo),
+    vit = getRandomInt(
+      config.playerInitialVit.from,
+      config.playerInitialVit.to,
+    ),
     // magic attack power
-    int = getRandomInt(config.playerInitialIntFrom, config.playerInitialIntTo),
+    int = getRandomInt(
+      config.playerInitialInt.from,
+      config.playerInitialInt.to,
+    ),
     // change to hit and forging powers
-    dex = getRandomInt(config.playerInitialDexFrom, config.playerInitialDexTo),
-    agi = getRandomInt(config.playerInitialAgiFrom, config.playerInitialAgiTo),
-  } = {}) {
+    dex = getRandomInt(
+      config.playerInitialDex.from,
+      config.playerInitialDex.to,
+    ),
+    agi = getRandomInt(
+      config.playerInitialAgi.from,
+      config.playerInitialAgi.to,
+    ),
+  }: { craeft: ICraeft } & Partial<{
+    name: string;
+    hp: number;
+    sta: number;
+    str: number;
+    vit: number;
+    int: number;
+    dex: number;
+    agi: number;
+  }>) {
     super({
       name,
+      craeft,
       sta,
       hp,
     });
@@ -61,12 +94,12 @@ export class Player extends Organism {
     this.level = config.playerStartLevel;
   }
 
-  static hydrate(obj: Player): Player {
-    const player = Object.assign(new Player(), obj);
+  public static hydrate(craeft: ICraeft, player: Player): Player {
+    const newPlayer = Object.assign(new Player({ craeft }), player);
 
-    player.equipment = Equipment.hydrate(obj.equipment);
+    newPlayer.equipment = Equipment.hydrate(craeft, player.equipment);
 
-    return player;
+    return newPlayer;
   }
 
   protected levelUp(): void {
@@ -75,7 +108,7 @@ export class Player extends Organism {
     this.hpMax = this.hpMax + 50 * log(this.level, 10);
     this.hpCurrent = this.hpMax;
 
-    // todo make this nicer
+    // TODO: make this nicer
     /*
         this._vit *= this.level;
         this._agi *= this.level;
@@ -123,31 +156,61 @@ export class Player extends Organism {
   }
 
   public dex() {
-    return this._dex;
+    let dex = this._dex;
+
+    for (const item of this.equipment.getEquipped()) {
+      dex += item.dex() ?? 0;
+    }
+
+    return dex;
   }
 
   public agi() {
-    return this._agi;
+    let agi = this._agi;
+
+    for (const item of this.equipment.getEquipped()) {
+      agi += item.agi() ?? 0;
+    }
+
+    return agi;
   }
 
   public int() {
-    return this._int;
+    let int = this._int;
+
+    for (const item of this.equipment.getEquipped()) {
+      int += item.int() ?? 0;
+    }
+
+    return int;
   }
 
   public str() {
-    return this._str;
+    let str = this._str;
+
+    for (const item of this.equipment.getEquipped()) {
+      str += item.str() ?? 0;
+    }
+
+    return str;
   }
 
   public vit() {
-    return this._vit;
+    let vit = this._vit;
+
+    for (const item of this.equipment.getEquipped()) {
+      vit += item.vit() ?? 0;
+    }
+
+    return vit;
   }
 
   public atk(): number {
     let atk = 0;
 
-    for (const equipment of this.equipment.getEquipped() as Weapon[]) {
-      if (equipment.atk) {
-        atk += equipment.atk() * this.str();
+    for (const item of this.equipment.getEquipped()) {
+      if (item instanceof Weapon) {
+        atk += item.atk() * this.str();
       }
     }
 
@@ -157,9 +220,9 @@ export class Player extends Organism {
   public matk(): number {
     let matk = 0;
 
-    for (const equipment of this.equipment.getEquipped() as Weapon[]) {
-      if (equipment.matk) {
-        matk += equipment.matk() * this.int();
+    for (const item of this.equipment.getEquipped()) {
+      if (item instanceof Weapon) {
+        matk += item.matk() * this.int();
       }
     }
 
@@ -169,9 +232,9 @@ export class Player extends Organism {
   public def(): number {
     let def = 0;
 
-    for (const armor of this.equipment.getEquipped() as Armor[]) {
-      if (armor.def) {
-        def += armor.def() * this.vit();
+    for (const item of this.equipment.getEquipped()) {
+      if (item instanceof Armor) {
+        def += item.def() * this.vit();
       }
     }
 
@@ -181,9 +244,9 @@ export class Player extends Organism {
   public mdef(): number {
     let mdef = 0;
 
-    for (const equipment of this.equipment.getEquipped() as Armor[]) {
-      if (equipment.mdef) {
-        mdef += equipment.mdef() * this.int();
+    for (const item of this.equipment.getEquipped()) {
+      if (item instanceof Armor) {
+        mdef += item.mdef() * this.int();
       }
     }
 
@@ -194,8 +257,8 @@ export class Player extends Organism {
     const isDead: boolean = super.takeDamage(dmg);
 
     if (isDead) {
-      logger(`${this.className()} ${this.name} died!`);
-      craeft.stop(true);
+      this.craeft.log(`${this.className()} ${this.name} died!`);
+      this.craeft.stop(true);
     }
 
     return isDead;

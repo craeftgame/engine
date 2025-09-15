@@ -1,5 +1,17 @@
-export class ExtendedArray<T> extends Array {
-  count = 0;
+import { CraeftMixin, HydrateableMixin } from "./mixins";
+import type { CraeftBase, ICraeft } from "../interfaces";
+
+class ArrayBase<T> extends Array<T> {}
+
+const MixedBase = CraeftMixin(HydrateableMixin(ArrayBase));
+
+export class ExtendedArray<T extends CraeftBase> extends MixedBase<T> {
+  public count = 0;
+
+  constructor({ craeft }: { craeft: ICraeft }, ...items: T[]) {
+    // @ts-expect-error  i am not sure why this happens
+    super(craeft, ...items);
+  }
 
   public findById = (id: string) => {
     return this.find((obj) => obj.id === id);
@@ -10,7 +22,7 @@ export class ExtendedArray<T> extends Array {
   };
 
   public wipeItem = (item: T) => {
-    return (this[this.indexOf(item)] = undefined);
+    delete this[this.indexOf(item)];
   };
 
   public push = (...items: T[]): number => {
@@ -19,4 +31,18 @@ export class ExtendedArray<T> extends Array {
 
     return length;
   };
+
+  public static hydrate(
+    craeft: ICraeft,
+    array: CraeftBase[],
+    array2?: CraeftBase[],
+  ): CraeftBase[] {
+    const newArray = Object.assign(new ExtendedArray({ craeft }), ...array);
+
+    if (array2) {
+      newArray.push(...array2);
+    }
+
+    return newArray;
+  }
 }
