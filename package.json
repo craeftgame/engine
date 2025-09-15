@@ -20,7 +20,7 @@
     "@craeft/serializer": "git+https://github.com/craeftgame/serializer.git#v1.3.2",
     "local-storage": "^2.0.0",
     "lz-string": "^1.5.0",
-    "mathjs": "^14.6.0"
+    "mathjs": "^14.7.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
