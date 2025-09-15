@@ -22,6 +22,8 @@ export class Boss extends Organism {
       hp,
     });
 
+    this.type = "Unknown";
+
     if (level) {
       this.level = level;
     }
