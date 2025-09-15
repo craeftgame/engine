@@ -4,6 +4,7 @@
   "description": "Cräft! engine",
   "main": "dist",
   "scripts": {
+    "clean": "rm -rf ./dist ./node_modules ./.yarn",
     "prettier": "prettier ./src --write",
     "postinstall": "yarn build",
     "test": "jest",
@@ -16,11 +17,12 @@
   "author": "Umlaut Games",
   "license": "MIT",
   "dependencies": {
-    "@craeft/map-generator": "git+https://github.com/craeftgame/map-generator.git#v1.5.4",
+    "@craeft/map-generator": "git+https://github.com/craeftgame/map-generator.git#v1.5.5",
     "@craeft/serializer": "git+https://github.com/craeftgame/serializer.git#v1.3.2",
     "local-storage": "^2.0.0",
     "lz-string": "^1.5.0",
-    "mathjs": "^14.7.0"
+    "mathjs": "^14.7.0",
+    "typescript": "^5.9.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
@@ -36,15 +38,11 @@
     "jiti": "^2.5.1",
     "prettier": "^3.6.2",
     "ts-jest": "^29.4.1",
-    "typescript": "^5.9.2",
     "typescript-eslint": "^8.43.0"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/craeftgame/engine.git"
   },
-  "packageManager": "yarn@4.9.4",
-  "resolutions": {
-    "@craeft/map-generator": "portal:/Users/sebastian/projects/umlaut-games/projects/cräft/map-generator"
-  }
+  "packageManager": "yarn@4.9.4"
 }
