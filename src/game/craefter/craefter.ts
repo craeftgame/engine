@@ -103,8 +103,8 @@ export abstract class Craefter<T = ItemTypes>
 
   public tick(_tick: number) {
     if (this.staCurrent < this.staMax && !this.isDead) {
-      // TODO: calculate some craefter parameters in
-      this.staCurrent += 0.1;
+      // TODO: calculate some craefter's parameters in
+      this.staCurrent += (99.9 / this.staMax) * 0.1;
     }
   }
 

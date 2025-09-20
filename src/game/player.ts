@@ -134,7 +134,8 @@ export class Player
 
     // regenerate stamina
     if (this.staCurrent < this.staMax) {
-      this.staCurrent += (100 / this.staMax) * 0.1;
+      // TODO: let some parameter influence stamina regen
+      this.staCurrent += (99.9 / this.staMax) * 0.1;
       if (this.staCurrent > this.staMax) {
         this.staCurrent = this.staMax;
       }
