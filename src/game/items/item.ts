@@ -174,11 +174,11 @@ export abstract class Item
     if (this.rarity === Rarities.Common) return;
 
     const actions = [
-      () => (!this._str ? (this._str = 1) : this._str++),
-      () => (!this._int ? (this._int = 1) : this._int++),
-      () => (!this._vit ? (this._vit = 1) : this._vit++),
-      () => (!this._dex ? (this._dex = 1) : this._dex++),
-      () => (!this._agi ? (this._agi = 1) : this._agi++),
+      () => this._str++,
+      () => this._int++,
+      () => this._vit++,
+      () => this._dex++,
+      () => this._agi++,
     ];
 
     const attribNum = Math.ceil(config.rarityMultiplier[this.rarity] / 2);
