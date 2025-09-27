@@ -32,8 +32,4 @@ export class Boss extends Organism {
       this.type = type;
     }
   }
-
-  public tick(_tick: number): void {
-    // TODO: tick tock
-  }
 }

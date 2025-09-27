@@ -7,12 +7,12 @@ import {
   WeaponSlots,
 } from "../data";
 import { Item } from ".";
-import { CraeftMixin, HydrateableMixin } from "../tools";
+import { CraeftMixin, HydrateableMixin, Tickable } from "../tools";
 import type { ICraeft } from "../interfaces";
 
 export class Equipment
   extends CraeftMixin(HydrateableMixin())
-  implements EquipmentSlots
+  implements EquipmentSlots, Tickable
 {
   [ArmorSlots.Head]?: Item;
   [ArmorSlots.Body]?: Item;
@@ -145,10 +145,10 @@ export class Equipment
     return Object.assign(new Equipment({ craeft }), equipment);
   }
 
-  public tick(delta: number) {
+  public tick?(tick: number): void {
     for (const slot in this) {
       const item = this[slot];
-      if (item instanceof Item) item?.tick(delta);
+      if (item instanceof Item) item?.tick?.(tick);
     }
   }
 }

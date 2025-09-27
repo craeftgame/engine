@@ -54,11 +54,11 @@ export default class Craeft implements ICraeft {
   public readonly bosses: Bosses;
   public map?: Map;
 
-  gameTick?: number;
+  protected gameTick?: number;
   onTick?: () => void;
   onUpdate?: () => void;
 
-  ticker: number = 0;
+  protected ticker: number = 0;
 
   constructor() {
     this.player = new Player({ craeft: this });
@@ -152,16 +152,18 @@ export default class Craeft implements ICraeft {
     this.ticker++;
 
     // tick the player
-    this.player.tick(this.ticker);
+    this.player.tick?.(this.ticker);
 
     // tick all craefters
     for (const craefter of this.craefters) {
-      craefter.tick(this.ticker);
+      craefter.tick?.(this.ticker);
     }
 
     // tick all the items
     for (const item of this.items) {
-      item.tick(this.ticker);
+      if (!item.isEquipped) {
+        item.tick?.(this.ticker);
+      }
     }
 
     if (this.onTick) {
@@ -174,7 +176,9 @@ export default class Craeft implements ICraeft {
   };
 
   public update(): void {
-    if (this.onUpdate) this.onUpdate();
+    if (this.onUpdate) {
+      this.onUpdate();
+    }
   }
 
   public start({

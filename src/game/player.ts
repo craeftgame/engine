@@ -126,7 +126,7 @@ export class Player
     }
   }
 
-  public tick(delta: number): void {
+  public tick?(tick: number): void {
     // do not tick when farming
     if (this.isFarming) {
       return;
@@ -149,7 +149,7 @@ export class Player
       }
     }
 
-    this.equipment.tick(delta);
+    this.equipment.tick?.(tick);
   }
 
   public className(): string {

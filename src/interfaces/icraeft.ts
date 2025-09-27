@@ -18,10 +18,8 @@ export interface ICraeft {
   resources: Resources;
   bosses: Bosses;
   map?: Map;
-  gameTick?: number;
   onTick?: () => void;
   onUpdate?: () => void;
-  ticker: number;
   log: (log: string) => void;
 
   serialize(): string;

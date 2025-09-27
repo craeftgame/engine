@@ -99,5 +99,5 @@ export abstract class Organism
     return this.isDead;
   }
 
-  public abstract tick(_tick: number): void;
+  public tick?(_tick: number): void;
 }

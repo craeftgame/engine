@@ -19,6 +19,7 @@ import {
   getRandomArrayItem,
   getRandomInt,
   HydrateableMixin,
+  Tickable,
 } from "../../tools";
 import { Craefter } from "../craefter";
 import { secureRandom } from "@craeft/map-generator/dist/tools/rand";
@@ -26,7 +27,7 @@ import type { ICraeft, PlayerStats } from "../../interfaces";
 
 export abstract class Item
   extends CraeftMixin(HydrateableMixin())
-  implements PlayerStats
+  implements PlayerStats, Tickable
 {
   public isEquipped = false;
   public isMultiSlot = false;
@@ -166,9 +167,7 @@ export abstract class Item
     }
   }
 
-  public tick(_delta: number) {
-    // TODO: tick, tock
-  }
+  public tick?(_tick: number): void;
 
   protected addedAdditionalAttributes() {
     if (this.rarity === Rarities.Common) return;
