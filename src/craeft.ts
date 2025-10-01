@@ -31,7 +31,7 @@ import {
   SlotNames,
   WeaponTypes,
 } from "./data";
-import { getRandomArrayItem } from "./tools";
+import { getRandomArrayItem, getRandomInt } from "./tools";
 import type { ICraeft } from "./interfaces";
 
 const version = `v${process.env.NEXT_PUBLIC_CRAEFT_VERSION ?? "Test"}`;
@@ -87,7 +87,8 @@ export default class Craeft implements ICraeft {
         type: WeaponTypes.Knife,
         material: ResourceTypes.Metal,
         rarity: Rarities.Common,
-        atk: 1,
+        // add some chance to get better item from the start
+        atk: getRandomInt(0, 3) === 0 ? 2 : 1,
         delay: -1,
       }),
     ];
