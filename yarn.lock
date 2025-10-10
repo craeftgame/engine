@@ -427,7 +427,7 @@ __metadata:
     jiti: "npm:^2.6.0"
     local-storage: "npm:^2.0.0"
     lz-string: "npm:^1.5.0"
-    mathjs: "npm:^14.8.1"
+    mathjs: "npm:^15.0.0"
     prettier: "npm:^3.6.2"
     ts-jest: "npm:^29.4.4"
     typescript: "npm:^5.9.3"
@@ -3780,9 +3780,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mathjs@npm:^14.8.1":
-  version: 14.8.1
-  resolution: "mathjs@npm:14.8.1"
+"mathjs@npm:^15.0.0":
+  version: 15.0.0
+  resolution: "mathjs@npm:15.0.0"
   dependencies:
     "@babel/runtime": "npm:^7.26.10"
     complex.js: "npm:^2.2.5"
@@ -3795,7 +3795,7 @@ __metadata:
     typed-function: "npm:^4.2.1"
   bin:
     mathjs: bin/cli.js
-  checksum: 10c0/57e02f70d3b9c183851b784fd969ee34de8f8a4c17f379970cad79cb7bd9fbb7718b0b4812a72bb24c7474e819144cad76c301bc84b8537866a23643bbbe015f
+  checksum: 10c0/f79fc152d563f6c1957cd3f28863deffb1b71f36b080b988269945ffd4b6663f898469403539d1be0191c7d9a6a156837c4e47a7b39ebe3b6c5cb01b8d1c1e6b
   languageName: node
   linkType: hard
 
