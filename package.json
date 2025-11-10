@@ -21,7 +21,7 @@
     "@craeft/serializer": "git+https://github.com/craeftgame/serializer.git#v1.3.2",
     "local-storage": "^2.0.0",
     "lz-string": "^1.5.0",
-    "mathjs": "^15.0.0",
+    "mathjs": "^15.1.0",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
