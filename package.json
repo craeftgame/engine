@@ -1,6 +1,6 @@
 {
   "name": "@craeft/engine",
-  "version": "1.11.17",
+  "version": "1.12.0",
   "description": "Cräft! engine",
   "main": "dist",
   "scripts": {
