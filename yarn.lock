@@ -413,7 +413,7 @@ __metadata:
   resolution: "@craeft/engine@workspace:."
   dependencies:
     "@craeft/map-generator": "git+https://github.com/craeftgame/map-generator.git#v1.7.0"
-    "@craeft/serializer": "git+https://github.com/craeftgame/serializer.git#v1.3.2"
+    "@craeft/serializer": "git+https://github.com/craeftgame/serializer.git#v1.4.0"
     "@eslint/js": "npm:^10.0.1"
     "@jest/globals": "npm:^30.3.0"
     "@testing-library/jest-dom": "npm:^6.9.1"
@@ -444,10 +444,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@craeft/serializer@git+https://github.com/craeftgame/serializer.git#v1.3.2":
-  version: 1.3.2
-  resolution: "@craeft/serializer@https://github.com/craeftgame/serializer.git#commit=88bcbb4e2459abe9aa0974dd0e70456cbf077d00"
-  checksum: 10c0/6c8f6ca7a259d752aa76603419c90a4ac079e2f9019de9bc33a28e4dc01f44ea98f86009547d809494aed1ea6a2d21d91555bd1d65f96b7ae477c43034af8cc1
+"@craeft/serializer@git+https://github.com/craeftgame/serializer.git#v1.4.0":
+  version: 1.4.0
+  resolution: "@craeft/serializer@https://github.com/craeftgame/serializer.git#commit=141013532772ff19ec0a583d61ac230f5c478472"
+  checksum: 10c0/e8594a2cc3fac8cbd88cd33037514ec76e917e017f33023d63aaea998a8860e2e3e0d6855a4b601fc62724089c20902d7c462cb64cd1ce025dcd406efe9bd3cd
   languageName: node
   linkType: hard
 

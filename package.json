@@ -18,7 +18,7 @@
   "license": "MIT",
   "dependencies": {
     "@craeft/map-generator": "git+https://github.com/craeftgame/map-generator.git#v1.7.0",
-    "@craeft/serializer": "git+https://github.com/craeftgame/serializer.git#v1.3.2",
+    "@craeft/serializer": "git+https://github.com/craeftgame/serializer.git#v1.4.0",
     "local-storage": "^2.0.0",
     "lz-string": "^1.5.0",
     "mathjs": "^15.1.1",
